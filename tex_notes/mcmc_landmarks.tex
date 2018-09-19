@@ -1,19 +1,91 @@
 \documentclass{article}
-\usepackage{amsmath,amssymb,bbm}
+\usepackage{amsmath,amssymb}
 \usepackage[margin=2cm]{geometry}
 
-\newtheorem{definition}{Definition}
-\newtheorem{theorem}{Theorem}
-
+% Comments
 \newcommand{\cjcsays}[1]{{\bfseries Colin says:} \emph{#1}}
 \newcommand{\absays}[1]{{\bfseries Andreas says:} \emph{#1}}
 \newcommand{\aasays}[1]{{\bfseries Alexis says:} \emph{#1}}
 
+% Maths
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+
+\newcommand{\norm}[2]{\| #1 \|_{ #2 }}
+\newcommand{\knorm}[1]{\norm{ #1 }{K}}
+\newcommand{\ltwonorm}[1]{\norm{ #1 }{2}}
+\newcommand{\diff}[1]{\text{d} #1}
+
 \begin{document}
 \title{Landmark Metamorphosis with MCMC}
-\author{}
+\author{Andreas, Alexis and Colin}
 \maketitle
 
-\section{Governing Equations}
+\section{Bayesian Interpretation}
+
+Following the Bayesian interpretation of inverse problems detailed in
+\cite{dashti2017bayesian} we aim to compute metamorphoses in a different manner
+to a Riemannian least-squares solution via a gradient method. We motivate this
+approach using an example where everything is finite-dimensional:\\
+%\begin{example}[General strategy to sample from stochastic metamorphoses]
+In finite dimension, if we sample $u$ (prior) from a Gaussian distribution,
+then its PDF is proportional to $e^{-u^TS^{-1}u/2}$ for some covariance matrix
+$S$. Recall that for metamorphosis, the reconstruction system in Eulerian frame
+is:
+\begin{align*}
+& \partial_t q + u\cdot\nabla q = z\\
+& \partial_t z + \text{div}(u z) = 0
+\end{align*}
+Then we \textbf{define} a likelihood function $\Phi_c(u)=\frac c2\ltwonorm{z}$
+via the solution of the reconstruction system, leading to a posterior pdf
+proportional to $e^{-u^TS^{-1}u/2 - \Phi_c(u)}$. 
+Given
+\begin{align*}
+u_{MAP} & \triangleq \arg\max_u p(z|u)p(u)\\
+        & \triangleq \arg\max_u \log [ p(z|u)p(u)]\\
+        & \triangleq \arg\max_u \log e^{-u^TS^{-1}u/2 - \Phi_c(u)}\\
+        & \triangleq \arg\max_u - u^TS^{-1}u/2 - \Phi_c(u)
+\end{align*}
+Since $\max_u - u^TS^{-1}u/2 - \Phi_c(u)= \min_u u^TS^{-1}u/2 + \Phi_c(u)$ we
+see that the MAP estimator is also a minimiser of the metamorphosis
+functional.\\
+
+In the gradient descent approach we discretise the function spaces and then
+optimise the metamorphosis functional. In this interpretation we want to use
+MCMC to generate samples from the conditional PDF rather than just finding the
+$u$ that has maximum probability (this would solve the deterministic
+metamorphosis problem) - we call this stochastic metamorphosis. MCMC allows us
+to compute statistics for $u$ (and $q$ and $z$) from this distribution via
+averaging over samples.
+%\end{example}
+\section{Optimisation Problem}
+
+Let $i=0,..M$, $M>0$ denote the landmark index. The landmark metamorphosis 
+optimisation problem reads:
+\begin{subequations}
+\begin{align}
+\min_{u, z} & \sum_{i=0}^M \int_0^1 \knorm{u^i_t}^2 + \ltwonorm{z^i_t} \diff{t}\\
+            & \dot{q^i_t} = - u_t \circ q^i_t + z^i_t \\
+            & \dot{z^i_t} = - (\nabla u_t \circ q^i_t)^T z^i_t \\
+            & q^i_1 = \hat q^i_1 \\
+            & q^i_0 = \hat q^i_0 \\
+            & u^i_t = K^i_t(q^i_t)
+\end{align}
+\end{subequations}
+
+here the boundary conditions $\hat q^i_j$ denotes the $i$th landmarks for time
+$j=0,\,1$. Here, $K^i_t$ denotes an operator that computes the velocity at each time
+and landmark step.
+
+\section{Numerical Solution}
+
+If we can parameterise - at each landmark and time step - a Gaussian kernel with
+a random $U(0,1)$ component then we can write the velocity as an implicit
+function of the landmark positions. As a result, the governing equations
+(constraints) above will become a nonlinear boundary value system. The
+nonlinearity will stem from the nonlinearity of the operator $K$.
+
+\bibliographystyle{abbrv}
+\bibliography{mcmc}
 
 \end{document}
