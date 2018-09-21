@@ -59,7 +59,7 @@ Let $i=0,..M$, $M>0$ denote the landmark index. The landmark metamorphosis
 optimisation problem reads:
 \begin{subequations}\label{pbl:landmark_mm}
 \begin{align}
-\min_{\substack{u\in B\\ \{z^i_t\}_i \in \mathbb{R}^{i\times d},\, t\in[0,1]}} & \sum_{i=0}^M \int_0^1 \bnorm{u^i_t}^2 + \ltwonorm{z^i_t} \diff{t}\\
+\min_{\substack{u\in B\\ \{z^i_t\}_i \in \mathbb{R}^{d\times M},\, t\in[0,1]}} & \sum_{i=0}^M \int_0^1 \bnorm{u^i_t}^2 + \ltwonorm{z^i_t} \diff{t}\\
             & \dot{q^i_t} = - u_t \circ q^i_t + z^i_t \label{eq:ele_q} \\
             & q^i_j = \hat q^i_j, \quad j=0,1 \label{eq:ele_q_bcs}\\
 \end{align}
@@ -86,12 +86,13 @@ $\{K^i\}_{i=0}^M$, where $K^i : \mathbb{R}^d \rightarrow \mathbb{R}^d$:
 u_t(x) = \sum_{i=0}^M K^i_t(x - q^i_t)\hat u^i_t \label{eq:ele_u_disc}
 \end{equation}
 
-where $\{\hat u^i_t\}_i \in \mathbb{R}^{i\times d}, t\in[0,1]$ denotes the
+where $\{\hat u^i_t\}_i \in \mathbb{R}^{d\times M}, t\in[0,1]$ denotes the
 velocity basis coefficients. Suppressing the time-dependencies for now we
 observe that the velocity norm can be written:
 \begin{align*}
 \bnorm{u}^2 & \triangleq \int_\Omega u\cdot Bu \diff{x}\\
-            & = \int_\Omega\sum_{i=0}^M K(x-q^i)\hat u^i \cdot B \sum_{j=0}^M K(x-q^j)\hat u^j \diff{x}\\
+            & = \int_\Omega\sum_{i=0}^M K(x-q^i)\hat u^i \cdot B \sum_{j=0}^M
+            K(x-q^j)\hat u^j \diff{x}\\
             & = \int_\Omega \sum_{i=0}^M K(x-q^i)\hat u^i \cdot \sum_{j=0}^M
             \delta (x-q^j)\hat u^j \diff{x}\\
             & = \sum_{i=0}^M \sum_{j=0}^M K(q^j-q^i)\hat u^i \cdot\hat u^j
@@ -101,9 +102,12 @@ Substituting \eqref{eq:ele_u_disc} into
 \eqref{pbl:landmark_mm} we write the spatially discretised problem
 \begin{subequations}\label{pbl:landmark_mm_disc}
 \begin{align}
-\min_{\substack{\{\hat u^i_t\}_i \in \mathbb{R}^{i\times d},\, t\in[0,1]\\
-\{z^i_t\}_i \in \mathbb{R}^{i\times d},\, t\in[0,1]}} & \int_0^1 \sum_{i=0}^M \sum_{j=0}^M K(q^j-q^i)\hat u^i \cdot\hat u^j+ \sum_{i=0}^M \ltwonorm{z^i_t} \diff{t}\\
-            & \dot{q^i_t} = - \sum_{j=0}^M K^j_t(q^i_t-q^j_t)\hat u^j_t \circ q^i_t + z^i_t \label{eq:ele_q_disc} \\
+\min_{\substack{\{\hat u^i_t\}_i \in \mathbb{R}^{d\times M},\, t\in[0,1]\\
+\{z^i_t\}_i \in \mathbb{R}^{d\times M},\, t\in[0,1]}} & \int_0^1 \sum_{i=0}^M
+\sum_{j=0}^M K(q^j-q^i)\hat u^i \cdot\hat u^j+ \sum_{i=0}^M
+\ltwonorm{z^i_t} \diff{t}\\
+            & \dot{q^i_t} = - \sum_{j=0}^M K^j_t(q^i_t-q^j_t)\hat u^j_t \circ
+            q^i_t + z^i_t \label{eq:ele_q_disc} \\
             & \eqref{eq:ele_q_bcs}\nonumber
 \end{align}
 \end{subequations}
