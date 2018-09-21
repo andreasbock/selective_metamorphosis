@@ -27,7 +27,7 @@ Following the Bayesian interpretation of inverse problems detailed in
 \cite{dashti2017bayesian} we aim to compute metamorphoses in a different manner
 to a Riemannian least-squares solution via a gradient method. We motivate this
 approach using an example where everything is finite-dimensional:\\
-%\begin{example}[General strategy to sample from stochastic metamorphoses]
+
 In finite dimension, if we sample $u$ (prior) from a Gaussian distribution,
 then its PDF is proportional to $e^{-u^TS^{-1}u/2}$ for some covariance matrix
 $S$. Recall that for metamorphosis, the reconstruction system in Eulerian frame
@@ -50,26 +50,19 @@ Since $\max_u - u^TS^{-1}u/2 - \Phi_c(u)= \min_u u^TS^{-1}u/2 + \Phi_c(u)$ we
 see that the MAP estimator is also a minimiser of the metamorphosis
 functional.\\
 
-In the gradient descent approach we discretise the function spaces and then
-optimise the metamorphosis functional. In this interpretation we want to use
-MCMC to generate samples from the conditional PDF rather than just finding the
-$u$ that has maximum probability (this would solve the deterministic
-metamorphosis problem) - we call this stochastic metamorphosis. MCMC allows us
-to compute statistics for $u$ (and $q$ and $z$) from this distribution via
-averaging over samples.
-%\end{example}
+The infinite-dimensional case in underway. More information on MAP estimators in
+connection with Bayesian inverse problems can be found in \cite{dashti2013map}.
+
 \section{Optimisation Problem}
 
 Let $i=0,..M$, $M>0$ denote the landmark index. The landmark metamorphosis 
 optimisation problem reads:
-\begin{subequations}
+\begin{subequations}\label{pbl:landmark_mm}
 \begin{align}
 \min_{u, z} & \sum_{i=0}^M \int_0^1 \knorm{u^i_t}^2 + \ltwonorm{z^i_t} \diff{t}\\
-            & \dot{q^i_t} = - u_t \circ q^i_t + z^i_t \\
-            & \dot{z^i_t} = - (\nabla u_t \circ q^i_t)^T z^i_t \\
-            & q^i_1 = \hat q^i_1 \\
-            & q^i_0 = \hat q^i_0 \\
-            & u^i_t = K^i_t(q^i_t)
+            & \dot{q^i_t} = - u_t \circ q^i_t + z^i_t \label{eq:ele_q} \\
+            & q^i_j = \hat q^i_j, \quad j=0,1 \label{eq:ele_q_bcs}\\
+            & u^i_t(x) = K^i_t(x - q^i_t) \label{eq:ele_u}
 \end{align}
 \end{subequations}
 
@@ -77,15 +70,47 @@ here the boundary conditions $\hat q^i_j$ denotes the $i$th landmarks for time
 $j=0,\,1$. Here, $K^i_t$ denotes an operator that computes the velocity at each time
 and landmark step.
 
+The Euler-Lagrange equation for $z$ is:
+\begin{equation}\label{eq:ele_z}
+\dot{z^i_t} = - (\nabla u_t \circ q^i_t)^T z^i_t
+\end{equation}
+
 \section{Numerical Solution}
 
-If we can parameterise - at each landmark and time step - a Gaussian kernel with
-a random $U(0,1)$ component then we can write the velocity as an implicit
-function of the landmark positions. As a result, the governing equations
-(constraints) above will become a nonlinear boundary value system. The
-nonlinearity will stem from the nonlinearity of the operator $K$.
+There are several ways of solving \eqref{pbl:landmark_mm}. We can throw Newton
+at the ELEs, solve an adjoint optimisation problem or do MCMC. This section
+touches on these approaches and their implementation.
+
+\subsection{Deterministic Metamorphosis}
+
+There are two options. We can write the equations \eqref{eq:ele_q},
+\eqref{eq:ele_q_bcs}, \eqref{eq:ele_z} and \eqref{eq:ele_u} as UFL expressions
+in Firedrake and hit the system with Newton. We might see multiple solutions in
+this case.\\
+
+Second, we can simply write \eqref{pbl:landmark_mm} in pyadjoint and optimise
+over $z$ (substituting the expression for $u$, \eqref{eq:ele_u}, in the right
+places).
+
+\subsection{MCMC Approach}
+
+Solving the reconstruction system should be feasible.  If we can parameterise -
+at each landmark and time step - a Gaussian kernel with a random $U(0,1)$
+component then we can write the velocity as an implicit function of the landmark
+positions. As a result, the governing equations (constraints) above will become
+a nonlinear boundary value system. The nonlinearity will stem from the
+nonlinearity of the operator $K$.\\
+
+When we accept sample velocities we need to
+assess whether or not they are actually appropriate potential minimisers, or
+realisations, of metamorphoses. We can either keep a running tally, i.e. at
+every step when we accept, we evaluate the metamorphosis functional and decide
+the ``quality'' of this realisation (sometimes we want low $z$ norm, sometimes
+not if we have diffeomorphic images!). This is called the running tally
+approach and depends on the type of application or images that we are looking
+at!
 
 \bibliographystyle{abbrv}
-\bibliography{mcmc}
+\bibliography{landmarks}
 
 \end{document}
