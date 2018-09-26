@@ -10,11 +10,21 @@
 % Maths
 \newtheorem{definition}{Definition}
 \newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
+
+\newcommand{\pp}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\dede}[2]{\frac{\delta #1}{\delta #2}}
+\newcommand{\dd}[2]{\frac{\diff#1}{\diff#2}}
 
 \newcommand{\norm}[2]{\| #1 \|_{ #2 }}
 \newcommand{\bnorm}[1]{\norm{ #1 }{B}}
 \newcommand{\ltwonorm}[1]{\norm{ #1 }{2}}
 \newcommand{\diff}[1]{\text{d} #1}
+
+\newcommand{\Q}{\mathbf{q}}
+\newcommand{\U}{\mathbf{u}}
+\newcommand{\Z}{\mathbf{z}}
+\newcommand{\V}{\mathbf{v}}
 
 \begin{document}
 \title{Landmark Metamorphosis with MCMC}
@@ -23,45 +33,15 @@
 
 \section{Bayesian Interpretation}
 
-Following the Bayesian interpretation of inverse problems detailed in
-\cite{dashti2017bayesian} we aim to compute metamorphoses in a different manner
-to a Riemannian least-squares solution via a gradient method. We motivate this
-approach using an example where everything is finite-dimensional:\\
+Let $i=0,..M$, $M>0$ denote the landmark index, and let $d$ denote the spatial
+dimension. The landmark metamorphosis optimisation problem reads:
 
-In finite dimension, if we sample $u$ (prior) from a Gaussian distribution,
-then its PDF is proportional to $e^{-u^TS^{-1}u/2}$ for some covariance matrix
-$S$. Recall that for metamorphosis, the reconstruction system in Eulerian frame
-is:
-\begin{align*}
-& \partial_t q + u\cdot\nabla q = z\\
-& \partial_t z + \text{div}(u z) = 0
-\end{align*}
-Then we \textbf{define} a likelihood function $\Phi_c(u)=\frac c2\ltwonorm{z}$
-via the solution of the reconstruction system, leading to a posterior pdf
-proportional to $e^{-u^TS^{-1}u/2 - \Phi_c(u)}$. 
-Given
-\begin{align*}
-u_{MAP} & \triangleq \arg\max_u p(z|u)p(u)\\
-        & \triangleq \arg\max_u \log [ p(z|u)p(u)]\\
-        & \triangleq \arg\max_u \log e^{-u^TS^{-1}u/2 - \Phi_c(u)}\\
-        & \triangleq \arg\max_u - u^TS^{-1}u/2 - \Phi_c(u)
-\end{align*}
-Since $\max_u - u^TS^{-1}u/2 - \Phi_c(u)= \min_u u^TS^{-1}u/2 + \Phi_c(u)$ we
-see that the MAP estimator is also a minimiser of the metamorphosis
-functional.\\
-
-The infinite-dimensional case in underway. More information on MAP estimators in
-connection with Bayesian inverse problems can be found in \cite{dashti2013map}.
-
-\section{Optimisation Problem}
-
-Let $i=0,..M$, $M>0$ denote the landmark index. The landmark metamorphosis 
-optimisation problem reads:
 \begin{subequations}\label{pbl:landmark_mm}
 \begin{align}
-\min_{\substack{u\in B\\ \{z^i_t\}_i \in \mathbb{R}^{d\times M},\, t\in[0,1]}} & \sum_{i=0}^M \int_0^1 \bnorm{u^i_t}^2 + \ltwonorm{z^i_t} \diff{t}\\
-            & \dot{q^i_t} = - u_t \circ q^i_t + z^i_t \label{eq:ele_q} \\
-            & q^i_j = \hat q^i_j, \quad j=0,1 \label{eq:ele_q_bcs}\\
+\min_{\substack{u\in L^1([0,1],B)\\ \{z^i_t\}_i \in L^1([0,1],\mathbb{R}^{d\times M})}} &
+\sum_{i=0}^M \int_0^1 \bnorm{u^i_t}^2 + \ltwonorm{z^i_t}^2 \diff{t}\\
+            & \dot{q^i_t} = u_t \circ q^i_t + z^i_t \label{eq:ele_q} \\
+            & q^i_j = \hat q^i_j, \quad j=0,1 \label{eq:ele_q_bcs}
 \end{align}
 \end{subequations}
 
@@ -69,10 +49,64 @@ where the boundary conditions $\hat q^i_j$ denotes the $i$th landmarks for time
 $j=0,\,1$. Here $(B,\bnorm{\cdot})$ is some appropriate Hilbert space for the
 velocity.
 
-The Euler-Lagrange equation for $z$ is:
+The Euler-Lagrange equation for $z$ can be shown to be
 \begin{equation}\label{eq:ele_z}
 \dot{z^i_t} = - (\nabla u_t \circ q^i_t)^T z^i_t
 \end{equation}
+
+We aim to solve the inverse problem \eqref{pbl:landmark_mm} using a Bayesian
+formulation cf. \cite{dashti2017bayesian,dashti2013map}. This is in contrast to
+traditional methods in image registration, where metamorphoses are compures as
+solutions to a Riemannian least-squares problem via gradient method.\\
+
+The goal of this approach is to compute a probability distribution on the space
+of velocities and sources $(u,z)$ given some obversations $I_0$ and $I_1$. As
+such, the desiderata here is a density. Mathematically this is expressed by
+Bayes' rule:
+\[
+\dd{\mu[u,z]}{\mu_0} \propto p(I_0, I_1 | [u, z])
+\]
+here $\mu_0$ denotes our prior density and $\mu[u, z] \triangleq N(0,C)\times
+N(0,G_u)$ for appropriate covariances $C$ and $G_u$ (details to follow). At this
+instance it is useful to relate minimisers of \eqref{pbl:landmark_mm} to the
+analogous notion in the stochastic setting, namely the \textit{maximum a
+posteriori estimator}.
+
+%%%% Finite dimensional MAP %%%%
+We motivate this approach using an example where everything is finite-dimensional:
+In finite dimension, if we sample $u$ (prior) from a Gaussian distribution,
+then its PDF is proportional to $e^{-u^TC^{-1}u/2}$ for some covariance matrix
+$C$. Recall that for metamorphosis, the reconstruction system in Eulerian frame
+is:
+\begin{subequations}\label{eq:reconst}
+\begin{align}
+& \partial_t q + u\cdot\nabla q = z\\
+& \partial_t z + \text{div}(u z) = 0
+\end{align}
+\end{subequations}
+Then we \textbf{define} a likelihood function $\Phi_c(u)=\frac c2\ltwonorm{z}^2$
+via the solution of the reconstruction system, leading to a posterior pdf
+proportional to $e^{-u^TC^{-1}u/2 - \Phi_c(u)}$.
+Given
+\begin{align*}
+u_{MAP} & \triangleq \arg\max_u p(z|u)p(u)\\
+        & \triangleq \arg\max_u \log [ p(z|u)p(u)]\\
+        & \triangleq \arg\max_u \log e^{-u^TC^{-1}u/2 - \Phi_c(u)}\\
+        & \triangleq \arg\max_u - u^TC^{-1}u/2 - \Phi_c(u)
+\end{align*}
+Since $\max_u - u^TC^{-1}u/2 - \Phi_c(u)= \min_u u^TC^{-1}u/2 + \Phi_c(u)$ we
+see that the MAP estimator is also a minimiser of the metamorphosis
+functional. The infinite-dimensional case is underway.\\
+
+%%%% Explanation of why we want a joint distribution %%%%
+Note that we do not want to put a stochastic model on the velocity without the
+source since this indicates that we can never sample realisations corresponding
+to new growth patterns! This can be seen by asking the question: ``\textit{how
+unique is the equation $\partial_t I + u\cdot\nabla I = z$}''? This equation is
+overdetermined, so the same image may appear for different velocities and
+sources (yet to be shown). Therefore, if we choose the proposal density
+$\exp(-\Phi_c(u))$ we sample only the sources that minimise the source $z$ and
+new features can never appear.
 
 \section{Numerical Solution}
 
@@ -105,31 +139,105 @@ Substituting \eqref{eq:ele_u_disc} into
 \min_{\substack{\{\hat u^i_t\}_i \in \mathbb{R}^{d\times M},\, t\in[0,1]\\
 \{z^i_t\}_i \in \mathbb{R}^{d\times M},\, t\in[0,1]}} & \int_0^1 \sum_{i=0}^M
 \sum_{j=0}^M K(q^j-q^i)\hat u^i \cdot\hat u^j+ \sum_{i=0}^M
-\ltwonorm{z^i_t} \diff{t}\\
-            & \dot{q^i_t} = - \sum_{j=0}^M K^j_t(q^i_t-q^j_t)\hat u^j_t \circ
+\ltwonorm{z^i_t}^2 \diff{t}\\
+            & \dot{q^i_t} = \sum_{j=0}^M K^j_t(q^i_t-q^j_t)\hat u^j_t \circ
             q^i_t + z^i_t \label{eq:ele_q_disc} \\
             & \eqref{eq:ele_q_bcs}\nonumber
 \end{align}
 \end{subequations}
 
+Optimising \eqref{pbl:landmark_mm_disc} is somewhat awkward due to the presence
+of $q$ in the functional. We can perform a change of variables to eliminate it.
+First we rewrite the problem in matrix notation: let $\Q = [q_0, q_1,
+\ldots]\in\mathbb{R}^{d\times M}$ denote the vector of landmark points and
+similarly $\U = [u_0, u_1, \ldots]\in\mathbb{R}^{d\times M}$ and $\Z = [z_0,
+z_1, \ldots]\in\mathbb{R}^{d\times M}$ the velocities and metamorphosis sources
+at each of the landmarks. Further, denote the kernel matrix $M$ by the following
+identity:
+\[
+\U^T M \U \triangleq \sum_{i=0}^M \sum_{j=0}^M K(q^j-q^i)\hat u^i \cdot\hat u^j
+\]
+where we have suppressed the $q$-dependency on $M$. By symmetry and
+positive-definiteness of the kernel there exists $M^{1/2}$ such that $M =
+(M^{1/2})^T M^{1/2}$. Therefore, by introducing the variable $\V \triangleq
+M^{1/2}\U$ we observe
+\[
+\bnorm{u} = \langle\U^T, M \U\rangle = \langle\V^T,\V\rangle
+\]
+and so \eqref{pbl:landmark_mm_disc} can be written as:
+
+\begin{subequations}\label{pbl:landmark_mm_disc_matrix}
+\begin{align}
+\min_{\U,\, \Z} & \int_0^1 \ltwonorm{\V}^2 + \sum_{i=0}^M \ltwonorm{\Z_i}^2 \diff{t}\\
+            & \dot{\Q} = M^{1/2} \V + \Z\label{eq:Q_eq}\\
+            & \eqref{eq:ele_q_bcs}\nonumber
+\end{align}
+\end{subequations}
+
+Note that in the infinite-dimensional space-time setting this change of
+variables is not required as the metric is not parameterised by a kernel -
+rather it is an outer metric that we can evaluate in the entire ambient space.\\
+
 \subsection{Deterministic Metamorphosis}
 
-There are two options. We can write the discrete problem
-\eqref{pbl:landmark_mm_disc} as UFL expressions in Firedrake and hit the system
-with Newton. We might see multiple solutions in this case.\\
+There are two options.\\
+
+First, we can solve the reconstruction system directly. Via the kernel basis
+parameterisation of the velocity field as implicit functions of the landmark
+positions we are able to pose and solve the governing equations (\eqref{eq:Q_eq}
+and the discrete analogue of \eqref{eq:ele_z}) as a non-linear boundary value
+system. The non-linearity will stem from the non-linearity of the operator $K$.
+We express this system in Firedrake/UFL and hit the system with Newton. We might
+see multiple solutions in this case.\\
 
 Second, we can simply write \eqref{pbl:landmark_mm_disc} in pyadjoint and optimise
-over $z$.
+over $z$.\\
 
-\subsection{MCMC Approach}
+In both settings time is implicitly discretised with Runge-Kutta.
 
-Solving the reconstruction system should be feasible.  If we can parameterise -
-at each landmark and time step - a Gaussian kernel with a random $U(0,1)$
-component then we can write the velocity as an implicit function of the landmark
-positions. As a result, the governing equations (constraints) above will become
-a nonlinear boundary value system. The nonlinearity will stem from the
-nonlinearity of the operator $K$.\\
+\subsection{MCMC Approach for Landmarks}
 
+We define a joint distribution $\mu[u,z]$ on the space of velocities and sources
+(what we call \textit{metamorphic paths}). However, since the two functions are
+linked by the reconstruction equation and hence $z \in G_u$, it is not
+completely obvious how to sample from $\mu$.
+
+The aim is to derive a quasi MCMC scheme to generate approximate metamorphic
+paths and therefore
+approximate minimisers to the metamorphosis problem. We (sort of) know how to
+sample diffeomorphisms; choose a sufficiently smooth vector space for $u$ and
+supply a suitable covariance operator. However, sampling from source terms, $z$,
+is not as simple because of the coupling between $z$ and $u$ through the
+equation $\partial_t q + u\cdot\nabla q = z$ (and the boundary conditions).  We
+can observe, however, that the governing equation for $z$ in \eqref{eq:reconst}
+is well-posed for any non-zero right-hand side, modulo some integrability
+conditions. The algorithm goes as follows: First we propose random velocities
+based the covariance operator $B$ (something like a tri-Helmholtz operator) and
+accept them based on the inner problem (i.e.  solve \eqref{eq:reconst} and use
+the density $e^{-\Phi(u)}$ to accept). This essentially amounts to sampling from
+the marginal distribution with respect to $u$ (i.e. $z$ is marginalised out).
+Then, after a number of samples of the velocity, we begin sampling from the
+marginal distribution with respect to $z$. If we look only at the equation for
+the image, then this is a rather difficult problem because not every $z$ will
+with probability 1 make the image match the boundary conditions! However, we
+can introduce a right-hand side variable $S$ to the equation for $z$ i.e.
+$\partial_t z + \text{div}(u z) = S$. If we need only something like $L^2$ in
+order to control $z$ with $S$, then we can generate $\delta$-correlated samples
+of $S$ through which we can generate possible metamorphic sources $z$ from the
+marginalised distribution for $z$!\\
+
+Things to check:
+\begin{itemize}
+\item We need to check that $\mu_z << \mu_S$!
+\item  Our problem is a bit tricky, because we have to sample from functions
+that are also defined over time. However, due to some janky result, sampling
+from a certain Hilbertian distribution for a certain temporal regularity does
+$not$ necessarily ensure that samples lie in the right space - i.e. have enough
+regularity in time! Should be simply verifying \cite[Assumption 2.17, Theorem
+2.18]{dashti2017bayesian}.
+\end{itemize}
+
+\begin{remark}[Evaluating the quality of samples]
 When we accept sample velocities we need to
 assess whether or not they are actually appropriate potential minimisers, or
 realisations, of metamorphoses. We can either keep a running tally, i.e. at
@@ -138,7 +246,11 @@ the ``quality'' of this realisation (sometimes we want low $z$ norm, sometimes
 not if we have diffeomorphic images!). This is called the running tally
 approach and depends on the type of application or images that we are looking
 at!
+\end{remark}
 
+See \cite{cotter2010approximation} for more information on results pertaining
+the connection between approximation of forward problems of PDEs and
+interpretation of Bayesian inverse problems.
 
 \bibliographystyle{abbrv}
 \bibliography{landmarks}
