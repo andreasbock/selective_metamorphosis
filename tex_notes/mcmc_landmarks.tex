@@ -1,7 +1,13 @@
 \documentclass{article}
+
+% --- Packages --- %
 \usepackage{amsmath,amssymb}
 \usepackage[margin=2cm]{geometry}
 
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+% --- Commands --- %
 % Comments
 \newcommand{\cjcsays}[1]{{\bfseries Colin says:} \emph{#1}}
 \newcommand{\absays}[1]{{\bfseries Andreas says:} \emph{#1}}
@@ -11,6 +17,7 @@
 \newtheorem{definition}{Definition}
 \newtheorem{theorem}{Theorem}
 \newtheorem{remark}{Remark}
+\newtheorem{proposition}{Proposition}
 
 \newcommand{\pp}[2]{\frac{\partial #1}{\partial #2}}
 \newcommand{\dede}[2]{\frac{\delta #1}{\delta #2}}
@@ -95,8 +102,8 @@ u_{MAP} & \triangleq \arg\max_u p(z|u)p(u)\\
         & \triangleq \arg\max_u - u^TC^{-1}u/2 - \Phi_c(u)
 \end{align*}
 Since $\max_u - u^TC^{-1}u/2 - \Phi_c(u)= \min_u u^TC^{-1}u/2 + \Phi_c(u)$ we
-see that the MAP estimator is also a minimiser of the metamorphosis
-functional. The infinite-dimensional case is underway.\\
+see that the MAP estimator is also a minimiser of the metamorphosis functional.
+The infinite-dimensional case is underway.\\
 
 %%%% Explanation of why we want a joint distribution %%%%
 Note that we do not want to put a stochastic model on the velocity without the
@@ -226,16 +233,52 @@ order to control $z$ with $S$, then we can generate $\delta$-correlated samples
 of $S$ through which we can generate possible metamorphic sources $z$ from the
 marginalised distribution for $z$!\\
 
-Things to check:
+\newcommand{\mhsample}{\textsc{sampleL2}}
+\newcommand{\inverthh}{\textsc{invertTriHelmHoltz}}
+\newcommand{\acceptprob}{\textsc{acceptanceProbability}}
+\newcommand{\solveinner}{\textsc{solveInnerProblem}}
+\begin{algorithm}
+\begin{algorithmic}
+\caption{Quasi-MCMC on $\mu[u,z]$}
+\Procedure{quasiMCMC}{$N$}
+\State $k \gets 0$
+\State $u^k \gets \text{ some initial guess}$
+\State $z^k \gets \text{ some initial guess}$
+
+\While{$k < N$}
+\State $v \gets \mhsample ()$\hspace{3cm} \textbf{\# sample velocity}
+\State $S \gets \mhsample ()$\hspace{3cm} \textbf{\# sample mutation}
+\State $u \gets \inverthh (v)$
+\State $z \gets \solveinner (u, S)$
+\If {\textsc{randomUnit()}$\,< \acceptprob(z^k, z)$}
+    \State $u^{k+1} \gets u$
+    \State $z^{k+1} \gets z$
+\Else
+    \State $u^{k+1} \gets u^k$
+    \State $z^{k+1} \gets z^k$
+\EndIf
+\State $k\gets k+1$
+\EndWhile
+\Return $u^k,\, z^k$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+where:
 \begin{itemize}
-\item We need to check that $\mu_z << \mu_S$!
-\item  Our problem is a bit tricky, because we have to sample from functions
-that are also defined over time. However, due to some janky result, sampling
-from a certain Hilbertian distribution for a certain temporal regularity does
-$not$ necessarily ensure that samples lie in the right space - i.e. have enough
-regularity in time! Should be simply verifying \cite[Assumption 2.17, Theorem
-2.18]{dashti2017bayesian}.
+\item \mhsample returns a $L^2$ function sample via a $H^2$ covariance operator
+\item \inverthh inverts a tri-Helmholtz operator onto its argument and returns
+the result
+\item $\solveinner(u,S)$ computes the image $I$ and source $z$
+given a fixed velocity $u$ and mutation $S$. The mutation defaults to zero.
+\item $\acceptprob(z_u, z_v)$ return the value $e^{\ltwonorm{z_u}^2
+-\ltwonorm{z_v}^2}$
 \end{itemize}
+
+Since the velocities have a tensor-product structure sampling is not obvious.
+However, we can avoid Bochner-type draws because we simple focus on sampling the
+$v$ component and then invert Helmholtz operators. As a result, we only need
+$H^1$ covariance (or $H^2$, depending on the dimension).
 
 \begin{remark}[Evaluating the quality of samples]
 When we accept sample velocities we need to
