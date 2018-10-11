@@ -38,6 +38,32 @@
 \author{Andreas, Alexis and Colin}
 \maketitle
 
+\section{Thoughts}
+
+\begin{enumerate}
+  \item in the formulation below, $z$ is exactly the momentum $p_i$ of landmarks, thus we don't need to do any inference, we can solve it directly. 
+  \item Instead, we would want a Lagrangian of the form
+    \begin{align}
+      l(q,p) = \|u\|_B^2 + \sum_i |p_i|^2 \nu(q_i) \, , 
+    \end{align}
+    where $\nu(x)(>0)$ is a function on the landmark $q$ space ($\mathbb R^2$), with values in $\mathbb R$. 
+  \item The baysian inference problem is then for this function, which we don't know. 
+  \item if $\nu=0$, we recover standard landmark dynamics, if $\nu(x)=\sigma^2$ is a constant, we recover the classic landmark metamorphosis.  
+  \item the equations of motion should be close to 
+    \begin{align}
+      \dot p_i  &= \nabla u(q_i)p_i  + |p_i|^2 \nabla \nu(q_i)\\
+      \dot q &= u(q_i) + \nu(q_i) p_i 
+    \end{align}
+  \item another choice is 
+    \begin{align}
+      l(q,p) = \|u\|_B^2 + \sum_i p_i\cdot \nu(q_i) \, , 
+    \end{align}
+    where $\nu:\mathbb R^2 \to \mathbb R^2$, which will give more freedom on the metamorphosis term, and give equations of motion as 
+\begin{align}
+      \dot p_i  &= \nabla u(q_i)p_i  + p_i \cdot \nabla \nu(q_i)\\
+      \dot q &= u(q_i) + \nu(q_i) 
+    \end{align}
+\end{enumerate}
 \section{Bayesian Interpretation}
 
 Let $i=0,..M$, $M>0$ denote the landmark index, and let $d$ denote the spatial
