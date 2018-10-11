@@ -242,37 +242,40 @@ marginalised distribution for $z$!\\
 \caption{Quasi-MCMC on $\mu[u,z]$}
 \Procedure{quasiMCMC}{$N$}
 \State $k \gets 0$
-\State $u^k \gets \text{ some initial guess}$
-\State $z^k \gets \text{ some initial guess}$
-
+\State $v^k \gets \text{ some initial guess}$
+\State $S^k \gets \text{ some initial guess}$
+\State $z \gets 0$
 \While{$k < N$}
 \State $v \gets \mhsample ()$\hspace{3cm} \textbf{\# sample velocity}
 \State $S \gets \mhsample ()$\hspace{3cm} \textbf{\# sample mutation}
 \State $u \gets \inverthh (v)$
-\State $z \gets \solveinner (u, S)$
-\If {\textsc{randomUnit()}$\,< \acceptprob(z^k, z)$}
-    \State $u^{k+1} \gets u$
-    \State $z^{k+1} \gets z$
+\State $z_\text{prop} \gets \solveinner (u, S)$
+\If {\textsc{randomUnit()}$\,< \acceptprob(z_\text{prop}, z)$}
+    \State $v^{k+1} \gets v$
+    \State $S^{k+1} \gets S$
+    \State $z \gets z_\text{prop}$
 \Else
-    \State $u^{k+1} \gets u^k$
-    \State $z^{k+1} \gets z^k$
+    \State $v^{k+1} \gets v^k$
+    \State $S^{k+1} \gets S^k$
 \EndIf
 \State $k\gets k+1$
 \EndWhile
-\Return $u^k,\, z^k$
+\Return $v^k,\, S^k$
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
 
 where:
 \begin{itemize}
-\item \mhsample returns a $L^2$ function sample via a $H^2$ covariance operator
+\item \mhsample$(f)$ returns a $L^2$ function sample computes as
+$\sqrt{1-\beta^2}f + \beta \xi$, where $\xi$ is a $N(0,1)$ piece-wise linear
+function
 \item \inverthh inverts a tri-Helmholtz operator onto its argument and returns
 the result
 \item $\solveinner(u,S)$ computes the image $I$ and source $z$
 given a fixed velocity $u$ and mutation $S$. The mutation defaults to zero.
-\item $\acceptprob(z_u, z_v)$ return the value $e^{\ltwonorm{z_u}^2
--\ltwonorm{z_v}^2}$
+\item $\acceptprob(z_u, z_v)$ return the value $e^{-c(\ltwonorm{z_u}^2
+-\ltwonorm{z_v}^2)}$
 \end{itemize}
 
 Since the velocities have a tensor-product structure sampling is not obvious.
