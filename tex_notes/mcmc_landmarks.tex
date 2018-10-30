@@ -38,7 +38,7 @@
 \author{Andreas, Alexis and Colin}
 \maketitle
 
-\section{Thoughts}
+\section{Metamorphosis with Inference}
 
 \begin{enumerate}
   \item in the formulation below, $z$ is exactly the momentum $p_i$ of landmarks, thus we don't need to do any inference, we can solve it directly. 
@@ -63,6 +63,20 @@
       \dot p_i  &= \nabla u(q_i)p_i  + p_i \cdot \nabla \nu(q_i)\\
       \dot q &= u(q_i) + \nu(q_i) 
     \end{align}
+\end{enumerate}
+
+Preliminary numerical experiments with only one dimension looks promising (2D on
+its way).\\
+
+\textbf{What we need to complete:}
+
+\begin{enumerate}
+\item Testing functionals in 2d and dump the results (sanity check)
+\item Existence and uniqueness of minimisers
+\item Existence and uniqueness of the ODEs
+\item Well-posedness of the Bayesian formulation
+\item Experiments with the tests dumping: Chains (centroid evolution), traceplots, 10 running batch MAP averages
+\item Conclusion
 \end{enumerate}
 \section{Bayesian Interpretation}
 
