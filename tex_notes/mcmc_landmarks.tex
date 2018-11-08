@@ -7,6 +7,12 @@
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 
+\usepackage{graphicx}
+\usepackage{subcaption}
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
 % --- Commands --- %
 % Comments
 \newcommand{\cjcsays}[1]{{\bfseries Colin says:} \emph{#1}}
@@ -16,6 +22,7 @@
 % Maths
 \newtheorem{definition}{Definition}
 \newtheorem{theorem}{Theorem}
+\newtheorem{assumption}{Assumption}
 \newtheorem{remark}{Remark}
 \newtheorem{proposition}{Proposition}
 
@@ -24,7 +31,8 @@
 \newcommand{\dd}[2]{\frac{\diff#1}{\diff#2}}
 
 \newcommand{\norm}[2]{\| #1 \|_{ #2 }}
-\newcommand{\bnorm}[1]{\norm{ #1 }{B}}
+\newcommand{\vnorm}[1]{\norm{ #1 }{V}}
+\newcommand{\hnorm}[1]{\norm{ #1 }{H}}
 \newcommand{\ltwonorm}[1]{\norm{ #1 }{2}}
 \newcommand{\diff}[1]{\text{d} #1}
 
@@ -32,56 +40,109 @@
 \newcommand{\U}{\mathbf{u}}
 \newcommand{\Z}{\mathbf{z}}
 \newcommand{\V}{\mathbf{v}}
+\newcommand{\Rd}{\mathbb{R}^{d}}
 \newcommand{\RdM}{\mathbb{R}^{d\times M}}
 
+\setlength\parindent{0pt}
+
 \begin{document}
-\title{Landmark Metamorphosis with MCMC}
+\title{MCMC for selective metamorphosis with applications to landmarks}
 \author{Andreas, Alexis and Colin}
 \maketitle
+\section{Introduction}
 
-\section{Metamorphosis with Inference}
+In this paper we consider a generalisation of the classical metamorphosis
+problem. The purpose of this work is to allow singular control where
+metamorphosis occurs in space to allow practitioners in e.g. medical imaging to
+qualitatively assess different growth patterns. Owing to this observation we
+build a stochastic model on spatial domain and use develop an MCMC algorithm in
+order to infer where in space growth is the most likely.\\
 
-Insert something clever.
+This paper is organised as follows. We review some preliminaries in section
+\ref{sec:bg}. Next, in section \ref{sec:select_mm} we analyse the problem with
+an \emph{a priori} observable function $\nu$ and derive the corresponding
+Euler-Lagrange equations for the associated matching functional. Next, section
+\ref{sec:bayesian} formalises the Bayesian framework for this problem. This is
+then evaluated in section \ref{sec:numerical}.
 
-\subsection{Introduction}
+\subsection{Background}\label{sec:bg}
 
-Observe the classical landmark metamorphosis problem: 
+In this paper we are concerned with diffeomorphometric approaches to image and
+shape matching. One of the central pillars on which this field relies is the
+observation made by Arnold '66 (cite) that, under certain conditions, a
+time-dependent velocity field $u$ occupying some Hilbert space $u_t \in B$
+induces a curve on a subgroup $G_B$ of diffeomorphisms \cite{younes2010shapes}
+via the following ordinary differential
+equation:
 \begin{subequations}
 \begin{align}
-\inf_{u\in V,\,q,\, z \in H=L^2([0,1],\RdM)} & S = \int_0^1 l(u, q,
-z)\diff{t}\label{nu_fnl}\\
-            & \dot{q^i_t} + u_t \cdot \nabla q^i_t = z^i_t \\
-            & q^i_j = \hat q^i_j, \quad j=0,1
+& \dot{\varphi_t} = u_t \circ \varphi_t\\
+& \varphi_0 = \text{id}
+\end{align}
+\end{subequations}
+with $\varphi_t \in G_B$, $\forall t$. This allows for the mathematical
+(Lagrangian) description of flows on shape and shape spaces.\\
+
+\textbf{$\longrightarrow$ Insert more background here}\\
+
+In the following we let $(V,\vnorm{\cdot})$ and $(H,\hnorm{\cdot})$ be
+reproducing kernel Hilbert spaces taking values in $\Rd$. Observe the classical
+landmark metamorphosis problem: 
+
+\begin{subequations}
+\begin{align}
+\inf_{\substack{u\in L^2([0,1],V)\\q,\, z \in L^2([0,1],H)}} & S = \int_0^1
+l(u_t, q_t, z_t)\diff{t}\\
+    & \dot{q_t} + u_t \cdot \nabla q_t = z_t \\
+    & q_j = \hat q_j, \quad j=0,1
 \end{align}
 \end{subequations}
 
-with $l(q, z) = \bnorm{u}^2 + \sum_i |z_i|^2$ and where the boundary conditions
-$\hat q^i_j$ denotes the $i$th landmarks for time $j=0,\,1$. Here
-$V = L^2([0,1], B)$ where $(B,\bnorm{\cdot})$ is some appropriate Hilbert space
-controlling the derivatives of the velocity.
+with $l(u, q, z) = \vnorm{u}^2 + \sigma^2\ltwonorm{z}^2$ and where the boundary
+conditions $\hat q_j$ denotes the landmarks for time $j=0,\,1$. $\sigma$
+is a parameter controlling the trade-off between the diffeometric and
+metamorphosis terms. This matching framework allows singular solutions for
+landmarks even in the limit of a large number of landmarks e.g. figure
+\ref{fig:classic_mm} where geodesics are allowed to intersect.
 
-This matching framework allows singular solutions for landmarks even in the
-limit of a large number of landmarks e.g. figure \ref{fig:classic_mm} where
-geodesics are allowed to intersect.
+\begin{figure}
+  \centering
+  \includegraphics[width=.4\textwidth]{example-image-a}
+  \caption{Something something metamorphosis.}
+  \label{fig:classic_mm}
+\end{figure}
 
-% TODO: plot figure
+For landmarks, the velocity field is explicitly expressed in terms of the
+momentum and landmarks positions, resulting in a boundary value problem (in
+time):
+\begin{subequations}
+\begin{align}
+\dot{q_t} = ...\\
+\dot{p_t} = ...
+\end{align}
+\end{subequations}
+
+\textbf{$\longrightarrow$ Insert segue and motivation for next section here}
+
+\subsection{Selective Metamorphosis}\label{sec:select_mm}
 
 This work aims to place a Bayesian framework on this model in such a way to
-allow control of \emph{where} in the domain $\RdM$ to allow transgression of the
+allow control of \emph{where} in the domain $\Rd$ to allow transgression of the
 usual diffeomorphic constraint $\dot{q_t} = u\circ q_t$. If $\nu=0$, we recover
 standard landmark dynamics, if $\nu(x)=\sigma^2$ is a constant, we recover the
-classic landmark metamorphosis. That is to say, augmenting the Lagrangian
-$l(q,z)$ to constrain metamorphic transformations only in areas of the domain
-that correspond to e.g. anatomically interesting places.  This can be expressed
+classic landmark metamorphosis. That is to say, augmenting the Lagrangian to
+constrain metamorphic transformations only in areas of the domain that
+correspond to e.g. anatomically interesting places.  This can be expressed
 mathematically by changing the Lagrangian above to:
 \[
-l(q,p) = \bnorm{u}^2 + \sum_i |p_i|^2 \nu(q_i)
+\hat l(u, q, z) = \vnorm{u}^2 +  \nu(q)\ltwonorm{z}^2
 \]
-where $\nu (>0)$ is a function on the landmark $q$ space ($\mathbb R^2$),
-with values in $\mathbb R$. The goal of this work is to infer the unknown
-function $\nu$ so as to gather information about where in the spatial domain we
-are most likely to observe metamorphic behaviour via a Bayesian framework
-introduced in \cite{stuart_something}.
+
+where $\Rd\ni x\mapsto\nu (x)$ takes non-negative values in $\mathbb R$. The
+goal of this work is to infer the unknown function $\nu$ so as to gather
+information about where in the spatial domain we are most likely to observe
+metamorphic behaviour via a Bayesian framework introduced in
+\cite{stuart_something}.
 
 \begin{remark}[Choice of the form of $\nu$]
 Taking $\nu = \sum_k \exp(something)$ we explicitly state at which locations in
@@ -93,7 +154,6 @@ metamorphosis. This could provide a first-order exploratory tool for physicians,
 to see if the development of a biological feature stems from a few violations of
 diffeomorphic evolution, starting with e.g. an inferred, least-cost,
 constellation of $\nu$.\\
-
 On the other hand, if we take $\nu =1 - \sum_k \alpha \exp(.)>0$, we could infer
 at which location(s) $x$ in space we require $z_t(x)>0$ in order for the
 metamorphosis problem to be solved. In contrast, this choice is natural as a
@@ -102,65 +162,57 @@ health experts can attribute biological meaning. This kind of choice allows us
 to infer where it is best (i.e. cheapest for the functional) \emph{physically}
 \end{remark}
 
-In section \ref{sec:select_mm} we analyse the problem with an \emph{a priori}
-observable function $\nu$ and derive the corresponding Euler-Lagrange equations
-for the associated matching functional. Next, section \ref{sec:bayesian}
-formalises the Bayesian framework for this problem. This is then evaluated in
-section \ref{sec:numerical}.
-
-\subsection{Selective Metamorphosis}\label{sec:select_mm}
-
-In this section we analyse the problem above where we have imposed a centroid
-for $\nu$ and it is a known function, which we denote as a \emph{selective
-metamorphosis problem}. First we show that this problem does in fact admit at
-least one minimiser.
-
-Clearly the functional in \eqref{nu_fnl} is not convex, so we work with a
-reformulation to ensure the required weak lower semi-continuity. This comes at
-the cost of showing weak continuity of the constraint variables. Specifically,
-we define a variable $w^i_t = z^i_t \sqrt{\nu(q_t^i)}$ in the problem:
-\begin{subequations}
+This leads to the following optimisation problem:
+\begin{subequations}\label{pbl:selective_mm}
 \begin{align}
-\inf_{u\in V,\,m,\, w \in H=L^2([0,1],\RdM)} & S = \int_0^1\bnorm{u}^2 + \sum_i |w_i|^2 \diff{t}\\
-            & \dot{m^i_t} = (\dot{q^i_t} + u_t \cdot \nabla q^i_t) = w^i_t
-            {\nu(q_t^i})^{-1/2}\\
-            & m^i_j = \text{same as for $q$ above}\quad j=0,1
+\inf_{\substack{u\in L^2([0,1],V)\\q,\, z \in L^2([0,1],H)}} & S = \int_0^1
+\hat l(u_t, q_t, z_t)\diff{t}\label{nu_fnl}\\
+    & \dot{q_t} + u_t \cdot \nabla q_t = z_t \\
+    & q_j = \hat q_j, \quad j=0,1
 \end{align}
 \end{subequations}
 
-where $m^i_t = q(t, \phi_t)$ This is essentially the reformulation on page 576
-from \cite{richardson2016metamorphosis} (used in the existence proof Theorem 1,
-page 591). 
+In this section we analyse the problem described in \eqref{pbl:selective_mm} for
+an a priori known function $\nu$ which we denote \emph{selective metamorphosis
+problem}. The first task is to show that the functional attains its infimum,
+i.e. identification of a minimiser. Clearly the functional in \eqref{nu_fnl} is
+not convex, so we work with a reformulation to ensure the required weak lower
+semi-continuity. This comes at the cost of showing weak continuity of the
+constraint variables. Specifically, we define a variable $w^i_t = z^i_t
+\sqrt{\nu(q_t^i)}$ in the problem:
+\begin{subequations}
+\begin{align}
+\inf_{\substack{u\in L^2([0,1],V)\\m,\, w \in L^2([0,1],H)}} & S =
+\int_0^1\vnorm{u}^2 + \sum_i |w_i|^2 \diff{t}\\
+    & \dot{m^i_t} = w^i_t {\nu(q_t^i})^{-1/2}\\
+    & m^i_j = \text{same as for $q$ above}\quad j=0,1
+\end{align}
+\end{subequations}
 
-Let $(u^{(n)}, w^{(n)}, m^{(n)})$ denote a minimising sequence. By classic
-results (see e.g.  Shapes and Diffeomorphisms), then we can extract bounded
-subsequences for the velocity and source converging to weak limits $u$ and $w$.
-The former implies weak convergence for the diffeomorphism $\phi$ induced by the
-velocity.\\
+where $m^i_t = q(t, \phi_t)$ so we recover $\dot{m^i_t} = \dot{q^i_t} + u_t
+\cdot \nabla q^i_t$ This is the reformulation used in \cite[Theorem
+1]{richardson2016metamorphosis}. Now let $(u^{(n)}, w^{(n)}, m^{(n)})$ denote a
+minimising sequence. By classic results (see e.g.  Shapes and Diffeomorphisms),
+then we can extract bounded subsequences for the velocity and source converging
+to weak limits $u$ and $w$ (check this for $w$!). The former implies weak
+convergence for the diffeomorphism $\phi$ induced by the velocity. We begin with
+the following assumption:
+\begin{assumption}
+$\|\nu\|_\infty \triangleq \hat \nu <\infty$.
+\end{assumption}
 
-The problem is that to show that (omitting landmark index) $m^{(n)}_t
-\rightharpoonup m_t$, since this requires showing (see the proof of Theorem 1):
-\[
-\int_0^1\frac{w_t^{(n)}\circ\phi_t^{(n)}}{\nu\circ q_t^{(n)}\circ\phi_t^{(n)}}
-\diff{t} -
-\int_0^1\frac{w_t\circ\phi_t}{\nu\circ q_t\circ\phi_t} \diff{t}\rightharpoonup 0
-\]
-and adding the zero does not completely work because I do not think I can say
-anything about e.g. the convergence of
-\[
-\int_0^1\frac{w_t^{(n)}\circ\phi_t^{(n)}}{\nu\circ q_t\circ\phi_t}
-\diff{t} -
-\int_0^1\frac{w_t\circ\phi_t}{\nu\circ q_t^{(n)}\circ\phi_t^{(n)}} \diff{t}\rightharpoonup 0
-\]
+Then, omitting the landmark index, we see that\\
+\begin{align*}
+m_t^{(n)} - m_t & = 
+\int_0^1\frac{w_t^{(n)}\circ\phi_t^{(n)}}{\sqrt{\nu\circ q_t^{(n)}\circ\phi_t^{(n)}}}
+\diff{t} - \int_0^1\frac{w_t\circ\phi_t}{\sqrt{\nu\circ q_t\circ\phi_t}}
+\diff{t}\\
+& \leq \int_0^1\frac{w_t^{(n)}\circ\phi_t^{(n)}}{\sqrt{\hat \nu}}
+\diff{t} - \int_0^1\frac{w_t\circ\phi_t}{\sqrt{\hat \nu}} \diff{t}\\
+\end{align*}
 
-On the other hand, if we try and absorb the term $\sqrt{\nu(q_t^i)}$ into the
-definition of $m_t$ to get $\dot{m^i_t} = {\nu(q_t^i})^{1/2}(\dot{q^i_t} + u_t
-\cdot \nabla q^i_t) = w^i_t$ then I cannot obtain the anti-derivative $m^i_t$ in
-order to evaluate the boundary conditions (the trick in the first approach is
-simply that $\dot{m^i_t} = \dot q_t(\phi_t)$ which makes the anti-derivative
-easy to compute)!
-
-
+We now invoke \cite[Theorem 1]{richardson2016metamorphosis} to see $m_t^{(n)} -
+m_t \rightharpoonup 0$.
 
 \begin{theorem}[Existence]
 Statement.\\
@@ -191,7 +243,49 @@ We now put a stochastic model on $\nu$. We refer to \dots
 This is an appropriate framework because if the lack of uniqueness lends a
 qualitative evaluation of what 'solves the optimisation problem'. 
 
-\subsection{Numerical Results}\label{sec:numerical}
+\newcommand{\mhsample}{\textsc{sampleCentroid}}
+\newcommand{\acceptprob}{\textsc{acceptanceProbability}}
+
+\begin{algorithm}[h!]
+\begin{algorithmic}
+\caption{Quasi-MCMC on $\nu$}
+\Procedure{quasiMCMC}{$N$}
+\State $k \gets 0$
+\State $\nu^k \gets \text{ some initial guess}$
+\While{$k < N$}
+\State $\nu \gets \mhsample ()$\hspace{3cm} \textbf{\# sample a new centroid}
+\State $(q, z, u) \gets solveMetamorphosis()$
+\If {\textsc{randomUnit()}$\,< \acceptprob(q, z)$}
+    \State do update
+\Else
+    \State don't do update
+\EndIf
+\State $k\gets k+1$
+\EndWhile
+\Return $q^k,\, z^k,\, u^k$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Note that the $solveMetamorphosis()$ operation depends on how the spatial domain
+is treated. In the next section, we give an example of a particle method leading
+to a shooting solution for this operation.
+
+\subsection{Selective Metamorphosis for Landmarks}\label{sec:numerical}
+
+\textbf{$\longrightarrow$ Describe shooting/solution method}\\
+
+\begin{algorithm}[h!]
+\begin{algorithmic}
+\caption{Metamorphosis for fixed $\nu$}
+\Procedure{solveMetamorphosis}{}
+\State something either shooting or Firedrake
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\textbf{$\longrightarrow$ Something about adjoints here}\\
+
 
 We present results for five test cases.
 
@@ -212,33 +306,16 @@ We present results for five test cases.
 
 % Insert Autocorrelation plots
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Thoughts}
-\begin{enumerate}
-  \item in the formulation below, $z$ is exactly the momentum $p_i$ of landmarks, thus we don't need to do any inference, we can solve it directly. 
-  \item Instead, we would want a Lagrangian of the form
-    \begin{align}
-      l(q,p) = \|u\|_B^2 + \sum_i |p_i|^2 \nu(q_i) \, , 
-    \end{align}
-    where $\nu(x)(>0)$ is a function on the landmark $q$ space ($\mathbb R^2$), with values in $\mathbb R$. 
-  \item The baysian inference problem is then for this function, which we don't know. 
-  \item the equations of motion should be close to 
-    \begin{align}
-      \dot p_i  &= \nabla u(q_i)p_i  + |p_i|^2 \nabla \nu(q_i)\\
-      \dot q &= u(q_i) + \nu(q_i) p_i 
-    \end{align}
-  \item another choice is 
-    \begin{align}
-      l(q,p) = \|u\|_B^2 + \sum_i p_i\cdot \nu(q_i) \, , 
-    \end{align}
-    where $\nu:\mathbb R^2 \to \mathbb R^2$, which will give more freedom on the metamorphosis term, and give equations of motion as 
+\subsection{Outlook}\label{sec:outlook}
+Another choice is 
 \begin{align}
-      \dot p_i  &= \nabla u(q_i)p_i  + p_i \cdot \nabla \nu(q_i)\\
-      \dot q &= u(q_i) + \nu(q_i) 
-    \end{align}
-\end{enumerate}
+    l(q,p) = \|u\|_B^2 + \sum_i p_i\cdot \nu(q_i) \, , 
+\end{align}
+where $\nu:\mathbb R^2 \to \mathbb R^2$, which will give more freedom on the metamorphosis term, and give equations of motion as 
+\begin{align}
+    \dot p_i  &= \nabla u(q_i)p_i  + p_i \cdot \nabla \nu(q_i)\\
+    \dot q &= u(q_i) + \nu(q_i) 
+\end{align}
 
 \textbf{What we need to complete:}
 
@@ -251,458 +328,6 @@ traceplots, 10 running batch MAP averages, convergence of the chains
 (autocorrelation?)
 \item Conclusion
 \end{enumerate}
-
-\section{Parameter-independent Landmarks Problems}
-
-We could analyse the effect of the choice of landmarks in matching problems.
-Suppose we have $N$ landmarks on a target denoted by 
-
-\begin{subequations}
-\begin{align}
-\min_{u, M=\{m_i\}_{i=1}^N} & \sum_{i=0}^M \int_0^1 \bnorm{u_t}^2 + \sum_{i=1}^N \ltwonorm{q_1(m_i)-y_i}^2 \diff{t}\\
-            & \dot{q^i_t} = u_t \circ q^i_t + z^i_t\\
-            & q^i_0 = \hat q^i_0(m_i)
-\end{align}
-\end{subequations}
-
-where $\hat q^i_0(m_i)$ denotes the template and $y_i$'s correspond to target
-landmarks. Interpreting this problem as a Bayesian inverse problem on the
-parameters $m_i$ would allow us to do parameter-independent matching and analyse
-the effect of the freedom to choose template landmarks on the matching.\\
-
-Moreover, we could replace the penalty term with metamorphosis:
-\begin{subequations}
-\begin{align}
-\min_{u, \{m_i\}_{i=1}^N} & \sum_{i=0}^M \int_0^1 \bnorm{u_t}^2 + \sum_{i=1}^N
-\ltwonorm{z_t^i}^2 \diff{t}\\
-            & \dot{q^i_t} = u_t \circ q^i_t + z^i_t\\
-            & q^i_0 = \hat q^i_0(m_i)\\
-            & q^i_1 = y_i
-\end{align}
-\end{subequations}
-
-We could then define an acceptance probability that would be more conducive
-towards either metamorphic growth or simply diffeomorphic evolution. For
-instance, one could imagine that the algorithm would only evaluate the shape at
-points that are easy to matching to the target, so perhaps we can tune some
-parameters and make a tool allowing us to assess trade-off between metamorphosis
-and geodesic shooting at the level of landmarks? From this point onwards we
-could even incorporate the selective metamorphosis approach above (?).\\
-
-The result of this exercise is that we would have a large set $M$ consisting of
-parameterisations that allows for a certain analysis of the effect these have on
-the matching. We could inspect the different geodesics visually and compute
-statistics on the initial momentum (?), and compare LDDMM and metamorphosis
-based on this.
-
-\textbf{Do we need to consider ordered sets for this to work?}
-\textbf{What we need to complete:}
-
-\begin{enumerate}
-\item Run Theano code for normal shooting
-\item Existence and uniqueness of minimisers
-\item Well-posedness of the Bayesian formulation
-\item Experiments with the tests dumping: Chains (centroid evolution),
-traceplots, 10 running batch MAP averages, convergence of the chains
-(autocorrelation?)
-\item Conclusion
-\end{enumerate}
-
-
-\section{Bayesian Interpretation}
-
-- FXV : motivative landmark metamorphoss via ill-posed problem of landmarks goes
-to infinity (some failing contraction mapping argument)
-
-Let $i=0,..M$, $M>0$ denote the landmark index, and let $d$ denote the spatial
-dimension. The landmark metamorphosis optimisation problem reads:
-
-\begin{subequations}\label{pbl:landmark_mm}
-\begin{align}
-\min_{\substack{u\in l^1([0,1],b)\\ \{z^i_t\}_i \in l^1([0,1],\mathbb{r}^{d\times m})}} &
-\sum_{i=0}^m \int_0^1 \bnorm{u^i_t}^2 + \ltwonorm{z^i_t}^2 \diff{t}\\
-            & \dot{q^i_t} = u_t \circ q^i_t + z^i_t \label{eq:ele_q} \\
-            & q^i_j = \hat q^i_j, \quad j=0,1 \label{eq:ele_q_bcs}
-\end{align}
-\end{subequations}
-
-where the boundary conditions $\hat q^i_j$ denotes the $i$th landmarks for time
-$j=0,\,1$. Here $(B,\bnorm{\cdot})$ is some appropriate Hilbert space for the
-velocity.
-
-The Euler-Lagrange equation for $z$ can be shown to be
-\begin{equation}\label{eq:ele_z}
-\dot{z^i_t} = - (\nabla u_t \circ q^i_t)^T z^i_t
-\end{equation}
-
-Moreover, since we have $Bu(x) = \sum_i \delta_i(x) p_i$ (where $\delta_i(x) =
-\delta(x-q_i)$), then we can write the velocity explicitly as a function of
-the momentum and positions:
-\begin{align*}
-u (x) & = B^{-1} [\sum_i \delta_i(x) p_i]\\
-& = \sum_i B^{-1} [\delta_i(x) p_i]\\
-& = \sum_i p_i B^{-1} [\delta_i(x)]\\
-& = \sum_i p_i K[\delta_i(x)]\\
-& = \sum_i p_i K(x - q_i)
-\end{align*}
-
-see also S. Joshi and M. Miller, Landmark matching via large deformation
-diffeomorphisms and V. Camion and L. Younes, Geodesic interpolating splines,
-in EMMCVPR 2001
-
-We aim to solve the inverse problem \eqref{pbl:landmark_mm} using a Bayesian
-formulation cf. \cite{dashti2017bayesian,dashti2013map}. This is in contrast to
-traditional methods in image registration, where metamorphoses are computes as
-solutions to a Riemannian least-squares problem via gradient method.\\
-
-The goal of this approach is to compute a probability distribution on the space
-of velocities and sources $(u,z)$ given some obversations $I_0$ and $I_1$. As
-such, the desiderata here is a density. Mathematically this is expressed by
-Bayes' rule:
-\[
-\dd{\mu[u,z]}{\mu_0} \propto p(I_0, I_1 | [u, z])
-\]
-here $\mu_0$ denotes our prior density and $\mu[u, z] \triangleq N(0,C)\times
-N(0,G_u)$ for appropriate covariances $C$ and $G_u$ (details to follow). At this
-instance it is useful to relate minimisers of \eqref{pbl:landmark_mm} to the
-analogous notion in the stochastic setting, namely the \textit{maximum a
-posteriori estimator}.
-
-%%%% Finite dimensional MAP %%%%
-We motivate this approach using an example where everything is finite-dimensional:
-In finite dimension, if we sample $u$ (prior) from a Gaussian distribution,
-then its PDF is proportional to $e^{-u^TC^{-1}u/2}$ for some covariance matrix
-$C$. Recall that for metamorphosis, the reconstruction system in Eulerian frame
-is:
-\begin{subequations}\label{eq:reconst}
-\begin{align}
-& \partial_t q + u\cdot\nabla q = z\\
-& \partial_t z + \text{div}(u z) = 0
-\end{align}
-\end{subequations}
-Then we \textbf{define} a likelihood function $\Phi_c(u)=\frac c2\ltwonorm{z}^2$
-via the solution of the reconstruction system, leading to a posterior pdf
-proportional to $e^{-u^TC^{-1}u/2 - \Phi_c(u)}$.
-Given
-\begin{align*}
-u_{MAP} & \triangleq \arg\max_u p(z|u)p(u)\\
-        & \triangleq \arg\max_u \log [ p(z|u)p(u)]\\
-        & \triangleq \arg\max_u \log e^{-u^TC^{-1}u/2 - \Phi_c(u)}\\
-        & \triangleq \arg\max_u - u^TC^{-1}u/2 - \Phi_c(u)
-\end{align*}
-Since $\max_u - u^TC^{-1}u/2 - \Phi_c(u)= \min_u u^TC^{-1}u/2 + \Phi_c(u)$ we
-see that the MAP estimator is also a minimiser of the metamorphosis functional.
-The infinite-dimensional case is underway.\\
-
-%%%% Explanation of why we want a joint distribution %%%%
-Note that we do not want to put a stochastic model on the velocity without the
-source since this indicates that we can never sample realisations corresponding
-to new growth patterns! This can be seen by asking the question: ``\textit{how
-unique is the equation $\partial_t I + u\cdot\nabla I = z$}''? This equation is
-overdetermined, so the same image may appear for different velocities and
-sources (yet to be shown). Therefore, if we choose the proposal density
-$\exp(-\Phi_c(u))$ we sample only the sources that minimise the source $z$ and
-new features can never appear.
-
-\subsection{Space-time stuff}
-
-We need to prove things:
-\begin{itemize}
-\item We need to check our priors are absolutely continuous with respect to the
-posteriors. This means verifying that $\mu[\cdot, z]<<\mu_S$ (for the
-metamorphic filter) and that ..?
-\item We need to check that our draws from the marginal distributions $\mu[u,
-\cdot]$ and $\mu[\cdot, z]$ possess the correct regularity to be well-defined.
-\item This means some properties of the potential $\Phi(u)$ and
-\end{itemize}
-
-\begin{proposition}\label{prop:verify_assump2.17}
-Let $A = (1-\Delta)^\beta$ for $\beta>0$ be a densely defined operator over the
-Hilbert space $L^2(D, \mathbb{R})$ with $D = [0,1] \times \Omega$, $\Omega
-\subset \mathbb{R}^d$. Then $A$ verifies the assumptions in \cite[Assumption
-2.17]{dashti2017bayesian}.\\
-
-Proof:\\
-
-\begin{enumerate}
-\item $A$ induces a natural inner product and so is trivially positive definite.
-Moreover, it is also clearly self-adjoint for integer $\beta$ and invertible.
-\item 
-\item eigenvl
-\item lipsch
-We show that the $W^{1,\infty}(\Omega)$ norm of all eigenfunctions
-$\{\phi_j\}_j$ is bounded. To this end, observe the Sobolev
-\end{enumerate}
-
-{\hfill $\square$}
-\end{proposition}
-
-Apply PCN to the joint distribution.
-For SL Cotter's  paper we need: I think we have local Lipschitz, we just need to
-check some of these bounds (which I think are ok?).
-
-For all this anal
-
-Need to check Assumptions 2.17 on the operator and then apply Theorem 2.18!\\
-
-
-Big Question: What do we need to draw from in order for our velocities and
-our sources to have the correct regularity?\\
-
-Lemma 10 of CotterCotterFX states regularity stuff!
-What is this $\mu(X) = 1$? Proability that draws lie in the Banach space?
-Stuart's Acta Numerica paper:
-In quasi-convex domains W1infy = C01
-
-
-
-Can we do EMM?
-
-
-Sobolev embeddings: On bounded domains of dimension $n=2$ we have
-$W^{3,2}\subset \mathsf{C}^{1,\alpha}$, $\alpha\in (0,1)$. Consequently, a
-function in $W^{3,2}$ is also in $\mathsf{C}^{0,1}$. The same applies to $n=3$
-where $W^{3,2}\subset \mathsf{C}^{1,\frac 12}$, and the desired embedding
-follows.\\
-
-We need to check that the C0 IP discretisation allows us to control the solution
-(u) in H3 by the L2 norm of v, i.e. the bound we need for absolute continuity.
-Isn't this going to be a little bit hard if we have the Osc(f) term there..?\\
-
-Things we could do with MCMC samples:
-\begin{itemize}
-\item For each point on the target we could ask: what is the PDF of a point on
-the template going to said target? This involves computing the advection
-equation
-\item Similarly, this could be 
-\item Compute the density accrued by z at each point over each streamline
-\end{itemize}
-
-\section{Numerical Solution}
-
-There are several ways of solving \eqref{pbl:landmark_mm}. We can:
-\begin{itemize}
-\item Express the velocity fully in terms of $q$ and $z$ and solve the resulting
-non-linear equations with Newton.
-\item Solve an adjoint optimisation problem with
-  \begin{itemize}
-  \item Gradient descent using \texttt{pyadjoint}
-  \item MCMC
-  \end{itemize}
-\item Do shooting (essentially an adjoint optimisation problem) on the initial
-momentum in Theano
-\end{itemize}
-
-This section touches on these approaches and their implementation. We discretise
-the velocity space $V$ by expanding and truncating it in a finite kernel basis
-$\{K^i\}_{i=0}^M$, where $K^i : \mathbb{R}^d \rightarrow \mathbb{R}^d$:
-
-\begin{equation}
-u_t(x) = \sum_{i=0}^M K^i_t(x - q^i_t)\hat u^i_t \label{eq:ele_u_disc}
-\end{equation}
-
-where $\{\hat u^i_t\}_i \in \mathbb{R}^{d\times M}, t\in[0,1]$ denotes the
-velocity basis coefficients. Suppressing the time-dependencies for now we
-observe that the velocity norm can be written:
-\begin{align*}
-\bnorm{u}^2 & \triangleq \int_\Omega u\cdot Bu \diff{x}\\
-            & = \int_\Omega\sum_{i=0}^M K(x-q^i)\hat u^i \cdot B \sum_{j=0}^M
-            K(x-q^j)\hat u^j \diff{x}\\
-            & = \int_\Omega \sum_{i=0}^M K(x-q^i)\hat u^i \cdot \sum_{j=0}^M
-            \delta (x-q^j)\hat u^j \diff{x}\\
-            & = \sum_{i=0}^M \sum_{j=0}^M K(q^j-q^i)\hat u^i \cdot\hat u^j
-\end{align*}
-
-Substituting \eqref{eq:ele_u_disc} into
-\eqref{pbl:landmark_mm} we write the spatially discretised problem
-\begin{subequations}\label{pbl:landmark_mm_disc}
-\begin{align}
-\min_{\substack{\{\hat u^i_t\}_i \in \mathbb{R}^{d\times M},\, t\in[0,1]\\
-\{z^i_t\}_i \in \mathbb{R}^{d\times M},\, t\in[0,1]}} & \int_0^1 \sum_{i=0}^M
-\sum_{j=0}^M K(q^j-q^i)\hat u^i \cdot\hat u^j+ \sum_{i=0}^M
-\ltwonorm{z^i_t}^2 \diff{t}\\
-            & \dot{q^i_t} = \sum_{j=0}^M K^j_t(q^i_t-q^j_t)\hat u^j_t \circ
-            q^i_t + z^i_t \label{eq:ele_q_disc} \\
-            & \eqref{eq:ele_q_bcs}\nonumber
-\end{align}
-\end{subequations}
-
-Optimising \eqref{pbl:landmark_mm_disc} is somewhat awkward due to the presence
-of $q$ in the functional. We can perform a change of variables to eliminate it.
-First we rewrite the problem in matrix notation: let $\Q = [q_0, q_1,
-\ldots]\in\mathbb{R}^{d\times M}$ denote the vector of landmark points and
-similarly $\U = [u_0, u_1, \ldots]\in\mathbb{R}^{d\times M}$ and $\Z = [z_0,
-z_1, \ldots]\in\mathbb{R}^{d\times M}$ the velocities and metamorphosis sources
-at each of the landmarks. Further, denote the kernel matrix $M$ by the following
-identity:
-\[
-\U^T M \U \triangleq \sum_{i=0}^M \sum_{j=0}^M K(q^j-q^i)\hat u^i \cdot\hat u^j
-\]
-where we have suppressed the $q$-dependency on $M$. By symmetry and
-positive-definiteness of the kernel there exists $M^{1/2}$ such that $M =
-(M^{1/2})^T M^{1/2}$. Therefore, by introducing the variable $\V \triangleq
-M^{1/2}\U$ we observe
-\[
-\bnorm{u} = \langle\U^T, M \U\rangle = \langle\V^T,\V\rangle
-\]
-and so \eqref{pbl:landmark_mm_disc} can be written as:
-
-\begin{subequations}\label{pbl:landmark_mm_disc_matrix}
-\begin{align}
-\min_{\U,\, \Z} & \int_0^1 \ltwonorm{\V}^2 + \sum_{i=0}^M \ltwonorm{\Z_i}^2 \diff{t}\\
-            & \dot{\Q} = M^{1/2} \V + \Z\label{eq:Q_eq}\\
-            & \eqref{eq:ele_q_bcs}\nonumber
-\end{align}
-\end{subequations}
-
-Note that in the infinite-dimensional space-time setting this change of
-variables is not required as the metric is not parameterised by a kernel -
-rather it is an outer metric that we can evaluate in the entire ambient space.\\
-
-\subsection{Deterministic Metamorphosis}
-
-There are two options.\\
-
-First, we can solve the reconstruction system directly. Via the kernel basis
-parameterisation of the velocity field as implicit functions of the landmark
-positions we are able to pose and solve the governing equations (\eqref{eq:Q_eq}
-and the discrete analogue of \eqref{eq:ele_z}) as a non-linear boundary value
-system. The non-linearity will stem from the non-linearity of the operator $K$.
-We express this system in Firedrake/UFL and hit the system with Newton. We might
-see multiple solutions in this case.\\
-
-Second, we can simply write \eqref{pbl:landmark_mm_disc} in pyadjoint and optimise
-over $z$.\\
-
-In both settings time is implicitly discretised with Runge-Kutta.
-
-\subsection{MCMC Approach for Landmarks}
-
-We define a joint distribution $\mu[u,z]$ on the space of velocities and sources
-(what we call \textit{metamorphic paths}). However, since the two functions are
-linked by the reconstruction equation and hence $z \in G_u$, it is not
-completely obvious how to sample from $\mu$.
-
-The aim is to derive a quasi MCMC scheme to generate approximate metamorphic
-paths and therefore
-approximate minimisers to the metamorphosis problem. We (sort of) know how to
-sample diffeomorphisms; choose a sufficiently smooth vector space for $u$ and
-supply a suitable covariance operator. However, sampling from source terms, $z$,
-is not as simple because of the coupling between $z$ and $u$ through the
-equation $\partial_t q + u\cdot\nabla q = z$ (and the boundary conditions).  We
-can observe, however, that the governing equation for $z$ in \eqref{eq:reconst}
-is well-posed for any non-zero right-hand side, modulo some integrability
-conditions. The algorithm goes as follows: First we propose random velocities
-based the covariance operator $B$ (something like a tri-Helmholtz operator) and
-accept them based on the inner problem (i.e.  solve \eqref{eq:reconst} and use
-the density $e^{-\Phi(u)}$ to accept). This essentially amounts to sampling from
-the marginal distribution with respect to $u$ (i.e. $z$ is marginalised out).
-Then, after a number of samples of the velocity, we begin sampling from the
-marginal distribution with respect to $z$. If we look only at the equation for
-the image, then this is a rather difficult problem because not every $z$ will
-with probability 1 make the image match the boundary conditions! However, we
-can introduce a right-hand side variable $S$ to the equation for $z$ i.e.
-$\partial_t z + \text{div}(u z) = S$. If we need only something like $L^2$ in
-order to control $z$ with $S$, then we can generate $\delta$-correlated samples
-of $S$ through which we can generate possible metamorphic sources $z$ from the
-marginalised distribution for $z$! The point is that by generating arbitrary
-samples of mutations $S$ and being selective about them through the acceptance
-probability we are approaching metamorphic paths.\\
-
-Let $\mu_[u]$ and $\mu_[z]$ denote the marginal distributions with respect to
-$u$ and $z$, respectively and $\mu_0^u$, $\mu_0^z$ the corresponding priors.
-For the landmark metamorphosis example we set
-\[
-\dd{\mu[u]}{\mu_0^u} \propto e^{-\ltwonorm{z}^2} \qquad\text{sampling new velocities}
-\]
-and
-\[
-\dd{\mu[z]}{\mu_0^u} \propto e^{-\ltwonorm{S}^2} \qquad\text{sampling new mutations}
-\]
-For these derivatives to be well-defined we must verify the properties in
-\cite[Assumption 2.1]{dashti2013map} for the potentials $\Phi_u =-\ltwonorm{z}^2$
-and $\Phi_z =-\ltwonorm{S}^2$.
-
-\begin{proposition}
-The derivatives $\dd{\mu[z]}{\mu_0^z}$ and $\dd{\mu[z]}{\mu_0^z}$ are
-well-defined.
-\begin{enumerate}
-\item We verify the assumption with $M=0$ since clearly, $\Psi_u \geq 0$ and
-$\Psi_z \geq 0$.
-\item We need that for any $r>0$ there exists a $K(r)>0$ such that for all
-$\norm{f}{X} < r$ we have
-\[
-\]
-We verify for $f=\Phi_u$, $X=L^2([0,1]\times\Omega)$:
-\item s
-\end{enumerate}
-{\hfill $\square$}
-\end{proposition}
-
-\newcommand{\mhsample}{\textsc{sampleL2}}
-\newcommand{\inverthh}{\textsc{invertTriHelmHoltz}}
-\newcommand{\acceptprob}{\textsc{acceptanceProbability}}
-\newcommand{\solveinner}{\textsc{solveInnerProblem}}
-\begin{algorithm}
-\begin{algorithmic}
-\caption{Quasi-MCMC on $\mu[u,z]$}
-\Procedure{quasiMCMC}{$N$}
-\State $k \gets 0$
-\State $v^k \gets \text{ some initial guess}$
-\State $S^k \gets \text{ some initial guess}$
-\State $z \gets 0$
-\While{$k < N$}
-\State $v \gets \mhsample ()$\hspace{3cm} \textbf{\# sample velocity}
-\State $S \gets \mhsample ()$\hspace{3cm} \textbf{\# sample mutation}
-\State $u \gets \inverthh (v)$
-\State $z_\text{prop} \gets \solveinner (u, S)$
-\If {\textsc{randomUnit()}$\,< \acceptprob(z_\text{prop}, z)$}
-    \State $v^{k+1} \gets v$
-    \State $S^{k+1} \gets S$
-    \State $z \gets z_\text{prop}$
-\Else
-    \State $v^{k+1} \gets v^k$
-    \State $S^{k+1} \gets S^k$
-\EndIf
-\State $k\gets k+1$
-\EndWhile
-\Return $v^k,\, S^k$
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
-
-where:
-\begin{itemize}
-\item \mhsample$(f)$ returns a $L^2$ function sample computes as
-$\sqrt{1-\beta^2}f + \beta \xi$, where $\xi$ is a $N(0,1)$ piece-wise linear
-function
-\item \inverthh inverts a tri-Helmholtz operator onto its argument and returns
-the result
-\item $\solveinner(u,S)$ computes the image $I$ and source $z$
-given a fixed velocity $u$ and mutation $S$. The mutation defaults to zero.
-\item $\acceptprob(z_u, z_v)$ return the value $e^{-c(\ltwonorm{z_u}^2
--\ltwonorm{z_v}^2)}$
-\end{itemize}
-
-Since the velocities have a tensor-product structure sampling is not obvious.
-However, we can avoid Bochner-type draws because we simple focus on sampling the
-$v$ component and then invert Helmholtz operators. As a result, we only need
-$H^1$ covariance (or $H^2$, depending on the dimension).
-
-\begin{remark}[Evaluating the quality of samples]
-When we accept sample velocities we need to
-assess whether or not they are actually appropriate potential minimisers, or
-realisations, of metamorphoses. We can either keep a running tally, i.e. at
-every step when we accept, we evaluate the metamorphosis functional and decide
-the ``quality'' of this realisation (sometimes we want low $z$ norm, sometimes
-not if we have diffeomorphic images!). This is called the running tally
-approach and depends on the type of application or images that we are looking
-at!
-\end{remark}
-
-See \cite{cotter2010approximation} for more information on results pertaining
-the connection between approximation of forward problems of PDEs and
-interpretation of Bayesian inverse problems.
 
 \bibliographystyle{abbrv}
 \bibliography{landmarks}
