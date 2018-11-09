@@ -9,7 +9,7 @@
 
 \usepackage{graphicx}
 \usepackage{subcaption}
-
+\usepackage{color}
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 
@@ -135,7 +135,7 @@ constrain metamorphic transformations only in areas of the domain that
 correspond to e.g. anatomically interesting places.  This can be expressed
 mathematically by changing the Lagrangian above to:
 \[
-\hat l(u, q, z) = \vnorm{u}^2 +  \nu(q)\ltwonorm{z}^2
+	\hat l(u, q, z) = \vnorm{u}^2 +  \sum_i \nu(q_i)|p_i|^2
 \]
 
 where $\Rd\ni x\mapsto\nu (x)$ takes non-negative values in $\mathbb R$. The
@@ -165,12 +165,13 @@ to infer where it is best (i.e. cheapest for the functional) \emph{physically}
 This leads to the following optimisation problem:
 \begin{subequations}\label{pbl:selective_mm}
 \begin{align}
-\inf_{\substack{u\in L^2([0,1],V)\\q,\, z \in L^2([0,1],H)}} & S = \int_0^1
-\hat l(u_t, q_t, z_t)\diff{t}\label{nu_fnl}\\
-    & \dot{q_t} + u_t \cdot \nabla q_t = z_t \\
+\inf_{\substack{u\in L^2([0,1],V)\\q,\, p \in L^2([0,1],H)}} & S = \int_0^1
+\hat l(u_t, q_t, p_t)\diff{t}\label{nu_fnl}\\
+& \dot{q_t} = u_t ( q_t) + \nu(q_t)p_t \\
     & q_j = \hat q_j, \quad j=0,1
 \end{align}
 \end{subequations}
+{\color{red} we don't need $u$ in this problem, if it is landmarks already.}
 
 In this section we analyse the problem described in \eqref{pbl:selective_mm} for
 an a priori known function $\nu$ which we denote \emph{selective metamorphosis
@@ -178,13 +179,13 @@ problem}. The first task is to show that the functional attains its infimum,
 i.e. identification of a minimiser. Clearly the functional in \eqref{nu_fnl} is
 not convex, so we work with a reformulation to ensure the required weak lower
 semi-continuity. This comes at the cost of showing weak continuity of the
-constraint variables. Specifically, we define a variable $w^i_t = z^i_t
+constraint variables. Specifically, we define a variable $z^i_t = p^i_t
 \sqrt{\nu(q_t^i)}$ in the problem:
 \begin{subequations}
 \begin{align}
 \inf_{\substack{u\in L^2([0,1],V)\\m,\, w \in L^2([0,1],H)}} & S =
-\int_0^1\vnorm{u}^2 + \sum_i |w_i|^2 \diff{t}\\
-    & \dot{m^i_t} = w^i_t {\nu(q_t^i})^{-1/2}\\
+\int_0^1\vnorm{u}^2 + \sum_i |z_i|^2 \diff{t}\\
+    & \dot{q_t} = u_t ( q_t) + z^i_t \sqrt{\nu(q_t^i)}\\
     & m^i_j = \text{same as for $q$ above}\quad j=0,1
 \end{align}
 \end{subequations}
@@ -198,24 +199,27 @@ to weak limits $u$ and $w$ (check this for $w$!). The former implies weak
 convergence for the diffeomorphism $\phi$ induced by the velocity. We begin with
 the following assumption:
 \begin{assumption}
-$\|\nu\|_\infty \triangleq \hat \nu <\infty$.
+$\|\nu\|_\infty \triangleq \sigma^2 <\infty$.
 \end{assumption}
 
 Then, omitting the landmark index, we see that\\
 \begin{align*}
-m_t^{(n)} - m_t & = 
-\int_0^1\frac{w_t^{(n)}\circ\phi_t^{(n)}}{\sqrt{\nu\circ q_t^{(n)}\circ\phi_t^{(n)}}}
-\diff{t} - \int_0^1\frac{w_t\circ\phi_t}{\sqrt{\nu\circ q_t\circ\phi_t}}
-\diff{t}\\
-& \leq \int_0^1\frac{w_t^{(n)}\circ\phi_t^{(n)}}{\sqrt{\hat \nu}}
-\diff{t} - \int_0^1\frac{w_t\circ\phi_t}{\sqrt{\hat \nu}} \diff{t}\\
+q_t^{(n)} - q_t & = 
+\int_0^1u_t^{(n)}(q_t^{(n)})+z_t^{(n)}\sqrt{\nu(q_t^{(n)}}) 
+-\int_0^1u_t(q_t)+z_t\sqrt{\nu(q_t})  \diff{t}\\
+&\leq \int_0^1u_t^{(n)}(q_t^{(n)})
+-\int_0^1u_t(q_t)
++\sigma^2\left (\int z_t^{(n)} dt
+-\int z_t  \diff{t}\right)\, , 
 \end{align*}
+which converges! 
 
-We now invoke \cite[Theorem 1]{richardson2016metamorphosis} to see $m_t^{(n)} -
+then \dots We now invoke \cite[Theorem 1]{richardson2016metamorphosis} to see $m_t^{(n)} -
 m_t \rightharpoonup 0$.
 
 \begin{theorem}[Existence]
 Statement.\\
+Done!
 
 {\hfill $\square$}
 \end{theorem}
@@ -227,13 +231,14 @@ local minima.
 
 Extremising the action $S$ we obtain the equations: 
 \begin{align}
-\dot p_i & = \nabla u(q_i)p_i  + p_i \cdot \nabla \nu(q_i)\\
-\dot q & = u(q_i) + \nu(q_i)\\
-u(q_j) & = \sum_i K_{ij} p_i
+\dot p_i & =\frac12 \sum_j \nabla K(q_i,q_j)p_i\cdot p_j  + \frac12 |p_i|^2 \nabla \nu(q_i)\\
+\dot q_i & = \sum_j K(q_i,q_j)p_i + \nu(q_i)p_i\, . 
 \end{align}
 
 \begin{theorem}[Optimality Conditions]
 There exists a unique (? )solution $u, q, z$ to this system.
+
+This will give more conditions on $\nu$, like $\nu(x) \in C^{1}(\mathbb R^2)$. 
 \end{theorem}
 
 \subsection{Bayesian Framework}\label{sec:bayesian}
@@ -242,6 +247,21 @@ We now put a stochastic model on $\nu$. We refer to \dots
 
 This is an appropriate framework because if the lack of uniqueness lends a
 qualitative evaluation of what 'solves the optimisation problem'. 
+\begin{align}
+	\nu(x) = \sum_k^N a_k \nu_k(x)
+\end{align}
+for a basis $(\nu_k)_{k=0}^\infty$ of $\mathcal D \in \mathbb R^2$, truncated at $k=N$.  
+
+\begin{align}
+	\Phi(a_k) = S(\nu,q_0,q_1) + |\nu|_V^2
+\end{align}
+where, for example $ V = {L_2(\mathcal D)}$. 
+
+\begin{itemize}
+	\item MAP exists
+	\item Radon-Nikodyn derivative exists
+	\item Continuity of the posterior w.r.t the initial data 
+\end{itemize}
 
 \newcommand{\mhsample}{\textsc{sampleCentroid}}
 \newcommand{\acceptprob}{\textsc{acceptanceProbability}}
