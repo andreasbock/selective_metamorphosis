@@ -173,7 +173,7 @@ def run_mcmc(q0, q1, test_name):
         if shoot_success:
             return np.exp(h - h_prop)
         else:
-            return 0
+            return -1
 
     # helper stuff for saving MCMC samples
     num_estimators = 10
@@ -190,6 +190,7 @@ def run_mcmc(q0, q1, test_name):
     fnls = [] # to store all the functional values
     c_samples = [center]
     num_accepted = 0
+    solver_failures = 0
 
     for i in range(num_samples - 1):
         msg = "Iteration {}".format(i + 1)
@@ -203,6 +204,8 @@ def run_mcmc(q0, q1, test_name):
         # compute acceptance probability
         acc = acceptance_prob(fnl, fnl_prop)
         msg += "\n\t acc. prob. = {}".format(acc)
+        if acc < 0:
+            solver_failures += 1
 
         # test for acceptance
         if np.random.uniform() < acc:
@@ -238,6 +241,8 @@ def run_mcmc(q0, q1, test_name):
     fh = open(log_dir + 'output.log','w')
     fh.write("Number of accepted samples: {} => {}%".format(num_accepted,
         num_accepted/num_samples*100))
+    fh.write("Number of solver failures: {} => {}%".format(solver_failures,
+        solver_failures/num_samples*100))
 
     # save MAP estimators
     fh.write("MAP estimators functional evaluation:")
