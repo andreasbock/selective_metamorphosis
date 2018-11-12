@@ -118,18 +118,40 @@ def centroid_plot(c_samples, log_dir):
     plt.plot(cx, cy, 'go-', alpha=0.3)
     plt.savefig(log_dir + 'centroid_evolution.pdf')
 
-def plot_autocorr():
-    pass
+def sample_autocov(k, m):
+    # number of samples
+    n = np.shape(m)[0]
+    mu = np.mean(m)
 
-    # TODO !
-    #plt.figure()
-    #lag = 100
-    #x = np.linspace(0, num_samples, lag, dtype=int)
-    #ac = lambda k: autocorr(k, u_samples)
-    #plt.plot(x, list(map(ac, x)), 'r.-')
-    #plt.xlabel('Iteration')
-    #plt.ylabel('Autocorrelation function')
-    #plt.savefig('autocorrelation_{}.pdf'.format(suffix))
+    # compute autocov
+    est = 0
+    for i in range(n - k):
+        est += np.dot(m[i + k] - mu, m[i] - mu)
+
+    return est / n
+
+def plot_autocorr(c_samples, fname):
+    plt.figure()
+    num = 100
+    lags = np.linspace(0, len(c_samples), num, dtype=int)
+
+    ac = lambda k: sample_autocov(k, c_samples)
+    acf = list(map(ac, lags)) / sample_autocov(0, c_samples)
+
+    plt.plot(lags, acf, 'r.-')
+    plt.xlabel('Lag')
+    plt.ylabel('Sample autocorrelation')
+    plt.grid(True)
+    plt.savefig(fname + 'autocorrelation.pdf')
+
+def fnl_histogram(fnls, fname):
+    plt.figure()
+    bins = len(fnls) // 1
+    plt.hist(fnls, bins=bins, density=1, facecolor='green', alpha=0.75)
+    plt.xlabel('Metamorphosis functional')
+    plt.ylabel('Number of observed values')
+    plt.grid(True)
+    plt.savefig(fname + 'functional_histogram.pdf')
 
 def plot_q(x0, xs, N, fname):
     plt.figure()
@@ -138,6 +160,7 @@ def plot_q(x0, xs, N, fname):
     plot_landmarks(xs[-1])
     plt.title(fname)
     plt.savefig(fname + '.pdf')
+    plt.grid(True)
     plt.close()
 
 def plot_landmarks_traj(x, N, lw=.1):

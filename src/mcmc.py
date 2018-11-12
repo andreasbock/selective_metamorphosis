@@ -1,24 +1,24 @@
 import theano
-from theano import pp, function
+from theano import function
 import theano.tensor as T
 from termcolor import colored
 from scipy.optimize import minimize, fmin_bfgs, fmin_cg
 import numpy as np
-import time
-import pylab as plt
+import pickle
+
 from lib import *
 
 # landmark parameters
-timesteps     = 200
+timesteps = 100
 
 # mcmc parameters
-maxiter = 5000  # shooting parameter
+maxiter = 5000  # shooting
 num_samples = 500
-log_freq = num_samples  # never log
+log_freq = num_samples // 10
 beta = 0.2
+q1_tolerance = 1e-02  # allow for slight mismatch owing to numerics
 
 def run_mcmc(q0, q1, test_name):
-
     # kernel parameters
     sigma    = 0.5
     sigma_nu = 0.2
@@ -53,7 +53,7 @@ def run_mcmc(q0, q1, test_name):
         return Ksigma(q1, q2, SIGMA)
 
     def nu(q):
-        r_sq = T.sqr(q.dimshuffle(0, 'x', 1)-NU.dimshuffle('x', 0, 1)).sum(2).sum(1)
+        r_sq = T.sqr(q.dimshuffle(0, 'x', 1) - NU.dimshuffle('x', 0, 1)).sum(2).sum(1)
         return T.exp( - r_sq / (2. * SIGMA_NU**2))
 
     def met(q,p):
@@ -90,15 +90,11 @@ def run_mcmc(q0, q1, test_name):
     p0 = p0.astype(theano.config.floatX)
     x0 = np.array([q0, p0]).astype(theano.config.floatX)
 
-    # ode to solve (Hamiltonian system)
     def ode_f(x):
-
-        dqt = dq(x[0],x[1])
-        dpt = dp(x[0],x[1])
-
+        dqt = dq(x[0], x[1])
+        dpt = dp(x[0], x[1])
         return T.stack((dqt, dpt))
 
-    # Forward Euler scheme
     def euler(x, dt):
         return x + dt * ode_f(x)
 
@@ -109,15 +105,10 @@ def run_mcmc(q0, q1, test_name):
                                   outputs_info=[x],
                                   non_sequences=[dt],
                                   n_steps=n_steps)
-
     # compile it
     simf = function(inputs=[x],
                     outputs=cout,
                     updates=updates)
-
-    # run the IVP
-    #print("Running forward model...")  # TODO: do we _have to_ do this?
-    #xs = simf(x0)
 
     # create loss function and compile
     loss = 1./N*T.sum(T.sqr(cout[-1,0] - q1_theano))
@@ -130,27 +121,30 @@ def run_mcmc(q0, q1, test_name):
                       updates=updates)
 
     # do the shooting to find the initial momenta
-    def shoot(q0,p0):
+    def shoot(q0, p0):
         def fopts(x):
             [y,gy] = dlossf(np.stack([q0,x.reshape([N.eval(), DIM])]).astype(theano.config.floatX),)
-            return (y,gy[1].flatten().astype(np.double))
+            return (y, gy[1].flatten().astype(np.double))
 
-        res = minimize(fopts, p0.flatten(), method='L-BFGS-B', jac=True,
+        return minimize(fopts, p0.flatten(), method='L-BFGS-B', jac=True,
             options={'disp': False, 'maxiter': maxiter})
-
-        return (res.x, res.fun)
 
     def solve_mm(nu):
         nx, ny = nu
         NU.set_value([[nx, ny],])
+
         res = shoot(q0,p0)
-        xs = simf(np.array([q0,res[0].reshape([N.eval(), DIM])]).astype(theano.config.floatX))
+        xs = simf(np.array([q0, res.x.reshape([N.eval(),
+            DIM])]).astype(theano.config.floatX))
+
         h = []
         for i in range(np.shape(xs)[0]):
             h.append(Hf(xs[i,0],xs[i,1]))
         h = np.array(h).sum()*dt.eval()
 
-        return xs, h
+        match_success = np.linalg.norm(xs[-1,0] - q1) < q1_tolerance
+
+        return xs, h, res.success and match_success
 
     log_dir = 'mcmc_results/' + test_name + '/'
     import os
@@ -176,7 +170,10 @@ def run_mcmc(q0, q1, test_name):
         return np.array([periodic(x, x_min, x_max), periodic(y, y_min, y_max)])
 
     def acceptance_prob(h, h_prop):
-        return np.exp(h - h_prop)
+        if shoot_success:
+            return np.exp(h - h_prop)
+        else:
+            return 0
 
     # helper stuff for saving MCMC samples
     num_estimators = 10
@@ -188,7 +185,7 @@ def run_mcmc(q0, q1, test_name):
     # initial guess
     center = np.array([np.random.uniform(low=x_min, high=x_max),
                        np.random.uniform(low=y_min, high=y_max)])
-    _, fnl = solve_mm(center)
+    _, fnl, shoot_success = solve_mm(center)
 
     fnls = [] # to store all the functional values
     c_samples = [center]
@@ -201,7 +198,7 @@ def run_mcmc(q0, q1, test_name):
         center_prop = propose_center(center)
         msg += "\n\t proposal   = {}".format(center_prop)
 
-        xs_prop, fnl_prop = solve_mm(center_prop)
+        xs_prop, fnl_prop, shoot_success = solve_mm(center_prop)
 
         # compute acceptance probability
         acc = acceptance_prob(fnl, fnl_prop)
@@ -238,19 +235,36 @@ def run_mcmc(q0, q1, test_name):
         msg += "\n\t # accepted = {}".format(num_accepted)
         print(colored(msg, term_colour))
 
-    print("Number of accepted samples: {} => {}%".format(num_accepted,
+    fh = open(log_dir + 'output.log','w')
+    fh.write("Number of accepted samples: {} => {}%".format(num_accepted,
         num_accepted/num_samples*100))
 
     # save MAP estimators
-    print("MAP estimators functional evaluation:")
+    fh.write("MAP estimators functional evaluation:")
     for me, val in zip(map_estimators, map_estimators_vals):
         if me:
-            print("\t Functional = {} with center {}".format(val, me.center))
-            plot_q(x0, me.xs, num_landmarks, log_dir +
-                'MAP_center={}'.format(me.center))
+            # log and plot this MAP estimator
+            fh.write("\t Functional = {} with center {}".format(val, me.center))
+            name = 'MAP_center={}'.format(me.center)
+            plot_q(x0, me.xs, num_landmarks, log_dir + name)
 
+            # serialise too because we can
+            po = open(log_dir + name + ".pickle", "wb")
+            pickle.dump(me.xs, po)
+            po.close()
+    fh.close()
+
+    # serialise results
+    po = open(log_dir + "fnls.pickle", "wb")
+    pickle.dump(fnls, po)
+    po.close()
+
+    po = open(log_dir + "c_samples.pickle", "wb")
+    pickle.dump(c_samples, po)
+    po.close()
+
+    # plotting
     trace_plot(fnls, log_dir)
     centroid_plot(c_samples, log_dir)
-    plot_autocorr()
-
-
+    plot_autocorr(c_samples, log_dir)
+    fnl_histogram(fnls, log_dir)
