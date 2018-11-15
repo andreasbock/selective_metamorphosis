@@ -1,6 +1,9 @@
 import numpy as np
 import pylab as plt
 
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')
+
 def sample_circle(num_landmarks, scale=1, shift=0):
     thetas = np.linspace(0, 2*np.pi, num=num_landmarks+1)[:-1]
     positions = scale * np.array([[np.cos(x), np.sin(x)] for x in thetas]) + shift
@@ -141,7 +144,7 @@ def plot_autocorr(c_samples, fname):
     plt.plot(lags, acf, 'r.-')
     plt.xlabel('Lag')
     plt.ylabel('Sample autocorrelation')
-    plt.grid(True)
+    plt.grid(linestyle='dotted')
     plt.savefig(fname + 'autocorrelation.pdf')
 
 def fnl_histogram(fnls, fname):
@@ -150,17 +153,18 @@ def fnl_histogram(fnls, fname):
     plt.hist(fnls, bins=bins, density=1, facecolor='green', alpha=0.75)
     plt.xlabel('Metamorphosis functional')
     plt.ylabel('Number of observed values')
-    plt.grid(True)
+    plt.grid(linestyle='dotted')
     plt.savefig(fname + 'functional_histogram.pdf')
 
-def plot_q(x0, xs, N, fname):
+def plot_q(x0, xs, N, fname, title=None):
     plt.figure()
-    plot_landmarks(x0)
+    plot_landmarks(x0, color='r', start_style='x--')
     plot_landmarks_traj(xs, N, lw=1)
-    plot_landmarks(xs[-1])
-    plt.title(fname)
+    plot_landmarks(xs[-1], start_style='o--')
+    if title:
+        plt.title(title)
+    plt.grid(linestyle='dotted')
     plt.savefig(fname + '.pdf')
-    plt.grid(True)
     plt.close()
 
 def plot_landmarks_traj(x, N, lw=.1):
@@ -177,7 +181,7 @@ def plot_landmarks_traj(x, N, lw=.1):
         plt.plot(x[:,0,i,0], x[:,0,i,1], 'k-', lw=lw)
 
 def plot_landmarks(x, x0=None, lw=1., line_style='g--', markersize=5, color='b',
-    start_style='x-', end_style='o-'):
+    start_style='x--', end_style='o-'):
     if len(x.shape) == 2:
         x = x.reshape((1, 1,) + x.shape)
     if len(x.shape) == 3:
