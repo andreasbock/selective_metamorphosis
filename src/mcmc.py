@@ -20,7 +20,7 @@ def run_mcmc(q0, q1, test_name, num_samples):
     log_freq = num_samples // 10
 
     # kernel parameters
-    sigma    = 0.5
+    sigma    = 0.7
     sigma_nu = 0.2
 
     num_landmarks, DIM = q0.shape
@@ -275,7 +275,6 @@ def run_mcmc(q0, q1, test_name, num_samples):
     po.close()
 
     # plotting
-    trace_plot(fnls, log_dir)
     centroid_plot(c_samples, log_dir)
     plot_autocorr(c_samples, log_dir)
     fnl_histogram(fnls, log_dir)
