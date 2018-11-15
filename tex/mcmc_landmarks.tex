@@ -227,18 +227,17 @@ This is a convex problem formulated only in terms of $(q,\,z)$.\\
 
 \textbf{$\longrightarrow$ Show that \eqref{pbm:nonlinear_inner} has a unique minimiser}\\
 
-Extremising $J$ leads to the following equations:
+Using $p_t^i$ as a Lagrange multiplier and extremising $J$ leads to the
+following equations:
+
 \begin{subequations}\label{pbm:nonlinear_inner:optimality}
 \begin{align}
-& \dot{\lambda_t^i} + \nabla u(q_t^i) \lambda + \half \nabla \sqrt{\nu(q_t^i)} \lambda = 0\\
+& \dot{p_t^i} + \nabla u(q_t^i) p_t^i + \half \nabla \nu(q_t^i) |p_t^i|^2 = 0\\
 & \dot{q_t^i} = u(q_t^i) + \sqrt{\nu(q_t^i)} z^i_t\\
-& z_t = \lambda_t \sqrt{\nu(q_t)}\\
 & q_0,\,q_1\text{ fixed}\\
 \end{align}
 \end{subequations}
 
-{\color{red} $\longrightarrow$ How do these equations relate to
-\eqref{pq:optimality}?}\\
 \textbf{$\longrightarrow$ Show that \eqref{pbm:nonlinear_inner:optimality} is
 invertible (in particular, uniqueness of $q$ is critical. We can do existence
 for $z$)}\\
