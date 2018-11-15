@@ -22,7 +22,6 @@ def run_mcmc(q0, q1, test_name):
     # kernel parameters
     sigma    = 0.5
     sigma_nu = 0.2
-    nu_init  = np.zeros([1,2])
 
     num_landmarks, DIM = q0.shape
     N = theano.shared(num_landmarks)
@@ -32,7 +31,7 @@ def run_mcmc(q0, q1, test_name):
     # radius of the landmark
     SIGMA_NU = theano.shared(np.array(sigma_nu).astype(theano.config.floatX))
     # initialise '\nu' centroid
-    NU  = theano.shared(nu_init).astype(theano.config.floatX)
+    NU  = theano.shared(np.zeros([1,2])).astype(theano.config.floatX)
 
     q1_theano = theano.shared(np.zeros([N.eval(), DIM]).astype(theano.config.floatX))
     q1_theano.set_value(q1.astype(theano.config.floatX))
@@ -239,17 +238,24 @@ def run_mcmc(q0, q1, test_name):
         print(colored(msg, term_colour))
 
     fh = open(log_dir + 'output.log','w')
-    fh.write("Number of accepted samples: {} => {}%".format(num_accepted,
+    fh.write("timesteps: {}\n".format(timesteps)
+            + "maxiter: {}\n".format(maxiter)
+            + "num_samples: {}\n".format(num_samples)
+            + "beta: {}\n".format(beta)
+            + "q1_tol: {}\n".format(q1_tolerance)
+            + "sigma: {}\n".format(SIGMA.eval())
+            + "sigma_nu: {}\n\n".format(sigma_nu))
+    fh.write("Number of accepted samples: {} => {}%\n".format(num_accepted,
         num_accepted/num_samples*100))
-    fh.write("Number of solver failures: {} => {}%".format(solver_failures,
+    fh.write("Number of solver failures: {} => {}%\n\n".format(solver_failures,
         solver_failures/num_samples*100))
 
     # save MAP estimators
-    fh.write("MAP estimators functional evaluation:")
+    fh.write("MAP estimators functional evaluation:\n")
     for me, val in zip(map_estimators, map_estimators_vals):
         if me:
             # log and plot this MAP estimator
-            fh.write("\t Functional = {} with center {}".format(val, me.center))
+            fh.write("\t Functional = {} with center {}\n".format(val, me.center))
             name = 'MAP_center={}'.format(me.center)
             plot_q(x0, me.xs, num_landmarks, log_dir + name)
 
