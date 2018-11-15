@@ -13,12 +13,12 @@ timesteps = 100
 
 # mcmc parameters
 maxiter = 5000  # shooting
-num_samples = 500
-log_freq = num_samples // 10
 beta = 0.2
 q1_tolerance = 1e-02  # allow for slight mismatch owing to numerics
 
-def run_mcmc(q0, q1, test_name):
+def run_mcmc(q0, q1, test_name, num_samples):
+    log_freq = num_samples // 10
+
     # kernel parameters
     sigma    = 0.5
     sigma_nu = 0.2
