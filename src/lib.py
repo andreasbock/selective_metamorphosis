@@ -158,7 +158,7 @@ def fnl_histogram(fnls, fname):
 
 def plot_q(x0, xs, N, fname, title=None):
     plt.figure()
-    plot_landmarks(x0, color='r', start_style='x--')
+    plot_landmarks(x0, color='r', start_style='x:')
     plot_landmarks_traj(xs, N, lw=1)
     plot_landmarks(xs[-1], start_style='o--')
     if title:
