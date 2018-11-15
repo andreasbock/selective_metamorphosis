@@ -29,6 +29,7 @@
 \newcommand{\pp}[2]{\frac{\partial #1}{\partial #2}}
 \newcommand{\dede}[2]{\frac{\delta #1}{\delta #2}}
 \newcommand{\dd}[2]{\frac{\diff#1}{\diff#2}}
+\newcommand{\half}{\frac 12}
 
 \newcommand{\norm}[2]{\| #1 \|_{ #2 }}
 \newcommand{\vnorm}[1]{\norm{ #1 }{V}}
@@ -70,18 +71,31 @@ then evaluated in section \ref{sec:numerical}.
 In this paper we are concerned with diffeomorphometric approaches to image and
 shape matching. One of the central pillars on which this field relies is the
 observation made by Arnold '66 (cite) that, under certain conditions, a
-time-dependent velocity field $u$ occupying some Hilbert space $u_t \in B$
-induces a curve on a subgroup $G_B$ of diffeomorphisms \cite{younes2010shapes}
+time-dependent velocity field $u$ occupying some Hilbert space $u_t \in V$
+induces a curve on a subgroup $G_V$ of diffeomorphisms \cite{younes2010shapes}
 via the following ordinary differential
 equation:
-\begin{subequations}
+\begin{subequations}\label{diffeo}
 \begin{align}
 & \dot{\varphi_t} = u_t \circ \varphi_t\\
 & \varphi_0 = \text{id}
 \end{align}
 \end{subequations}
-with $\varphi_t \in G_B$, $\forall t$. This allows for the mathematical
-(Lagrangian) description of flows on shape and shape spaces.\\
+with $\varphi_t \in G_V$, $\forall t$. This allows for the mathematical
+(Lagrangian) description of flows on shape and shape spaces with a rich
+literature of applications (cite theory + applications). A unifying property of
+these is to use \eqref{diffeo} in defining an optimisation problem:
+\[
+\min_{t \mapsto \varphi_t} \int_0^1 \half\vnorm{u_t}^2 \diff{t} + \half S(q_0\circ\varphi_1, q_1)
+\]
+where $S$ denotes a similarity measure and $q_j$, $j=0,1$.
+
+However deformations of manifolds $q_j$ by members of $G_B$ must obey a certain
+smoothness, which is ill-suited for arbitrary manifolds e.g. topologically
+different ones.
+
+Moreover, metamorphosis is a generalisation thereof and provides more robust
+model for performing shape deformation.
 
 \textbf{$\longrightarrow$ Insert more background here}\\
 
@@ -93,17 +107,17 @@ landmark metamorphosis problem:
 \begin{align}
 \inf_{\substack{u\in L^2([0,1],V)\\q,\, z \in L^2([0,1],H)}} & S = \int_0^1
 l(u_t, q_t, z_t)\diff{t}\\
-    & \dot{q_t} + u_t \cdot \nabla q_t = z_t \\
-    & q_j = \hat q_j, \quad j=0,1
+    & \dot{q_t} = u_t \circ q_t + z_t \\
+    & q_0,\,q_1\text{ fixed}
 \end{align}
 \end{subequations}
 
-with $l(u, q, z) = \vnorm{u}^2 + \sigma^2\ltwonorm{z}^2$ and where the boundary
-conditions $\hat q_j$ denotes the landmarks for time $j=0,\,1$. $\sigma$
-is a parameter controlling the trade-off between the diffeometric and
-metamorphosis terms. This matching framework allows singular solutions for
-landmarks even in the limit of a large number of landmarks e.g. figure
-\ref{fig:classic_mm} where geodesics are allowed to intersect.
+with $l(u, q, z) = \half \vnorm{u}^2 + \frac{\sigma^2}2 \ltwonorm{z}^2$ and
+where the boundary conditions $q_0,\,q_1 \in \RdM$ denotes the landmarks for
+time $j=0,\,1$.  $\sigma$ is a parameter controlling the trade-off between the
+diffeometric and metamorphosis terms. This matching framework allows singular
+solutions for landmarks even in the limit of a large number of landmarks e.g.
+figure \ref{fig:classic_mm} where geodesics are allowed to intersect.
 
 \begin{figure}
   \centering
@@ -117,10 +131,15 @@ momentum and landmarks positions, resulting in a boundary value problem (in
 time):
 \begin{subequations}
 \begin{align}
-\dot{q_t} = ...\\
-\dot{p_t} = ...
+& \dot{q_t} = u(q_t)\\
+& \dot{p_t} = - \nabla u(q_t)^T p_t\\
+& q_0,\,q_1\text{ fixed}
 \end{align}
 \end{subequations}
+
+In LDDMM, the equations are the same but the boundary conditions are different.
+In particular, $q_1$ is not fixed, but an initial momentum, $p_0$, is imposed to
+close the system.\\
 
 \textbf{$\longrightarrow$ Insert segue and motivation for next section here}
 
@@ -135,44 +154,40 @@ constrain metamorphic transformations only in areas of the domain that
 correspond to e.g. anatomically interesting places.  This can be expressed
 mathematically by changing the Lagrangian above to:
 \[
-	\hat l(u, q, z) = \vnorm{u}^2 +  \sum_i \nu(q_i)|p_i|^2
+\hat l(u, q, p) = \half\vnorm{u}^2 + \half\sum_i \nu(q_i)|p_i|^2
 \]
 
 where $\Rd\ni x\mapsto\nu (x)$ takes non-negative values in $\mathbb R$. The
 goal of this work is to infer the unknown function $\nu$ so as to gather
 information about where in the spatial domain we are most likely to observe
-metamorphic behaviour via a Bayesian framework introduced in
-\cite{stuart_something}.
+metamorphic behaviour via a Bayesian framework as in \cite{dashti2017bayesian}.
 
 \begin{remark}[Choice of the form of $\nu$]
-Taking $\nu = \sum_k \exp(something)$ we explicitly state at which locations in
-space we allow non-diffeomorphic evolution, because when $\nu$ goes to zero we
-observe classical smooth dynamics of the landmarks. It could be useful to
-develop an algorithm that explores the entire space and infers at which location
-in space (if we had to choose only one such location!) it would be best to have
-metamorphosis. This could provide a first-order exploratory tool for physicians,
-to see if the development of a biological feature stems from a few violations of
-diffeomorphic evolution, starting with e.g. an inferred, least-cost,
-constellation of $\nu$.\\
-On the other hand, if we take $\nu =1 - \sum_k \alpha \exp(.)>0$, we could infer
-at which location(s) $x$ in space we require $z_t(x)>0$ in order for the
-metamorphosis problem to be solved. In contrast, this choice is natural as a
-diagnostic tool instead to infer where in the domain we have growth, which
+Taking $\nu(\cdot) = \sum_k \exp(h(\cdot))$ for some function $h$ we explicitly
+state at which locations in space we allow non-diffeomorphic evolution, because
+when $\nu$ goes to zero we observe classical smooth dynamics of the landmarks.
+It could be useful to develop an algorithm that explores the entire space and
+infers at which location in space (if we had to choose only one such location!)
+it would be best to have metamorphosis. This could provide a first-order
+exploratory tool for physicians, to see if the development of a biological
+feature stems from a few violations of diffeomorphic evolution, starting with
+e.g. an inferred, least-cost, constellation of $\nu$.\\
+
+On the other hand, if we take $\nu(\cdot) = 1 - \sum_k \alpha \exp(h(\cdot))>0$,
+we could infer at which location(s) $x$ in space we require $z_t(x)>0$ in order
+for the metamorphosis problem to be solved. In contrast, this choice is natural
+as a diagnostic tool instead to infer where in the domain we have growth, which
 health experts can attribute biological meaning. This kind of choice allows us
-to infer where it is best (i.e. cheapest for the functional) \emph{physically}
+to infer where it is best (i.e. cheapest for the functional) \emph{physically}.
 \end{remark}
 
-This leads to the following optimisation problem:
 \begin{subequations}\label{pbl:selective_mm}
 \begin{align}
-\inf_{\substack{u\in L^2([0,1],V)\\q,\, p \in L^2([0,1],H)}} & S = \int_0^1
-\hat l(u_t, q_t, p_t)\diff{t}\label{nu_fnl}\\
-& \dot{q_t} = u_t ( q_t) + \nu(q_t)p_t \\
-    & q_j = \hat q_j, \quad j=0,1
+\inf_{\substack{u \in L^2([0,1],V)\\ q, p\, \in L^2([0,1],\RdM)}} & S = \int_0^1 \hat l(u_t, q_t, p_t)\diff{t}\label{nu_fnl}\\
+& \dot{q_t^i} =  u(q_t^i) + \nu(q^i_t)p^i_t \\
+    & q_0,\,q_1\text{ fixed}
 \end{align}
 \end{subequations}
-{\color{red} we don't need $u$ in this problem, if it is landmarks already.}
-
 In this section we analyse the problem described in \eqref{pbl:selective_mm} for
 an a priori known function $\nu$ which we denote \emph{selective metamorphosis
 problem}. The first task is to show that the functional attains its infimum,
@@ -181,46 +196,92 @@ not convex, so we work with a reformulation to ensure the required weak lower
 semi-continuity. This comes at the cost of showing weak continuity of the
 constraint variables. Specifically, we define a variable $z^i_t = p^i_t
 \sqrt{\nu(q_t^i)}$ in the problem:
-\begin{subequations}
+\begin{subequations}\label{pbl:reformulation}
 \begin{align}
-\inf_{\substack{u\in L^2([0,1],V)\\m,\, w \in L^2([0,1],H)}} & S =
-\int_0^1\vnorm{u}^2 + \sum_i |z_i|^2 \diff{t}\\
-    & \dot{q_t} = u_t ( q_t) + z^i_t \sqrt{\nu(q_t^i)}\\
-    & m^i_j = \text{same as for $q$ above}\quad j=0,1
+\inf_{\substack{u \in L^2([0,1],V)\\ q, z\, \in L^2([0,1],\RdM)}}
+    & S = \int_0^1 \half\vnorm{u_t}^2 + \half\sum_i |z_t^i|^2 \diff{t}\\
+    & \dot{q_t^i} = u(q_t^i) + \sqrt{\nu(q_t^i)} z^i_t\\
+    & q_0,\,q_1\text{ fixed}
 \end{align}
 \end{subequations}
 
-where $m^i_t = q(t, \phi_t)$ so we recover $\dot{m^i_t} = \dot{q^i_t} + u_t
-\cdot \nabla q^i_t$ This is the reformulation used in \cite[Theorem
-1]{richardson2016metamorphosis}. Now let $(u^{(n)}, w^{(n)}, m^{(n)})$ denote a
+We now show existence of a minimiser to this problem. First, note that owing to
+the constraint effectively being a boundary value problem, we cannot always find
+a $q$ for arbitrary pairs of $(u,\,z)$. It is therefore not trivial to show that
+a minimising sequence is admissible. We begin with the following assumption:
+\begin{assumption}\label{assumption:nu_bounded}
+$\|\nu\|_\infty \triangleq \sigma^2 <\infty$. + something so 5b can be solved!
+\end{assumption}
+
+Consider the following problem for a fixed,
+arbitrary $u\in L^2([0,1], V)$:
+\begin{subequations}\label{pbm:nonlinear_inner}
+\begin{align}
+\inf_{q, z\, \in L^2([0,1],\RdM)}
+    & J = \int_0^1 \sum_i \half |z_t^i|^2 \diff{t}\\
+    & \dot{q_t^i} = u(q_t^i) + \sqrt{\nu(q_t^i)} z^i_t\\
+    & q_0,\,q_1\text{ fixed}
+\end{align}
+\end{subequations}
+This is a convex problem formulated only in terms of $(q,\,z)$.\\
+
+\textbf{$\longrightarrow$ Show that \eqref{pbm:nonlinear_inner} has a unique minimiser}\\
+
+Extremising $J$ leads to the following equations:
+\begin{subequations}\label{pbm:nonlinear_inner:optimality}
+\begin{align}
+& \dot{\lambda_t^i} + \nabla u(q_t^i) \lambda + \half \nabla \sqrt{\nu(q_t^i)} \lambda = 0\\
+& \dot{q_t^i} = u(q_t^i) + \sqrt{\nu(q_t^i)} z^i_t\\
+& z_t = \lambda_t \sqrt{\nu(q_t)}\\
+& q_0,\,q_1\text{ fixed}\\
+\end{align}
+\end{subequations}
+
+{\color{red} $\longrightarrow$ How do these equations relate to
+\eqref{pq:optimality}?}\\
+\textbf{$\longrightarrow$ Show that \eqref{pbm:nonlinear_inner:optimality} is
+invertible (in particular, uniqueness of $q$ is critical. We can do existence
+for $z$)}\\
+\textbf{$\longrightarrow$ We obtain a pair of admissible $(q,z)$ for each $u$}\\
+\textbf{$\longrightarrow$ Verify again that these are bounded by $u$ to ensure
+that the sequence is minimising}\\
+\textbf{$\longrightarrow$ Show weak continuity of the constraint equation for
+$q$ (the stuff below)}\\
+
+Now let $(u^{(n)}, q^{(n)}, z^{(n)})$ denote a
 minimising sequence. By classic results (see e.g.  Shapes and Diffeomorphisms),
 then we can extract bounded subsequences for the velocity and source converging
-to weak limits $u$ and $w$ (check this for $w$!). The former implies weak
-convergence for the diffeomorphism $\phi$ induced by the velocity. We begin with
-the following assumption:
-\begin{assumption}
-$\|\nu\|_\infty \triangleq \sigma^2 <\infty$.
-\end{assumption}
+to weak limits $u$ and $z$. The former implies weak
+convergence for the diffeomorphism $\varphi$ induced by the velocity. 
+\textbf{$\longrightarrow$ Need to prove that we can solve the new BVP!}\\
 
 Then, omitting the landmark index, we see that\\
 \begin{align*}
 q_t^{(n)} - q_t & = 
 \int_0^1u_t^{(n)}(q_t^{(n)})+z_t^{(n)}\sqrt{\nu(q_t^{(n)}}) 
 -\int_0^1u_t(q_t)+z_t\sqrt{\nu(q_t})  \diff{t}\\
-&\leq \int_0^1u_t^{(n)}(q_t^{(n)})
--\int_0^1u_t(q_t)
-+\sigma^2\left (\int z_t^{(n)} dt
--\int z_t  \diff{t}\right)\, , 
+&\lesssim \int_0^1 u_t^{(n)}(q_t^{(n)}) -  u_t(q_t)\diff{t}+ \int_0^1 \sigma^2 \left(z_t^{(n)} - z_t \right) \diff{t}
 \end{align*}
-which converges! 
 
-then \dots We now invoke \cite[Theorem 1]{richardson2016metamorphosis} to see $m_t^{(n)} -
-m_t \rightharpoonup 0$.
+$z^{(n)}$ is bounded by its minimising property of the coercive functional, so
+limit and integral can be interchanged in the second integral. We add the zero
+to the first term:
+\begin{align*}
+\int_0^1 u_t^{(n)}(q_t^{(n)}) -  u_t(q_t)\diff{t} = 
+\int_0^1 u_t^{(n)}(q_t^{(n)}) - u_t^{(n)}(q_t) + u_t^{(n)}(q_t) - u_t(q_t)\diff{t}
+\end{align*}
+By a similar argument as before we obtain 
+\[
+\int_0^1 u_t^{(n)}(q_t) - u_t(q_t)\diff{t} \rightarrow 0
+\]
+since the integrands are bounded in $\vnorm{\cdot}$ (also point-wise since $V$
+embeds into the space of continuous functions \cite{something}). This continuity
+also implies convergence of the first term and hence $q_t^{(n)} -
+q_t\rightharpoonup 0$ and we have therefore proved the following: 
 
 \begin{theorem}[Existence]
-Statement.\\
-Done!
-
+Assumption \ref{assumption:nu_bounded} implies that the problem
+\eqref{pbl:reformulation} attains its infimum.
 {\hfill $\square$}
 \end{theorem}
 
@@ -229,8 +290,20 @@ It is clear that uniqueness is not obtained, as symmetries can elicit several
 local minima.
 \end{remark}
 
+In this paper we are concerned only with
+landmarks, so we can write the Lagrangian in terms of the state variables $\hat
+l(q, z) = \hat l(u, q, z)$ \cite{younes2010shapes}:
+\begin{align*}
+\vnorm{u}^2 = \sum_{i,j=0}^M K(q^i,q^j) p^i \cdot p^j
+\end{align*}
+
+where supercripts denote the landmark index. 
+%\inf_{\substack{u \in L^2([0,1],V)\\ q, z\, \in L^2([0,1],\RdM)}}
+    %& S = \int_0^1\sum_{i,j=0}^M K(q_t^i,q_t^j)
+  %& \dot{q_t^i} = \sum_{j=0}^M K(q_t^j, q_t^i)p_t^i + \sqrt{\nu(q_t^i)} z^i_t\\
+
 Extremising the action $S$ we obtain the equations: 
-\begin{align}
+\begin{align}\label{pq:optimality}
 \dot p_i & =\frac12 \sum_j \nabla K(q_i,q_j)p_i\cdot p_j  + \frac12 |p_i|^2 \nabla \nu(q_i)\\
 \dot q_i & = \sum_j K(q_i,q_j)p_i + \nu(q_i)p_i\, . 
 \end{align}
@@ -243,10 +316,26 @@ This will give more conditions on $\nu$, like $\nu(x) \in C^{1}(\mathbb R^2)$.
 
 \subsection{Bayesian Framework}\label{sec:bayesian}
 
-We now put a stochastic model on $\nu$. We refer to \dots
+We now place a stochastic model on $\nu$, the purpose of which depends on its
+definition. First we present some preliminaries on the Bayesian approach to
+inverse problems. We rely heavily on the results of \cite{dashti2017bayesian}.
+See also (the one by SL Cotter).\\
 
-This is an appropriate framework because if the lack of uniqueness lends a
-qualitative evaluation of what 'solves the optimisation problem'. 
+% General setting
+Our setting is the following. Consider a potential $\Phi(y)$ 
+
+We now introduce the main problem of this paper in the setting above. We
+consider $\nu$ as a random variable, indeed a random \emph{function}, occupying
+some space yet to be determined. The \\
+
+Indeed, if $\nu$ is set as some kind of exponential, then we
+see that 
+the purpose of which is to infer at
+which points in the spatial domain it is most likely to allow metamorphosis.
+%
+%This is an appropriate framework because if the lack of uniqueness lends a
+%qualitative evaluation of what 'solves the optimisation problem'.
+
 \begin{align}
 	\nu(x) = \sum_k^N a_k \nu_k(x)
 \end{align}
@@ -287,14 +376,12 @@ where, for example $ V = {L_2(\mathcal D)}$.
 \end{algorithmic}
 \end{algorithm}
 
-Note that the $solveMetamorphosis()$ operation depends on how the spatial domain
-is treated. In the next section, we give an example of a particle method leading
-to a shooting solution for this operation.
-
-\subsection{Selective Metamorphosis for Landmarks}\label{sec:numerical}
+Note that the $solveMetamorphosis()$ operation, in general, depends on how the
+spatial domain is treated e.g. whether we use landmarks or treat full images.
+In this paper we are only concerned with the former, so we use a standard and
+easily implemented procedure (cite) below 
 
 \textbf{$\longrightarrow$ Describe shooting/solution method}\\
-
 \begin{algorithm}[h!]
 \begin{algorithmic}
 \caption{Metamorphosis for fixed $\nu$}
@@ -304,27 +391,50 @@ to a shooting solution for this operation.
 \end{algorithmic}
 \end{algorithm}
 
+\subsection{Selective Metamorphosis for Landmarks}\label{sec:numerical}
+
+This penultimate section displays some numerical results for our method. First,
+as a proof of concept we shall consider the simplest case where we can
+parameterise $\nu$ by a finite family $h_k$ of fields in $\Rd$. We denote these
+the \textit{centroids}. Specifically, we define
+\begin{equation}
+\nu_h (x) \triangleq \sum_k e^{-\|h_k - x\|_{\Rd}^2}
+\end{equation}
+
 \textbf{$\longrightarrow$ Something about adjoints here}\\
-
-
-We present results for five test cases.
 
 %Stuff that works:
 %\begin{tabular}{ l c r }
 %\text{Test case}   & \beta \text{ (pCN) } & \text{Samples} \\
-%\text{Criss-cross} & & \\
+%\text{Criss-cross} & & \\ <-- CENTROID
 %\text{Triangle}    & & \\
 %\text{Pringle}     & & \\
-%\text{Squeeze}     & 1 & 500
+%\text{Squeeze}     & 1 & 500 <-- CENTROID
 %\end{tabular}
 
-% Insert centroid plot for each test case
+% Insert realisations for some random $\nu$ for each test case
 
-% Insert traceplots with highlighted MAP estimators
+% Insert heat map centroid plot along with positions of first sample and 10 MAP
+% estimators!
 
-% Insert Batch plot of 10 running MAP averages
+% Insert histogram where x-axis is functional value and y-axis is #times seen
 
 % Insert Autocorrelation plots
+
+% Insert Effective Sample size (if time)
+
+% Compare with shooting approach for each test
+
+
+\textbf{$\longrightarrow$ Compare with classic LDDMM shooting to argue for our
+model}\\
+
+We note that since the Euler-Lagrange equations for $p$ and $q$ are
+time-reversible, the configuration in \ref{something} both lead to a notion of
+collapse and hole creation for the landmarks.\\
+
+Finally, we note that the source code for all of these experiments is documented
+here (insert link to github.io). 
 
 \subsection{Outlook}\label{sec:outlook}
 Another choice is 
@@ -337,17 +447,15 @@ where $\nu:\mathbb R^2 \to \mathbb R^2$, which will give more freedom on the met
     \dot q &= u(q_i) + \nu(q_i) 
 \end{align}
 
-\textbf{What we need to complete:}
-
-\begin{enumerate}
-\item Existence and uniqueness of minimisers
-\item Existence and uniqueness of the ODEs
-\item Well-posedness of the Bayesian formulation
-\item Experiments with the tests dumping: Chains (centroid evolution),
-traceplots, 10 running batch MAP averages, convergence of the chains
-(autocorrelation?)
-\item Conclusion
-\end{enumerate}
+Future work also includes extending this framework to images e.g. using the
+kernel framework in \cite{richardson2016metamorphosis}, or developing a
+space-time method. Moreover, adding a time-dependency to $\nu$ is also to be
+explored. It is our hope that we can extend the theory developed here to
+encompass classic metamorphosis; that is to say, to develop the necessary theory
+in order to place a stochastic model on the state space consisting of
+velocities and source functions. Being able to sample random pairs (MCMC) of these
+would permit a novel numerical approach to metamorphosis as well as other
+problems shape analysis.
 
 \bibliographystyle{abbrv}
 \bibliography{landmarks}
