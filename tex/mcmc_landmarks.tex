@@ -252,7 +252,6 @@ minimising sequence. By classic results (see e.g.  Shapes and Diffeomorphisms),
 then we can extract bounded subsequences for the velocity and source converging
 to weak limits $u$ and $z$. The former implies weak
 convergence for the diffeomorphism $\varphi$ induced by the velocity. 
-\textbf{$\longrightarrow$ Need to prove that we can solve the new BVP!}\\
 
 Then, omitting the landmark index, we see that\\
 \begin{align*}
@@ -276,7 +275,21 @@ By a similar argument as before we obtain
 since the integrands are bounded in $\vnorm{\cdot}$ (also point-wise since $V$
 embeds into the space of continuous functions \cite{something}). This continuity
 also implies convergence of the first term and hence $q_t^{(n)} -
-q_t\rightharpoonup 0$ and we have therefore proved the following: 
+q_t\rightharpoonup 0$.
+
+\textbf{$\longrightarrow$ Show that the constrained problem of
+\eqref{pbm:nonlinear_inner} (where we include the velocity!) has a E\&U}
+
+\textbf{$\longrightarrow$ Now prove E\&U for the original problem:}\\
+
+The original problem is therefore a relaxation of the constrained problem, so we
+must check that there does not exist a minimiser to the original problem that is
+\emph{NOT} equation to the minimiser of the constrained problem. Assume
+therefore that there exists a unique solution to the original problem different
+from the one obtained from the constrained one. Then we arrive at a
+contradiction because this unique solution must satisfy
+\eqref{pbm:nonlinear_inner} - which is invertible - so the minimisers coincide.
+We have therefore proved the following:
 
 \begin{theorem}[Existence]
 Assumption \ref{assumption:nu_bounded} implies that the problem
