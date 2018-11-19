@@ -41,11 +41,19 @@ def pringle(num_landmarks):
 def squeeze(num_landmarks):
     test_name = 'squeeze'
 
-    if num_landmarks != 8:
-        print("only works for 8 landmarks at the moment!")
-        exit()
-
     scale = 1
+
+    # test 1
+    eps = 1e-04 # for 8 LMS, goes to one center
+    y_map = lambda y: y
+
+    # test 2: 16 (line singularity 2*3) LMS
+    eps = .5
+    y_map = lambda y: y
+
+    # test 3: 16 (one big singularity at zero) LMS
+    eps = .5
+    y_map = lambda y: 0
 
     thetas = np.linspace(0, 2*np.pi, num=num_landmarks+1)[:-1]
     q1 = scale * np.array([[np.cos(x), np.sin(x)] for x in thetas])
@@ -53,8 +61,8 @@ def squeeze(num_landmarks):
     k = 0
     for p in q1:
         x, y = p
-        if abs(y) < 1e-04:
-            q1[k] = (0., y)
+        if abs(y) < eps:
+            q1[k] = (0., y_map(y))
         k += 1
 
     k = 0
@@ -101,6 +109,20 @@ def triangle_flip(num_landmarks):
 
     return q0, q1, test_name
 
+def plot_target(q0, q1, fname=None):
+    fig = plt.figure()
+    q0_plt = np.append(q0, [q0[0,:]], axis=0)
+    q1_plt = np.append(q1, [q1[0,:]], axis=0)
+
+    plt.plot(q0_plt[:,0], q0_plt[:,1], 'm*-', label='$q_0$')
+    plt.plot(q1_plt[:,0], q1_plt[:,1], 'bo-', label='$q_1$')
+    plt.legend(loc='best')
+
+    if fname:
+        plt.savefig(fname)
+    else:
+        plt.show()
+
 class map_estimator():
     def __init__(self, xs, center):
         self.xs = np.copy(xs)
@@ -120,6 +142,15 @@ def centroid_plot(c_samples, log_dir):
     cx, cy = zip(*c_samples)
     plt.plot(cx, cy, 'go-', alpha=0.3)
     plt.savefig(log_dir + 'centroid_evolution.pdf')
+
+def centroid_heatmap(c_samples, log_dir):
+    cx, cy = zip(*c_samples)
+    plt.figure()
+    plt.hist2d(cx, cy, bins=len(cy))
+    plt.xlabel('$x$-coordinate')
+    plt.ylabel('$y$-coordinate')
+    plt.colorbar()
+    plt.savefig(log_dir + 'centroid_heat.pdf')
 
 def sample_autocov(k, m):
     # number of samples

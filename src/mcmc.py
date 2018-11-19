@@ -14,7 +14,7 @@ timesteps = 100
 # mcmc parameters
 maxiter = 5000  # shooting
 beta = 0.2
-q1_tolerance = 1e-02  # allow for slight mismatch owing to numerics
+q1_tolerance = 1e-01  # allow for slight mismatch owing to numerics
 
 def run_mcmc(q0, q1, test_name, num_samples):
     log_freq = num_samples // 10
@@ -142,7 +142,6 @@ def run_mcmc(q0, q1, test_name, num_samples):
         h = np.array(h).sum()*dt.eval()
 
         match_success = np.linalg.norm(xs[-1,0] - q1) < q1_tolerance
-
         return xs, h, res.success and match_success
 
     log_dir = 'mcmc_results/' + test_name + '/'
@@ -275,6 +274,7 @@ def run_mcmc(q0, q1, test_name, num_samples):
     po.close()
 
     # plotting
+    centroid_heatmap(c_samples, log_dir)
     centroid_plot(c_samples, log_dir)
     plot_autocorr(c_samples, log_dir)
     fnl_histogram(fnls, log_dir)
