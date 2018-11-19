@@ -2,7 +2,7 @@
 # Job name
 #PBS -N my_theano_test
 # Time required in hh:mm:ss
-#PBS -l walltime=24:00:00
+#PBS -l walltime=48:00:00
 # Resource requirements
 #PBS -l select=1:ncpus=1:mpiprocs=1:ompthreads=1:mem=15999Mb
 # Files to contain standard error and standard output
