@@ -158,9 +158,10 @@ def fnl_histogram(fnls, fname):
 
 def plot_q(x0, xs, N, fname, title=None):
     plt.figure()
-    plot_landmarks(x0, color='r', start_style='x:')
+    plot_landmarks(x0, color='r', start_style='x:', label='$q_0$')
     plot_landmarks_traj(xs, N, lw=1)
-    plot_landmarks(xs[-1], start_style='o--')
+    plot_landmarks(xs[-1], start_style='o--', label='$q_1$')
+    plt.legend(loc='best')
     if title:
         plt.title(title)
     plt.grid(linestyle='dotted')
@@ -181,7 +182,7 @@ def plot_landmarks_traj(x, N, lw=.1):
         plt.plot(x[:,0,i,0], x[:,0,i,1], 'k-', lw=lw)
 
 def plot_landmarks(x, x0=None, lw=1., line_style='g--', markersize=5, color='b',
-    start_style='x--', end_style='o-'):
+    start_style='x--', end_style='o-', label=None):
     if len(x.shape) == 2:
         x = x.reshape((1, 1,) + x.shape)
     if len(x.shape) == 3:
@@ -194,9 +195,14 @@ def plot_landmarks(x, x0=None, lw=1., line_style='g--', markersize=5, color='b',
     if not x0 is None:
         x = np.concatenate((x0.reshape((1,)+x0.shape),x),axis=0)
 
-    plt.plot(np.concatenate((x[0,0,:,0],[x[0,0,0,0],])),np.concatenate((x[0,0,:,1],[x[0,0,0,1],])),start_style,color=color,markersize=markersize)
+    plt.plot(np.concatenate((x[0,0,:,0],[x[0,0,0,0],])),
+        np.concatenate((x[0,0,:,1],[x[0,0,0,1],])), start_style, color=color,
+        markersize=markersize, label=label)
+
     if x.shape[0] > 1:
-        plt.plot(np.concatenate((x[-1,0,:,0],[x[-1,0,0,0],])),np.concatenate((x[-1,0,:,1],[x[-1,0,0,1],])),end_style,color=color,markersize=markersize)
+        plt.plot(np.concatenate((x[-1,0,:,0],[x[-1,0,0,0],])),
+            np.concatenate((x[-1,0,:,1],[x[-1,0,0,1],])), end_style,
+            color=color,markersize=markersize)
 
     for i in range(x.shape[2]):
         plt.plot(x[:,0,i,0],x[:,0,i,1],line_style,lw=lw)
