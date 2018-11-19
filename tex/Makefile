@@ -1,8 +1,8 @@
 name=mcmc_landmarks
 
 all:
-	latex ${name}.tex
+	pdflatex ${name}.tex
 	bibtex ${name}
-	latex ${name}.tex
-	latex ${name}.tex
-	dvipdf ${name}.dvi
+	pdflatex ${name}.tex
+	pdflatex ${name}.tex
+	#dvipdf ${name}.dvi

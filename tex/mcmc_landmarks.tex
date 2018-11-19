@@ -115,15 +115,27 @@ l(u_t, q_t, z_t)\diff{t}\\
 with $l(u, q, z) = \half \vnorm{u}^2 + \frac{\sigma^2}2 \ltwonorm{z}^2$ and
 where the boundary conditions $q_0,\,q_1 \in \RdM$ denotes the landmarks for
 time $j=0,\,1$.  $\sigma$ is a parameter controlling the trade-off between the
-diffeometric and metamorphosis terms. This matching framework allows singular
-solutions for landmarks even in the limit of a large number of landmarks e.g.
-figure \ref{fig:classic_mm} where geodesics are allowed to intersect.
+diffeometric and metamorphosis terms. In LDDMM, the equations are the same but
+the boundary conditions are different.  In particular, $q_1$ is not fixed, but
+an initial momentum, $p_0$, is imposed to close the system. As we see in
+\ref{fig:mm_lddmm}, these frameworks lead to different results.
 
 \begin{figure}
+\centering
+\begin{minipage}{\textwidth}
   \centering
-  \includegraphics[width=.4\textwidth]{example-image-a}
-  \caption{Something something metamorphosis.}
-  \label{fig:classic_mm}
+    \includegraphics[width=.2\textwidth]{../src/vanilla_results/mm/mm_criss_cross.pdf}\quad
+    \includegraphics[width=.2\textwidth]{../src/vanilla_results/mm/mm_pringle.pdf}\quad
+    \includegraphics[width=.2\textwidth]{../src/vanilla_results/mm/mm_squeeze.pdf}\quad
+    \includegraphics[width=.2\textwidth]{../src/vanilla_results/mm/mm_triangle_flip.pdf}\\[0.25cm]
+    \includegraphics[width=.2\textwidth]{../src/vanilla_results/lddmm/lddmm_criss_cross.pdf}\quad
+    \includegraphics[width=.2\textwidth]{../src/vanilla_results/lddmm/lddmm_pringle.pdf}\quad
+    \includegraphics[width=.2\textwidth]{../src/vanilla_results/lddmm/lddmm_squeeze.pdf}\quad
+    \includegraphics[width=.2\textwidth]{../src/vanilla_results/lddmm/lddmm_triangle_flip.pdf}
+    %\subcaption{.}
+    \caption{Metamorphosis (top) and LDDMM (bottom).}
+    \label{fig:mm_lddmm}
+\end{minipage}
 \end{figure}
 
 For landmarks, the velocity field is explicitly expressed in terms of the
@@ -136,10 +148,6 @@ time):
 & q_0,\,q_1\text{ fixed}
 \end{align}
 \end{subequations}
-
-In LDDMM, the equations are the same but the boundary conditions are different.
-In particular, $q_1$ is not fixed, but an initial momentum, $p_0$, is imposed to
-close the system.\\
 
 \textbf{$\longrightarrow$ Insert segue and motivation for next section here}
 
@@ -233,7 +241,7 @@ following equations:
 \begin{subequations}\label{pbm:nonlinear_inner:optimality}
 \begin{align}
 & \dot{p_t^i} + \nabla u(q_t^i) p_t^i + \half \nabla \nu(q_t^i) |p_t^i|^2 = 0\\
-& \dot{q_t^i} = u(q_t^i) + \sqrt{\nu(q_t^i)} z^i_t\\
+& \dot{q_t^i} = u(q_t^i) + \nu(q_t^i) p^i_t\\
 & q_0,\,q_1\text{ fixed}\\
 \end{align}
 \end{subequations}
@@ -348,9 +356,9 @@ which points in the spatial domain it is most likely to allow metamorphosis.
 %This is an appropriate framework because if the lack of uniqueness lends a
 %qualitative evaluation of what 'solves the optimisation problem'.
 
-\begin{align}
+\begin{equation}\label{finite_dim_nu}
 	\nu(x) = \sum_k^N a_k \nu_k(x)
-\end{align}
+\end{equation}
 for a basis $(\nu_k)_{k=0}^\infty$ of $\mathcal D \in \mathbb R^2$, truncated at $k=N$.  
 
 \begin{align}
@@ -369,7 +377,7 @@ where, for example $ V = {L_2(\mathcal D)}$.
 
 \begin{algorithm}[h!]
 \begin{algorithmic}
-\caption{Quasi-MCMC on $\nu$}
+\caption{Quasi-MCMC on $\nu$}\label{algo:mcmc}
 \Procedure{quasiMCMC}{$N$}
 \State $k \gets 0$
 \State $\nu^k \gets \text{ some initial guess}$
@@ -403,18 +411,12 @@ easily implemented procedure (cite) below
 \end{algorithmic}
 \end{algorithm}
 
+\textbf{$\longrightarrow$ Something about adjoints here}\\
+
 \subsection{Selective Metamorphosis for Landmarks}\label{sec:numerical}
 
 This penultimate section displays some numerical results for our method. First,
-as a proof of concept we shall consider the simplest case where we can
-parameterise $\nu$ by a finite family $h_k$ of fields in $\Rd$. We denote these
-the \textit{centroids}. Specifically, we define
-\begin{equation}
-\nu_h (x) \triangleq \sum_k e^{-\|h_k - x\|_{\Rd}^2}
-\end{equation}
-
-\textbf{$\longrightarrow$ Something about adjoints here}\\
-
+as a proof of concept 
 %Stuff that works:
 %\begin{tabular}{ l c r }
 %\text{Test case}   & \beta \text{ (pCN) } & \text{Samples} \\
@@ -424,28 +426,111 @@ the \textit{centroids}. Specifically, we define
 %\text{Squeeze}     & 1 & 500 <-- CENTROID
 %\end{tabular}
 
-% Insert realisations for some random $\nu$ for each test case
+As we have seen in figure \ref{fig:classic_mm}, classic metamorphosis is an
+appropriate model for non-diffeomorphic matching. We now evaluate our stochastic
+model described in algorithm \ref{algo:mcmc} to the landmark configurations in
+\ref{fig:classic_mm}. For the pinching and crossing geodesics, figure X and Y,
+we consider the simplest case where we can parameterise $\nu$ by a finite family
+$h_k$ of fields in $\Rd$. We denote these the \textit{centroids}. Specifically,
+we define \begin{equation} \nu_h (x) \triangleq \sum_k e^{-\|h_k - x\|_{\Rd}^2}
+\end{equation}
 
-% Insert heat map centroid plot along with positions of first sample and 10 MAP
-% estimators!
+\begin{figure}
+\centering
+\begin{minipage}{\textwidth}
+  \centering
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\\[0.25cm]
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}
+    %\subcaption{.}
+    \caption{Selective metamorphosis for the pinch example. The top row displays
+    the geodesics corresponding a sample realisation from the chain, centroid
+    heat map with four MAP estimators, functional histogram and autocorrelation
+    plot. The bottom row shows the geodesics for four MAP estimators.}
+    \label{fig:selective:pinch}
+\end{minipage}
+\end{figure}
 
-% Insert histogram where x-axis is functional value and y-axis is #times seen
+\textbf{$\longrightarrow$ Explain results}\\
 
-% Insert Autocorrelation plots
+\begin{figure}
+\centering
+\begin{minipage}{\textwidth}
+  \centering
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\\[0.25cm]
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}
+    %\subcaption{.}
+    \caption{Selective metamorphosis for the inverted landmarks example. The top
+    row displays the geodesics corresponding a sample realisation from the
+    chain, centroid heat map with four MAP estimators, functional histogram and
+    autocorrelation plot. The bottom row shows the geodesics for four MAP
+    estimators.}
+    \label{fig:selective:crossing}
+\end{minipage}
+\end{figure}
 
 % Insert Effective Sample size (if time)
-
-% Compare with shooting approach for each test
-
-
-\textbf{$\longrightarrow$ Compare with classic LDDMM shooting to argue for our
-model}\\
-
 We note that since the Euler-Lagrange equations for $p$ and $q$ are
 time-reversible, the configuration in \ref{something} both lead to a notion of
 collapse and hole creation for the landmarks.\\
 
-Finally, we note that the source code for all of these experiments is documented
+\begin{figure}
+\centering
+\begin{minipage}{\textwidth}
+  \centering
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\\[0.25cm]
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}
+    %\subcaption{.}
+    \caption{Selective metamorphosis for the inverted landmarks example The top
+    row displays the geodesics corresponding a sample realisation from the
+    chain, centroid heat map with four MAP estimators, functional histogram and
+    autocorrelation plot. The bottom row shows the geodesics for four MAP
+    estimators.}
+    \label{fig:selective:crossing}
+\end{minipage}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\begin{minipage}{\textwidth}
+  \centering
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\\[0.25cm]
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}
+    %\subcaption{.}
+    \caption{Selective metamorphosis for the inverted landmarks example The top
+    row displays the geodesics corresponding a sample realisation from the
+    chain, centroid heat map with four MAP estimators, functional histogram and
+    autocorrelation plot. The bottom row shows the geodesics for four MAP
+    estimators.}
+    \label{fig:selective:crossing}
+\end{minipage}
+\end{figure}
+
+We note that the source code for all of these experiments is documented
 here (insert link to github.io). 
 
 \subsection{Outlook}\label{sec:outlook}
@@ -461,7 +546,10 @@ where $\nu:\mathbb R^2 \to \mathbb R^2$, which will give more freedom on the met
 
 Future work also includes extending this framework to images e.g. using the
 kernel framework in \cite{richardson2016metamorphosis}, or developing a
-space-time method. Moreover, adding a time-dependency to $\nu$ is also to be
+space-time method. Formalising the measure-theory necessary to consider the
+limit of \eqref{finite_dim_nu} as $k\rightarrow\infty$.
+
+Moreover, adding a time-dependency to $\nu$ is also to be
 explored. It is our hope that we can extend the theory developed here to
 encompass classic metamorphosis; that is to say, to develop the necessary theory
 in order to place a stochastic model on the state space consisting of
