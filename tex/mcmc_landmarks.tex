@@ -43,6 +43,7 @@
 \newcommand{\V}{\mathbf{v}}
 \newcommand{\Rd}{\mathbb{R}^{d}}
 \newcommand{\RdM}{\mathbb{R}^{d\times M}}
+\newcommand{\nuinf}{\nu_\text{inf}}
 
 \setlength\parindent{0pt}
 
@@ -99,13 +100,11 @@ model for performing shape deformation.
 
 \textbf{$\longrightarrow$ Insert more background here}\\
 
-In the following we let $(V,\vnorm{\cdot})$ and $(H,\hnorm{\cdot})$ be
-reproducing kernel Hilbert spaces taking values in $\Rd$. Observe the classical
-landmark metamorphosis problem: 
-
+In the following we let $H$ denote a vector space taking values in $\Rd$ to be determined later.
+Observe the classical landmark metamorphosis problem:
 \begin{subequations}
 \begin{align}
-\inf_{\substack{u\in L^2([0,1],V)\\q,\, z \in L^2([0,1],H)}} & S = \int_0^1
+\inf_{\substack{u\in L^1([0,1],V)\\q,\, z \in C^1([0,1], H)}} & S = \int_0^1
 l(u_t, q_t, z_t)\diff{t}\\
     & \dot{q_t} = u_t \circ q_t + z_t \\
     & q_0,\,q_1\text{ fixed}
@@ -171,27 +170,28 @@ information about where in the spatial domain we are most likely to observe
 metamorphic behaviour via a Bayesian framework as in \cite{dashti2017bayesian}.
 
 \begin{remark}[Choice of the form of $\nu$]
-Taking $\nu(\cdot) = \sum_k \exp(h(\cdot))$ for some function $h$ we explicitly
-state at which locations in space we allow non-diffeomorphic evolution, because
-when $\nu$ goes to zero we observe classical smooth dynamics of the landmarks.
-It could be useful to develop an algorithm that explores the entire space and
-infers at which location in space (if we had to choose only one such location!)
-it would be best to have metamorphosis. This could provide a first-order
-exploratory tool for physicians, to see if the development of a biological
-feature stems from a few violations of diffeomorphic evolution, starting with
-e.g. an inferred, least-cost, constellation of $\nu$.\\
+Taking e.g. $\nu(\cdot) = \sum_k \exp(-h(\cdot))$ for some function $h>0$ we
+explicitly state at which locations in space we allow non-diffeomorphic
+evolution, because when $\nu$ goes to zero we observe classical smooth dynamics
+of the landmarks.  It could be useful to develop an algorithm that explores the
+entire space and infers at which location in space (if we had to choose only one
+such location!) it would be best to have metamorphosis. This could provide a
+first-order exploratory tool for physicians, to see if the development of a
+biological feature stems from a few violations of diffeomorphic evolution,
+starting with e.g. an inferred, least-cost, constellation of $\nu$.\\
 
-On the other hand, if we take $\nu(\cdot) = 1 - \sum_k \alpha \exp(h(\cdot))>0$,
-we could infer at which location(s) $x$ in space we require $z_t(x)>0$ in order
-for the metamorphosis problem to be solved. In contrast, this choice is natural
-as a diagnostic tool instead to infer where in the domain we have growth, which
-health experts can attribute biological meaning. This kind of choice allows us
-to infer where it is best (i.e. cheapest for the functional) \emph{physically}.
+On the other hand, if we take $\nu(\cdot) = 1 - \sum_k \alpha
+\exp(-h(\cdot))>0$, we could infer at which location(s) $x$ in space we require
+$z_t(x)>0$ in order for the metamorphosis problem to be solved. In contrast,
+this choice is natural as a diagnostic tool instead to infer where in the domain
+we have growth, which health experts can attribute biological meaning. This kind
+of choice allows us to infer where it is best (i.e. cheapest for the functional)
+\emph{physically}.
 \end{remark}
 
 \begin{subequations}\label{pbl:selective_mm}
 \begin{align}
-\inf_{\substack{u \in L^2([0,1],V)\\ q, p\, \in L^2([0,1],\RdM)}} & S = \int_0^1 \hat l(u_t, q_t, p_t)\diff{t}\label{nu_fnl}\\
+\inf_{\substack{u \in L^1([0,1],V)\\ q, p\, \in C^1([0,1],\RdM)}} & S = \int_0^1 \hat l(u_t, q_t, p_t)\diff{t}\label{nu_fnl}\\
 & \dot{q_t^i} =  u(q_t^i) + \nu(q^i_t)p^i_t \\
     & q_0,\,q_1\text{ fixed}
 \end{align}
@@ -199,7 +199,13 @@ to infer where it is best (i.e. cheapest for the functional) \emph{physically}.
 In this section we analyse the problem described in \eqref{pbl:selective_mm} for
 an a priori known function $\nu$ which we denote \emph{selective metamorphosis
 problem}. The first task is to show that the functional attains its infimum,
-i.e. identification of a minimiser. Clearly the functional in \eqref{nu_fnl} is
+i.e. identification of a minimiser. We begin with the following assumption:
+\begin{assumption}\label{assumption:nu_bounded}
+$\|\nu\|_\infty \triangleq \sigma^2 <\infty$ and $\nu$ is bounded from below
+away from zero by $\nuinf \in \mathbb R$.
+\end{assumption}
+Since the limit as $\nu\rightarrow 0$ is well-understood these assumptions do
+not constitute large concessions. Clearly the functional in \eqref{nu_fnl} is
 not convex, so we work with a reformulation to ensure the required weak lower
 semi-continuity. This comes at the cost of showing weak continuity of the
 constraint variables. Specifically, we define a variable $z^i_t = p^i_t
@@ -215,26 +221,30 @@ constraint variables. Specifically, we define a variable $z^i_t = p^i_t
 
 We now show existence of a minimiser to this problem. First, note that owing to
 the constraint effectively being a boundary value problem, we cannot always find
-a $q$ for arbitrary pairs of $(u,\,z)$. It is therefore not trivial to show that
-a minimising sequence is admissible. We begin with the following assumption:
-\begin{assumption}\label{assumption:nu_bounded}
-$\|\nu\|_\infty \triangleq \sigma^2 <\infty$. + something so 5b can be solved!
-\end{assumption}
+a $q$ for arbitrary pairs of $(u,\,z)$. We define an bounded operator $(q,u)\mapsto
+\frac{\dot{q} - u(q)}{\sqrt{\nu(q)}} \triangleq z$:
+\begin{align*}
+\ltwonorm{z}^2 & = \ltwonorm{\frac{\dot{q} - u(q)}{\sqrt{\nu(q)}}}^2\\
+& \leq \nuinf^{-1}\Big(\ltwonorm{\dot{q}}^2 + \ltwonorm{u(q)}^2\Big)\\
+\end{align*}
+which is clearly bounded since $q\in C^1(0,1,H)$ and since by continuity of $u$.
+From this we generate a minimising sequence $(q^n, u^n, z^n)$ admissible to
+\eqref{pbl:reformulation}.\\
 
-Consider the following problem for a fixed,
-arbitrary $u\in L^2([0,1], V)$:
-\begin{subequations}\label{pbm:nonlinear_inner}
-\begin{align}
-\inf_{q, z\, \in L^2([0,1],\RdM)}
-    & J = \int_0^1 \sum_i \half |z_t^i|^2 \diff{t}\\
-    & \dot{q_t^i} = u(q_t^i) + \sqrt{\nu(q_t^i)} z^i_t\\
-    & q_0,\,q_1\text{ fixed}
-\end{align}
-\end{subequations}
-This is a convex problem formulated only in terms of $(q,\,z)$.\\
+\textbf{$\longrightarrow$ Show weak continuity of the constraint equation for
+$q$ (the stuff below)}\\
 
-\textbf{$\longrightarrow$ Show that \eqref{pbm:nonlinear_inner} has a unique minimiser}\\
+Passing to subsequences where necessary we can by classic results
+\cite{younes2010shapes} extract bounded subsequences converging to weak limits
+where necessary. By convexity of $S$ we have therefore proved the following:
 
+\begin{theorem}
+Assumption \ref{assumption:nu_bounded} implies that the problem
+\eqref{pbl:reformulation} attains its unique infimum.
+{\hfill $\square$}
+\end{theorem}
+
+We now derive the optimality conditions of \eqref{pbl:reformulation}.
 Using $p_t^i$ as a Lagrange multiplier and extremising $J$ leads to the
 following equations:
 
@@ -242,73 +252,9 @@ following equations:
 \begin{align}
 & \dot{p_t^i} + \nabla u(q_t^i) p_t^i + \half \nabla \nu(q_t^i) |p_t^i|^2 = 0\\
 & \dot{q_t^i} = u(q_t^i) + \nu(q_t^i) p^i_t\\
-& q_0,\,q_1\text{ fixed}\\
+& q_0,\,q_1\text{ fixed}
 \end{align}
 \end{subequations}
-
-\textbf{$\longrightarrow$ Show that \eqref{pbm:nonlinear_inner:optimality} is
-invertible (in particular, uniqueness of $q$ is critical. We can do existence
-for $z$)}\\
-\textbf{$\longrightarrow$ We obtain a pair of admissible $(q,z)$ for each $u$}\\
-\textbf{$\longrightarrow$ Verify again that these are bounded by $u$ to ensure
-that the sequence is minimising}\\
-\textbf{$\longrightarrow$ Show weak continuity of the constraint equation for
-$q$ (the stuff below)}\\
-
-Now let $(u^{(n)}, q^{(n)}, z^{(n)})$ denote a
-minimising sequence. By classic results (see e.g.  Shapes and Diffeomorphisms),
-then we can extract bounded subsequences for the velocity and source converging
-to weak limits $u$ and $z$. The former implies weak
-convergence for the diffeomorphism $\varphi$ induced by the velocity. 
-
-Then, omitting the landmark index, we see that\\
-\begin{align*}
-q_t^{(n)} - q_t & = 
-\int_0^1u_t^{(n)}(q_t^{(n)})+z_t^{(n)}\sqrt{\nu(q_t^{(n)}}) 
--\int_0^1u_t(q_t)+z_t\sqrt{\nu(q_t})  \diff{t}\\
-&\lesssim \int_0^1 u_t^{(n)}(q_t^{(n)}) -  u_t(q_t)\diff{t}+ \int_0^1 \sigma^2 \left(z_t^{(n)} - z_t \right) \diff{t}
-\end{align*}
-
-$z^{(n)}$ is bounded by its minimising property of the coercive functional, so
-limit and integral can be interchanged in the second integral. We add the zero
-to the first term:
-\begin{align*}
-\int_0^1 u_t^{(n)}(q_t^{(n)}) -  u_t(q_t)\diff{t} = 
-\int_0^1 u_t^{(n)}(q_t^{(n)}) - u_t^{(n)}(q_t) + u_t^{(n)}(q_t) - u_t(q_t)\diff{t}
-\end{align*}
-By a similar argument as before we obtain 
-\[
-\int_0^1 u_t^{(n)}(q_t) - u_t(q_t)\diff{t} \rightarrow 0
-\]
-since the integrands are bounded in $\vnorm{\cdot}$ (also point-wise since $V$
-embeds into the space of continuous functions \cite{something}). This continuity
-also implies convergence of the first term and hence $q_t^{(n)} -
-q_t\rightharpoonup 0$.
-
-\textbf{$\longrightarrow$ Show that the constrained problem of
-\eqref{pbm:nonlinear_inner} (where we include the velocity!) has a E\&U}
-
-\textbf{$\longrightarrow$ Now prove E\&U for the original problem:}\\
-
-The original problem is therefore a relaxation of the constrained problem, so we
-must check that there does not exist a minimiser to the original problem that is
-\emph{NOT} equation to the minimiser of the constrained problem. Assume
-therefore that there exists a unique solution to the original problem different
-from the one obtained from the constrained one. Then we arrive at a
-contradiction because this unique solution must satisfy
-\eqref{pbm:nonlinear_inner} - which is invertible - so the minimisers coincide.
-We have therefore proved the following:
-
-\begin{theorem}[Existence]
-Assumption \ref{assumption:nu_bounded} implies that the problem
-\eqref{pbl:reformulation} attains its infimum.
-{\hfill $\square$}
-\end{theorem}
-
-\begin{remark}[Uniqueness]
-It is clear that uniqueness is not obtained, as symmetries can elicit several
-local minima.
-\end{remark}
 
 In this paper we are concerned only with
 landmarks, so we can write the Lagrangian in terms of the state variables $\hat
@@ -324,8 +270,9 @@ where supercripts denote the landmark index.
 
 Extremising the action $S$ we obtain the equations: 
 \begin{align}\label{pq:optimality}
-\dot p_i & =\frac12 \sum_j \nabla K(q_i,q_j)p_i\cdot p_j  + \frac12 |p_i|^2 \nabla \nu(q_i)\\
-\dot q_i & = \sum_j K(q_i,q_j)p_i + \nu(q_i)p_i\, . 
+& \dot p_i =\frac12 \sum_j \nabla K(q_i,q_j)p_i\cdot p_j  + \frac12 |p_i|^2 \nabla \nu(q_i)\\
+& \dot q_i = \sum_j K(q_i,q_j)p_i + \nu(q_i)p_i\\
+& q_0,\,q_1\text{ fixed}
 \end{align}
 
 \begin{theorem}[Optimality Conditions]
