@@ -16,8 +16,8 @@ maxiter = 5000  # shooting
 beta = 0.2
 q1_tolerance = 1e-01  # allow for slight mismatch owing to numerics
 
-def run_mcmc(q0, q1, test_name, num_samples):
-    log_freq = num_samples // 10
+def run_mcmc(q0, q1, test_name, num_samples, num_nus=1):
+    log_freq = num_samples // min(10, num_samples)
 
     # kernel parameters
     sigma    = 0.7
@@ -30,8 +30,8 @@ def run_mcmc(q0, q1, test_name, num_samples):
     SIGMA = theano.shared(np.array(sigma).astype(theano.config.floatX))
     # radius of the landmark
     SIGMA_NU = theano.shared(np.array(sigma_nu).astype(theano.config.floatX))
-    # initialise '\nu' centroid
-    NU  = theano.shared(np.zeros([1,2])).astype(theano.config.floatX)
+    # initialise '\nu' centroid(s)
+    NU  = theano.shared(np.zeros([num_nus, DIM])).astype(theano.config.floatX)
 
     q1_theano = theano.shared(np.zeros([N.eval(), DIM]).astype(theano.config.floatX))
     q1_theano.set_value(q1.astype(theano.config.floatX))
@@ -128,9 +128,12 @@ def run_mcmc(q0, q1, test_name, num_samples):
         return minimize(fopts, p0.flatten(), method='L-BFGS-B', jac=True,
             options={'disp': False, 'maxiter': maxiter})
 
-    def solve_mm(nu):
-        nx, ny = nu
-        NU.set_value([[nx, ny],])
+    def solve_mm(nus):
+        nu_vals = []
+        for nu in nus:
+            nx, ny = nu
+            nu_vals.append([nx, ny])
+        NU.set_value(nu_vals)
 
         res = shoot(q0,p0)
         xs = simf(np.array([q0, res.x.reshape([N.eval(),
@@ -155,17 +158,22 @@ def run_mcmc(q0, q1, test_name, num_samples):
     x_max = max(np.max(q0[:, 0]), np.max(q1[:, 0]))
     y_max = max(np.max(q0[:, 1]), np.max(q1[:, 1]))
 
-    def periodic(v, v_min, v_max):
-        if v < v_min:
-            return v_max + (v - v_min)
-        elif v > v_max:
-            return v_min + (v - v_max)
-        else:
-            return v
+    def periodic(vs, v_min, v_max):
+        res = []
+        for v in vs:
+            if v < v_min:
+                res.append(v_max + (v - v_min))
+            elif v > v_max:
+                res.append(v_min + (v - v_max))
+            else:
+                res.append(v)
+        return res
 
-    def propose_center(center):
-        x, y = center + beta * np.random.normal(size=2)
-        return np.array([periodic(x, x_min, x_max), periodic(y, y_min, y_max)])
+    def propose_center(centers):
+        c = centers + beta * np.random.normal(size=centers.shape)
+        x, y = c[:, 0], c[:, 1]
+        px, py = periodic(x, x_min, x_max), periodic(y, y_min, y_max)
+        return np.dstack((px, py))[0]
 
     def acceptance_prob(h, h_prop):
         if shoot_success:
@@ -181,12 +189,14 @@ def run_mcmc(q0, q1, test_name, num_samples):
     print("Running MCMC with {} samples...".format(num_samples))
 
     # initial guess
-    center = np.array([np.random.uniform(low=x_min, high=x_max),
-                       np.random.uniform(low=y_min, high=y_max)])
-    _, fnl, shoot_success = solve_mm(center)
+    center_x = np.random.uniform(low=x_min, high=x_max, size=num_nus)
+    center_y = np.random.uniform(low=y_min, high=y_max, size=num_nus)
+
+    centers = np.dstack((center_x, center_y))[0]
+    _, fnl, shoot_success = solve_mm(centers)
 
     fnls = [] # to store all the functional values
-    c_samples = [center]
+    c_samples = [centers]
     num_accepted = 0
     solver_failures = 0
 
@@ -194,7 +204,7 @@ def run_mcmc(q0, q1, test_name, num_samples):
         msg = "Iteration {}".format(i + 1)
 
         # compute proposal
-        center_prop = propose_center(center)
+        center_prop = propose_center(centers)
         msg += "\n\t proposal   = {}".format(center_prop)
 
         xs_prop, fnl_prop, shoot_success = solve_mm(center_prop)
@@ -211,7 +221,7 @@ def run_mcmc(q0, q1, test_name, num_samples):
             num_accepted += 1
 
             # update
-            center = center_prop
+            centers = center_prop
             fnl = fnl_prop
 
             # save MAP estimators
@@ -229,7 +239,7 @@ def run_mcmc(q0, q1, test_name, num_samples):
             plot_q(x0, xs_prop, num_landmarks, log_dir + 'sample_{}'.format(i))
 
         fnls.append(fnl)
-        c_samples.append(center)
+        c_samples.append(centers)
 
         # flush message buffer
         msg += "\n\t functional = {}".format(fnl)
@@ -251,11 +261,11 @@ def run_mcmc(q0, q1, test_name, num_samples):
 
     # save MAP estimators
     fh.write("MAP estimators functional evaluation:\n")
-    for me, val in zip(map_estimators, map_estimators_vals):
+    for j, (me, val) in enumerate(zip(map_estimators, map_estimators_vals)):
         if me:
             # log and plot this MAP estimator
-            fh.write("\t Functional = {} with center {}\n".format(val, me.center))
-            name = 'MAP_center={}'.format(me.center)
+            fh.write("\t Functional = {} with center {}\n".format(val, me.centers))
+            name = 'MAP_center_{}'.format(j)
             plot_q(x0, me.xs, num_landmarks, log_dir + name)
 
             # serialise too because we can

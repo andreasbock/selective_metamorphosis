@@ -124,9 +124,9 @@ def plot_target(q0, q1, fname=None):
         plt.show()
 
 class map_estimator():
-    def __init__(self, xs, center):
+    def __init__(self, xs, centers):
         self.xs = np.copy(xs)
-        self.center = center
+        self.centers = centers
 
 def trace_plot(fnls, log_dir):
     plt.figure()
@@ -136,15 +136,19 @@ def trace_plot(fnls, log_dir):
     plt.savefig(log_dir + 'functional_traceplot.pdf')
 
 def centroid_plot(c_samples, log_dir):
+    cs = np.array(c_samples)[:, 0, :]
+    cx, cy = cs[:, 0], cs[:, 1]
+
     plt.figure()
     plt.xlabel('Iteration')
     plt.ylabel('Centroid position')
-    cx, cy = zip(*c_samples)
     plt.plot(cx, cy, 'go-', alpha=0.3)
     plt.savefig(log_dir + 'centroid_evolution.pdf')
 
 def centroid_heatmap(c_samples, log_dir):
-    cx, cy = zip(*c_samples)
+    cs = np.array(c_samples)[:, 0, :]
+    cx, cy = cs[:, 0], cs[:, 1]
+
     plt.figure()
     plt.hist2d(cx, cy, bins=len(cy))
     plt.xlabel('$x$-coordinate')
@@ -155,12 +159,12 @@ def centroid_heatmap(c_samples, log_dir):
 def sample_autocov(k, m):
     # number of samples
     n = np.shape(m)[0]
-    mu = np.mean(m)
 
     # compute autocov
     est = 0
     for i in range(n - k):
-        est += np.dot(m[i + k] - mu, m[i] - mu)
+        est += np.dot(m[i + k, 0, :], m[i, 0, :])
+        est += np.dot(m[i + k, 1, :], m[i, 1, :])
 
     return est / n
 
@@ -169,8 +173,11 @@ def plot_autocorr(c_samples, fname):
     num = 100
     lags = np.linspace(0, len(c_samples), num, dtype=int)
 
-    ac = lambda k: sample_autocov(k, c_samples)
-    acf = list(map(ac, lags)) / sample_autocov(0, c_samples)
+    c_samples_np = np.array(c_samples)
+    mean = np.mean(c_samples_np, axis=0)
+
+    ac = lambda k: sample_autocov(k, c_samples_np - mean)
+    acf = list(map(ac, lags)) / sample_autocov(0, c_samples_np - mean)
 
     plt.plot(lags, acf, 'r.-')
     plt.xlabel('Lag')
