@@ -51,6 +51,7 @@
 \title{MCMC for selective metamorphosis with applications to landmarks}
 \author{Andreas, Alexis and Colin}
 \maketitle
+\tableofcontents
 \section{Introduction}
 
 In this paper we consider a generalisation of the classical metamorphosis
@@ -67,7 +68,7 @@ Euler-Lagrange equations for the associated matching functional. Next, section
 \ref{sec:bayesian} formalises the Bayesian framework for this problem. This is
 then evaluated in section \ref{sec:numerical}.
 
-\subsection{Background}\label{sec:bg}
+\section{Background}\label{sec:bg}
 
 In this paper we are concerned with diffeomorphometric approaches to image and
 shape matching. One of the central pillars on which this field relies is the
@@ -152,7 +153,7 @@ time):
 
 \textbf{$\longrightarrow$ Insert segue and motivation for next section here}
 
-\subsection{Selective Metamorphosis}\label{sec:select_mm}
+\section{Selective Metamorphosis}\label{sec:select_mm}
 
 This work aims to place a Bayesian framework on this model in such a way to
 allow control of \emph{where} in the domain $\Rd$ to allow transgression of the
@@ -171,7 +172,7 @@ goal of this work is to infer the unknown function $\nu$ so as to gather
 information about where in the spatial domain we are most likely to observe
 metamorphic behaviour via a Bayesian framework as in \cite{dashti2017bayesian}.
 
-\begin{remark}[Choice of the form of $\nu$]
+\begin{remark}[Choice of the form of $\nu$]\label{remark:nu}
 Taking e.g. $\nu(\cdot) = \sum_k \exp(-h(\cdot))$ for some function $h>0$ we
 explicitly state at which locations in space we allow non-diffeomorphic
 evolution, because when $\nu$ goes to zero we observe classical smooth dynamics
@@ -283,56 +284,80 @@ There exists a unique (? )solution $u, q, z$ to this system.
 This will give more conditions on $\nu$, like $\nu(x) \in C^{1}(\mathbb R^2)$. 
 \end{theorem}
 
-\subsection{Bayesian Framework}\label{sec:bayesian}
+\section{Bayesian Framework}\label{sec:bayesian}
 
 We now place a stochastic model on $\nu$, the purpose of which depends on its
-definition. First we present some preliminaries on the Bayesian approach to
-inverse problems. We rely heavily on the results of \cite{dashti2017bayesian}.
-See also (the one by SL Cotter).\\
+definition as mentioned in remark \eqref{remark:nu}. The goal is to develop an
+algorithm to infer $\nu$, passing via the deterministic problem seen above.\\
 
+First we present some preliminaries on the Bayesian approach to inverse problems
+in section \ref{subs:gf}, essentially quoting results from
+\cite{dashti2017bayesian}.  See also \cite{cotter2013mcmc} for an exposition of
+algorithmic aspects of function space MCMC. Section \ref{subs:finite-dim-param}
+then describes how we apply this stochastic approach to inverse problems to
+$\nu$ by a finite-dimensional family of parameterisations.
+
+\subsection{General Framework}\label{subs:gf}
 % General setting
-Our setting is the following. Consider a potential $\Phi(y)$ 
+Our setting is the following. Given an inverse problem
+
+$\min\quad J$\\
+
+we formally define a centered Gaussian distribution, denoted $N(0, B)$ over this
+space of functions defined up to a constant by the density
+\[
+\mu_0 = e^{-J}
+\]
+
+In general, for inverse problems on function space, several key properties
+documented in \cite{something} must be verified before the inverse-problem is
+well-posed. Beyond showing existence of the MAP estimator extremising $J$ above,
+the infinite-dimensional version of Bayes' rule must also be check i.e. the
+Radon-Nikodym derivative of the prior with respect to the posterior must exist
+and be absolutely continuous. Finally, we request continuity of the posterior
+distribution w.r.t the initial data corresponding in a sense to Hadamard
+well-posedness in a stochastic framework. Proceeding bona fide we therefore have
+the key ingredients necessary to define a pCN MCMC algorithm:
+\begin{enumerate}
+\item Sample a function.
+\item $f^{k+1} = \alpha f^k + (1-\alpha) f^k$
+\item accept/reject..
+\end{enumerate}
+
+\textbf{$\longrightarrow$ Finish}\\
+
+% Talk about our problem
+\subsection{Finite-dimensional Parameterisation}\label{subs:finite-dim-param}
 
 We now introduce the main problem of this paper in the setting above. We
 consider $\nu$ as a random variable, indeed a random \emph{function}, occupying
-some space yet to be determined. The \\
-
-Indeed, if $\nu$ is set as some kind of exponential, then we
-see that 
-the purpose of which is to infer at
-which points in the spatial domain it is most likely to allow metamorphosis.
-%
-%This is an appropriate framework because if the lack of uniqueness lends a
-%qualitative evaluation of what 'solves the optimisation problem'.
-
-\begin{equation}\label{finite_dim_nu}
-	\nu(x) = \sum_k^N a_k \nu_k(x)
+some space yet to be determined. This is an appropriate framework because if the
+lack of uniqueness allows for a qualitative evaluation of a solution to
+selective metamorphosis. In this paper we consider the case where $\nu$ is given
+by a sum of exponentials:
+\begin{equation}
+    \nu_h (x) \triangleq \sum_k e^{-\|h_k - x\|_{\Rd}^2}
 \end{equation}
-for a basis $(\nu_k)_{k=0}^\infty$ of $\mathcal D \in \mathbb R^2$, truncated at $k=N$.  
+Here the finite family $h_k$ of centroids in $\Rd$ fully determine $\nu_h$, thus
+greatly reducing the complexity of sampling.
 
 \begin{align}
 	\Phi(a_k) = S(\nu,q_0,q_1) + |\nu|_V^2
 \end{align}
-where, for example $ V = {L_2(\mathcal D)}$. 
-
-\begin{itemize}
-	\item MAP exists
-	\item Radon-Nikodyn derivative exists
-	\item Continuity of the posterior w.r.t the initial data 
-\end{itemize}
+where, for example $ V = {L_2(\mathcal D)}$.
 
 \newcommand{\mhsample}{\textsc{sampleCentroid}}
 \newcommand{\acceptprob}{\textsc{acceptanceProbability}}
 
 \begin{algorithm}[h!]
 \begin{algorithmic}
-\caption{Quasi-MCMC on $\nu$}\label{algo:mcmc}
+\caption{MCMC on $\nu$}\label{algo:mcmc}
 \Procedure{quasiMCMC}{$N$}
 \State $k \gets 0$
 \State $\nu^k \gets \text{ some initial guess}$
 \While{$k < N$}
 \State $\nu \gets \mhsample ()$\hspace{3cm} \textbf{\# sample a new centroid}
-\State $(q, z, u) \gets solveMetamorphosis()$
+\State $(q, z, u) \gets $
 \If {\textsc{randomUnit()}$\,< \acceptprob(q, z)$}
     \State do update
 \Else
@@ -362,7 +387,7 @@ easily implemented procedure (cite) below
 
 \textbf{$\longrightarrow$ Something about adjoints here}\\
 
-\subsection{Selective Metamorphosis for Landmarks}\label{sec:numerical}
+\section{Selective Metamorphosis for Landmarks}\label{sec:numerical}
 
 This penultimate section displays some numerical results for our method. First,
 as a proof of concept 
@@ -378,11 +403,7 @@ as a proof of concept
 As we have seen in figure \ref{fig:classic_mm}, classic metamorphosis is an
 appropriate model for non-diffeomorphic matching. We now evaluate our stochastic
 model described in algorithm \ref{algo:mcmc} to the landmark configurations in
-\ref{fig:classic_mm}. For the pinching and crossing geodesics, figure X and Y,
-we consider the simplest case where we can parameterise $\nu$ by a finite family
-$h_k$ of fields in $\Rd$. We denote these the \textit{centroids}. Specifically,
-we define \begin{equation} \nu_h (x) \triangleq \sum_k e^{-\|h_k - x\|_{\Rd}^2}
-\end{equation}
+\ref{fig:classic_mm}.
 
 \begin{figure}
 \centering
@@ -482,7 +503,7 @@ collapse and hole creation for the landmarks.\\
 We note that the source code for all of these experiments is documented
 here (insert link to github.io). 
 
-\subsection{Outlook}\label{sec:outlook}
+\section{Outlook}\label{sec:outlook}
 Another choice is 
 \begin{align}
     l(q,p) = \|u\|_B^2 + \sum_i p_i\cdot \nu(q_i) \, , 
@@ -493,10 +514,13 @@ where $\nu:\mathbb R^2 \to \mathbb R^2$, which will give more freedom on the met
     \dot q &= u(q_i) + \nu(q_i) 
 \end{align}
 
+Natural extensions of this work include fully determining e.g. the Fourier modes
+of $\nu$ via the stochastic framework.\\
+
 Future work also includes extending this framework to images e.g. using the
 kernel framework in \cite{richardson2016metamorphosis}, or developing a
 space-time method. Formalising the measure-theory necessary to consider the
-limit of \eqref{finite_dim_nu} as $k\rightarrow\infty$.
+limit of \eqref{finite_dim_nu} as $k\rightarrow\infty$.\\
 
 Moreover, adding a time-dependency to $\nu$ is also to be
 explored. It is our hope that we can extend the theory developed here to
