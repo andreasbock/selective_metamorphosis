@@ -12,12 +12,11 @@
 #PBS -m ae
 #PBS -M andreas.bock15@imperial.ac.uk
  
-# NB: This assumes you have pulled this repository to your home directory!
 TEST_NUM=0
-NUM_SAMPLES=10
-NUM_LANDMARKS=4
+NUM_SAMPLES=5000
+NUM_LANDMARKS=10
 NUM_NUS=1
-LOGDIR='test_$TESTNUM'
+LOGDIR='results_criss_cross'
  
 echo Working Directory is $PBS_O_WORKDIR
 cd $PBS_O_WORKDIR

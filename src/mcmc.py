@@ -147,10 +147,9 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
         match_success = np.linalg.norm(xs[-1,0] - q1) < q1_tolerance
         return xs, h, res.success and match_success
 
-    if log_dir is None:
-        log_dir = '../tex/mcmc_results/' + test_name + '/'
-    else:
-        log_dir += test_name + '/'
+    if log_dir is None:  # running locally
+        log_dir = '../tex/mcmc_results/' + test_name
+    log_dir += '/'
 
     import os
     if not os.path.exists(log_dir):
