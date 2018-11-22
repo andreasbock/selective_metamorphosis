@@ -157,22 +157,14 @@ def centroid_heatmap(c_samples, log_dir):
     plt.savefig(log_dir + 'centroid_heat.pdf')
 
 def sample_autocov(k, m):
-    # number of samples
-    n = m.shape[0]
-
-    # compute autocov
+    num_samples, num_kernels, _ = m.shape
     est = 0
-    for i in range(n - k):
-        if len(m.shape) > 2:
-            est += np.dot(m[i + k, 0, :], m[i, 0, :])
-            est += np.dot(m[i + k, 1, :], m[i, 1, :])
-        else:
-            est += np.dot(m[i + k], m[i, 1])
-
-    return est / n
+    for i in range(num_samples - k):  # for each sample
+        for j in range(num_kernels):  # for each kernel in \nu
+            est += np.dot(m[i + k, j, :], m[i, j, :])
+    return est / num_samples
 
 def plot_autocorr(c_samples, fname):
-    plt.figure()
     num = 100
     lags = np.linspace(0, len(c_samples), num, dtype=int)
 
@@ -182,6 +174,7 @@ def plot_autocorr(c_samples, fname):
     ac = lambda k: sample_autocov(k, c_samples_np - mean)
     acf = list(map(ac, lags)) / sample_autocov(0, c_samples_np - mean)
 
+    plt.figure()
     plt.plot(lags, acf, 'r.-')
     plt.xlabel('Lag')
     plt.ylabel('Sample autocorrelation')
