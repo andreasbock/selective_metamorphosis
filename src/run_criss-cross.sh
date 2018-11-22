@@ -1,6 +1,6 @@
 #!/bin/bash
 # Job name
-#PBS -N run_mcmc
+#PBS -N run_mcmc_criss_cross
 # Time required in hh:mm:ss
 #PBS -l walltime=72:00:00
 # Resource requirements
