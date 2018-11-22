@@ -1,0 +1,8 @@
+name=selec_mm
+
+all:
+	pdflatex ${name}.tex
+	bibtex ${name}
+	pdflatex ${name}.tex
+	pdflatex ${name}.tex
+	#dvipdf ${name}.dvi

@@ -85,13 +85,32 @@ Indeed, even for if we allow inexact matching in LDDMM, the image deformation wi
 The incertainty comes from the fact that for inexact matching, several almost trajectories of deformations can be computed, but with different energies.  
 Introducing the metamorphosis parameter $\sigma^2$ will stabilize this matching problem at the cost of breaking the diffeomorphic property on the whole image, or shape, and at all time in the deformation. 
 
-In this work, we modify the original metamorphosis problem to include an image dependent metamorphosis parameter $\nu(x)$ in order to obtain an almost diffeomorphic matching, but without the energy or inexact matching problem. 
+In this work, we modify the original metamorphosis problem to include an image dependent metamorphosis parameter $\nu(x)$ in order to obtain an almost diffeomorphic matching, but without the energy or inexact matching problem, see figure \ref{fig:mm_lddmm}. 
 If $\nu(x) = \sigma^2$, our theory will reduces to the standard metamorphosis model, but with a localised $\nu(x)$, we can selectively introduce metamorphosis on an image and model local topological effects, such as hole creation or annihilation. 
 The difficulty of this problem is to infer the function $\nu(x)$ without a priory knowledge of the location of the topological effects. 
 We will use a Markov chain approach to infer good functions $\nu(x)$, such that the topological effects are well described and a large part of the matching remains diffeomorphic. 
 For this paper, we will focus on landmark matching, but the theory of selective metamorphosis can be extended to any data structures that the classical metamorphosis of LDDMM theory can handle, see {\color{red} cite next paper in preparation!}. 
 
 
+\begin{figure}
+\centering
+\begin{minipage}{\textwidth}
+  \centering
+    \includegraphics[width=.3\textwidth]{../src/vanilla_results/lddmm/lddmm_criss_cross.pdf}\quad
+    \includegraphics[width=.3\textwidth]{../src/vanilla_results/lddmm/lddmm_squeeze.pdf}\quad
+    \includegraphics[width=.3\textwidth]{../src/vanilla_results/lddmm/lddmm_triangle_flip.pdf}\\[0.25cm]
+    \includegraphics[width=.3\textwidth]{../src/vanilla_results/mm/mm_criss_cross.pdf}\quad
+    \includegraphics[width=.3\textwidth]{../src/vanilla_results/mm/mm_squeeze.pdf}\quad
+    \includegraphics[width=.3\textwidth]{../src/vanilla_results/mm/mm_triangle_flip.pdf}\\[0.25cm]
+    \includegraphics[width=.3\textwidth]{../src/vanilla_results/mm/mm_criss_cross.pdf}\quad
+    \includegraphics[width=.3\textwidth]{../src/vanilla_results/mm/mm_squeeze.pdf}\quad
+    \includegraphics[width=.3\textwidth]{../src/vanilla_results/mm/mm_triangle_flip.pdf}
+    \caption{This figures illustrates landmark matching with classical LDDMM (top row), metamorphosis (bottom row) and selective metamorphosis (middle row). 
+      We chose difficult matching for LDDMM, and we observe unrealistic landmark trajectories, with large resulting energies, or distances, whereas the metamorphosis  matching results in a more realistic landmark trajectories. 
+      The selective metamorphosis has the extra advantage of only breaking the diffeomorphic property where needed in along the matching, thus preserving more of the desired diffeomorphic property of the matching. {\color{red} Add the middle row with position of $\nu$ fields as crosses, and value of the energy functional for each (larger for top and middle row)}}
+    \label{fig:mm_lddmm}
+\end{minipage}
+\end{figure}
 
 %In this paper we consider a generalisation of the classical metamorphosis
 %problem. The purpose of this work is to allow singular control where
@@ -112,100 +131,130 @@ observation made by Arnold '66 (cite) that, under certain conditions, a
 time-dependent velocity field $u$ occupying some Hilbert space $u_t \in V$
 induces a curve on a subgroup $G_V$ of diffeomorphisms \cite{younes2010shapes}
 via the following ordinary differential
-equation:
-%\begin{subequations}
+equation
 \begin{align}
-& \dot{\varphi_t} = u_t \circ \varphi_t\\
-& \varphi_0 = \text{id}
+& \dot{\varphi_t} = u_t \circ \varphi_t\, , \qquad  \varphi_0 = \text{id}
   \label{diffeo}
 \end{align}
-%\end{subequations}
-with $\varphi_t \in G_V$, $\forall t$. This allows for the mathematical
-(Lagrangian) description of flows on shape and shape spaces with a rich
-literature of applications (cite theory + applications). A unifying property of
-these is to use \eqref{diffeo} in defining an optimisation problem:
-\[
-\min_{t \mapsto \varphi_t} \int_0^1 \half\vnorm{u_t}^2 \diff{t} + \half S(q_0\circ\varphi_1, q_1)
-\]
-where $S$ denotes a similarity measure and $q_j$, $j=0,1$.
-
-However deformations of manifolds $q_j$ by members of $G_B$ must obey a certain
-smoothness, which is ill-suited for arbitrary manifolds e.g. topologically
-different ones.
-
-Moreover, metamorphosis is a generalisation thereof and provides more robust
-model for performing shape deformation.
-
-\textbf{$\longrightarrow$ Insert more background here}\\
-
-In the following we let $H$ denote a vector space taking values in $\Rd$ to be determined later.
-Observe the classical landmark metamorphosis problem:
-%\begin{subequations}
+with $\varphi_t \in G_V$, $\forall t$ and $u_t$ is a time-dependent vector field, obtained as a solution of optimisation  
 \begin{align}
-\inf_{\substack{u\in L^1([0,1],V)\\q,\, z \in C^1([0,1], H)}} & S = \int_0^1
-l(u_t, q_t, z_t)\diff{t}\\
-    & \dot{q_t} = u_t \circ q_t + z_t \\
-    & q_0,\,q_1\text{ fixed}
+  E(u_t) = \min_{\hat u_t} \int_0^1 \half\vnorm{\hat u_t}^2 \diff{t} + \frac{1}{\lambda} S(I_0\circ\varphi_1, I_1)\, , 
+  \label{E-def}
 \end{align}
-%\end{subequations}
+where $S$ denotes a similarity measure between the deformed initial image $I_0\circ \varphi_1$ and the target image $I_1$ to allow inexact matching parametrised by $\lambda$.  
+In the sequel, we will set $\lambda=0$ such that we only consider exact matching, the hardest problem to solve, especially for images non-topologically equivalent, as discussed in the introduction, see also Fig. \ref{fig:mm_lddmm}.
 
-with $l(u, q, z) = \half \vnorm{u}^2 + \frac{\sigma^2}2 \ltwonorm{z}^2$ and
-where the boundary conditions $q_0,\,q_1 \in \RdM$ denotes the landmarks for
-time $j=0,\,1$.  $\sigma$ is a parameter controlling the trade-off between the
-diffeometric and metamorphosis terms. In LDDMM, the equations are the same but
-the boundary conditions are different.  In particular, $q_1$ is not fixed, but
-an initial momentum, $p_0$, is imposed to close the system. As we see in figure
-\ref{fig:mm_lddmm}, these frameworks lead to different results. Our goal here is
-to provide an approach that allows selective delivery of a mix between the
-purely diffeomorphic LDDMM approach and the metamorphic matching.
 
-\begin{figure}
-\centering
-\begin{minipage}{\textwidth}
-  \centering
-    \includegraphics[width=.3\textwidth]{mm/mm_criss_cross.pdf}\quad
-    %\includegraphics[width=.2\textwidth]{mm/mm_pringle.pdf}\quad
-    \includegraphics[width=.3\textwidth]{mm/mm_squeeze.pdf}\quad
-    \includegraphics[width=.3\textwidth]{mm/mm_triangle_flip.pdf}\\[0.25cm]
-    \includegraphics[width=.3\textwidth]{lddmm/lddmm_criss_cross.pdf}\quad
-    %\includegraphics[width=.2\textwidth]{lddmm/lddmm_pringle.pdf}\quad
-    \includegraphics[width=.3\textwidth]{lddmm/lddmm_squeeze.pdf}\quad
-    \includegraphics[width=.3\textwidth]{lddmm/lddmm_triangle_flip.pdf}
-    %\subcaption{.}
-    \caption{Metamorphosis (top) and LDDMM (bottom).}
-    \label{fig:mm_lddmm}
-\end{minipage}
-\end{figure}
+%However deformations of manifolds $q_j$ by members of $G_B$ must obey a certain
+%smoothness, which is ill-suited for arbitrary manifolds e.g. topologically
+%different ones.
 
-For landmarks, the velocity field is explicitly expressed in terms of the
-momentum and landmarks positions, resulting in a boundary value problem (in
-time):
-%\begin{subequations}
+%Moreover, metamorphosis is a generalisation thereof and provides more robust
+%model for performing shape deformation.
+
+%\textbf{$\longrightarrow$ Insert more background here}\\
+
+%In the following we let $H$ denote a vector space taking values in $\Rd$ to be determined later.
+%Observe the classical landmark metamorphosis problem:
+
+
+In order to simplify the exposition, we will consider singular solutions of this problem, which are given by 
 \begin{align}
-& \dot{q_t} = u(q_t)\\
-& \dot{p_t} = - \nabla u(q_t)^T p_t\\
-& q_0,\,q_1\text{ fixed}
+  \frac{\delta l}{\delta u} = m(x) = \sum_i p_i \delta(x-q_i)\,, 
 \end{align}
+for $N$ landmarks with position $q_i\in \mathbb R^2 $ and momenta $p_i \in \mathbb R^2$. 
+The vector field is thus 
+\begin{align}
+  u(x) = \sum_i p_i K(x-q_i)\,, 
+  \label{u-def}
+\end{align}
+where $K:\mathbb R^2\times \mathbb R^2\to \mathbb R$ is the kernel associated to the norm $\|\cdot \|_V$. 
+
+For metamorphosis, we introduce a discrete template variable $\boldsymbol \eta_t$ such that the deformation of a set of landmarks is $\mathbf q_t = \varphi_t \boldsymbol \eta_t$. 
+Then, we can define the template velocity as $\mathbf z = \varphi_t \dot {\boldsymbol \eta}$ and extend the energy \eqref{E-def} to 
+\begin{align}
+  \begin{split}
+    E_m(u_t,\mathbf z) =\min_{\hat u_t, \hat{\mathbf z}} & \int_0^1
+    \half  \left (\vnorm{\hat u_t}^2 + \frac{1}{\sigma^2} \sum_i |\hat{z_i}|^2\right )\diff{t}
+  \end{split}
+  \label{E_m-def}
+\end{align}
+where now the reconstruction relation is 
+\begin{align}
+    \dot{\mathbf q_t} = u_t (\mathbf q_t) + \mathbf z_t\, , 
+    \label{dq-m}
+\end{align}
+obtained from the definition of $z$ and $u$, see \cite{?}. 
+ before, the boundary conditions are given on the positions $\mathbf q(0)$ and $\mathbf q(1)$, but we now have an extra term in the energy and the reconstruction equation \eqref{dq-m}. 
+
+By taking variations carefully, see again \cite{?}, we directly obtain 
+\begin{align}
+  m(x) = \frac{1}{\sigma^2} \sum_i z_i\delta(x-q_i)\qquad \Rightarrow \qquad  z_i = \sigma^2 p_i\, , 
+\end{align}
+and the equation of motions are
+\begin{align}
+  \begin{split}
+  \dot{\mathbf p_t} &= - \nabla u_t(\mathbf q_t)^T \mathbf p_t\\ 
+  \dot{\mathbf q_t} &= u_t(\mathbf q_t) +  \sigma^2\mathbf p_t \,,
+  \end{split}
+  \label{eq-m-classic}
+\end{align}
+where $u_t$ is defined in \eqref{u-def}. 
+
+ %$\sigma$ is a parameter controlling the trade-off between the
+%diffeometric and metamorphosis terms. 
+%In LDDMM, the equations are the same but
+%the boundary conditions are different.  In particular, $q_1$ is not fixed, but
+%an initial momentum, $p_0$, is imposed to close the system. As we see in figure
+%\ref{fig:mm_lddmm}, these frameworks lead to different results. Our goal here is
+%to provide an approach that allows selective delivery of a mix between the
+%purely diffeomorphic LDDMM approach and the metamorphic matching.
+
+
+%For landmarks, the velocity field is explicitly expressed in terms of the
+%momentum and landmarks positions, resulting in a boundary value problem (in
+%time):
+%\begin{subequations}
+%\begin{align}
+%& \dot{q_t} = u(q_t)\\
+%& \dot{p_t} = - \nabla u(q_t)^T p_t\\
+%& q_0,\,q_1\text{ fixed}
+%\end{align}
 %\end{subequations}
 
-\textbf{$\longrightarrow$ Insert segue and motivation for next section here}
+%\textbf{$\longrightarrow$ Insert segue and motivation for next section here}
 
 \section{Selective Metamorphosis}\label{sec:select_mm}
 
-This work aims to place a Bayesian framework on this model in such a way to
-allow control of \emph{where} in the domain $\Rd$ to allow transgression of the
-usual diffeomorphic constraint $\dot{q_t} = u\circ q_t$. If $\nu=0$, we recover
-standard landmark dynamics, if $\nu(x)=\sigma^2$ is a constant, we recover the
-classic landmark metamorphosis. That is to say, augmenting the Lagrangian to
-constrain metamorphic transformations only in areas of the domain that
-correspond to e.g. anatomically interesting places.  This can be expressed
-mathematically by changing the Lagrangian above to:
-\[
-\hat l(u, q, p) = \half\vnorm{u}^2 + \half\sum_i \nu(q_i)|p_i|^2
-\]
 
-where $\Rd\ni x\mapsto\nu (x)$ takes non-negative values in $\mathbb R$. The
-goal of this work is to infer the unknown function $\nu$ so as to gather
+We can now extend the metamorphosis setting to allow a control of where in the domain $\Rd$ 
+we allow transgression of the diffeomorphic constraint $\dot{q_t} = u\circ q_t$. 
+For this, we introduce a positive smooth bounded function $\nu: \mathbb R^2\to \mathbb R$, with $\mathrm{max}(\nu) = \nu_m$ which will replace the parameter $\sigma^2$ such that of $\nu(x)=\sigma^2$, we will recover the
+classic landmark metamorphosis. 
+We thus choose the energy functional to be
+\begin{align}
+  \begin{split}
+    E_{sm}(u_t,\mathbf z) =\min_{\hat u_t, \hat{\mathbf z}} & \int_0^1
+    \half  \left (\vnorm{\hat u_t}^2 +\sum_i \frac{1}{\nu(q_i)} |\hat{z_i}|^2\right )\diff{t}
+  \end{split}
+  \label{E_sm-def}
+\end{align}
+and we have, as before that
+\begin{align}
+  m(x) =  \sum_i \frac{1}{\nu(q_i)} z_i\delta(x-q_i)\qquad \Rightarrow \qquad  z_i = \nu(q_i) p_i\, , 
+\end{align}
+which yields the selective metarmorphosis equations for landmarks as
+\begin{align}
+  \begin{split}
+  \dot{\mathbf p_t} &= - \nabla u_t(\mathbf q_t)^T \mathbf p_t + \sum_i \nabla \nu(q_i) |p_i|^2\\ 
+  \dot{\mathbf q_t} &= u_t(\mathbf q_t) +  \nu(q_i)\mathbf p_t \,.
+  \end{split}
+  \label{eq-m-classic}
+\end{align}
+
+
+{\color{red} I AM HERE}
+The goal of this work is to infer the unknown function $\nu$ so as to gather
 information about where in the spatial domain we are most likely to observe
 metamorphic behaviour via a Bayesian framework as in \cite{dashti2017bayesian}.
 
