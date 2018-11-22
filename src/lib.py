@@ -158,13 +158,16 @@ def centroid_heatmap(c_samples, log_dir):
 
 def sample_autocov(k, m):
     # number of samples
-    n = np.shape(m)[0]
+    n = m.shape[0]
 
     # compute autocov
     est = 0
     for i in range(n - k):
-        est += np.dot(m[i + k, 0, :], m[i, 0, :])
-        est += np.dot(m[i + k, 1, :], m[i, 1, :])
+        if len(m.shape) > 2:
+            est += np.dot(m[i + k, 0, :], m[i, 0, :])
+            est += np.dot(m[i + k, 1, :], m[i, 1, :])
+        else:
+            est += np.dot(m[i + k], m[i, 1])
 
     return est / n
 
