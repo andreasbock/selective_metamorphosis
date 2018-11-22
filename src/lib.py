@@ -194,14 +194,18 @@ def fnl_histogram(fnls, fname):
     plt.grid(linestyle='dotted')
     plt.savefig(fname + 'functional_histogram.pdf')
 
-def plot_q(x0, xs, N, fname, title=None):
+def plot_q(x0, xs, N, fname, nus=None, title=None):
     plt.figure()
     plot_landmarks(x0, color='r', start_style='o--', label='$q_0$', markersize=9)
     plot_landmarks_traj(xs, N, lw=1)
     plot_landmarks(xs[-1], start_style='x:', label='$q_1$', markersize=15)
-    plt.legend(loc='best')
     if title:
         plt.title(title)
+    if nus:
+        nx, ny = np.array(nus).T
+        s = [12*2**4] * len(nus)
+        plt.scatter(nx, ny, s=s, color='purple', alpha=.3, label='centroid')
+    plt.legend(loc='best')
     plt.grid(linestyle='dotted')
     plt.savefig(fname + '.pdf')
     plt.close()
@@ -244,5 +248,4 @@ def plot_landmarks(x, x0=None, lw=1., line_style='g--', markersize=5, color='b',
 
     for i in range(x.shape[2]):
         plt.plot(x[:,0,i,0],x[:,0,i,1],line_style,lw=lw)
-
 
