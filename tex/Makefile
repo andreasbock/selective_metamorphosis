@@ -1,4 +1,4 @@
-name=mcmc_landmarks
+name=select_mm
 
 all:
 	pdflatex ${name}.tex
