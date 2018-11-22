@@ -123,7 +123,7 @@ For this paper, we will focus on landmark matching, but the theory of selective 
 \ref{sec:bg} and extend it to selective metamorphosis in \ref{sec:select_mm}. 
 We then introduce a Bayesian framework for inferring the local metamorphosis parameter $\nu(x)$ in section \ref{sec:bayesian} and apply this theory to a few landmark examples in section \ref{sec:numerical}.
 
-\section{Background}\label{sec:bg}
+\section{Metamorphosis with landmarks}\label{sec:bg}
 
 In this paper we are concerned with diffeomorphometric approaches to image and
 shape matching. One of the central pillars on which this field relies is the
@@ -144,20 +144,6 @@ with $\varphi_t \in G_V$, $\forall t$ and $u_t$ is a time-dependent vector field
 where $S$ denotes a similarity measure between the deformed initial image $I_0\circ \varphi_1$ and the target image $I_1$ to allow inexact matching parametrised by $\lambda$.  
 In the sequel, we will set $\lambda=0$ such that we only consider exact matching, the hardest problem to solve, especially for images non-topologically equivalent, as discussed in the introduction, see also Fig. \ref{fig:mm_lddmm}.
 
-
-%However deformations of manifolds $q_j$ by members of $G_B$ must obey a certain
-%smoothness, which is ill-suited for arbitrary manifolds e.g. topologically
-%different ones.
-
-%Moreover, metamorphosis is a generalisation thereof and provides more robust
-%model for performing shape deformation.
-
-%\textbf{$\longrightarrow$ Insert more background here}\\
-
-%In the following we let $H$ denote a vector space taking values in $\Rd$ to be determined later.
-%Observe the classical landmark metamorphosis problem:
-
-
 In order to simplify the exposition, we will consider singular solutions of this problem, which are given by 
 \begin{align}
   \frac{\delta l}{\delta u} = m(x) = \sum_i p_i \delta(x-q_i)\,, 
@@ -170,8 +156,17 @@ The vector field is thus
 \end{align}
 where $K:\mathbb R^2\times \mathbb R^2\to \mathbb R$ is the kernel associated to the norm $\|\cdot \|_V$. 
 
-For metamorphosis, we introduce a discrete template variable $\boldsymbol \eta_t$ such that the deformation of a set of landmarks is $\mathbf q_t = \varphi_t \boldsymbol \eta_t$. 
-Then, we can define the template velocity as $\mathbf z = \varphi_t \dot {\boldsymbol \eta}$ and extend the energy \eqref{E-def} to 
+For metamorphosis, we introduce a discrete template variable $\boldsymbol \eta_t$ such that the deformation of a set of landmarks is 
+\begin{align}
+  \mathbf q_t = \varphi_t \boldsymbol \eta_t\, . 
+  \label{q_t}
+\end{align}
+Then, we can define the template velocity as 
+\begin{align}
+  \mathbf z = \varphi_t \dot {\boldsymbol \eta}
+  \label{z_eta}
+\end{align}
+and extend the energy \eqref{E-def} to 
 \begin{align}
   \begin{split}
     E_m(u_t,\mathbf z) =\min_{\hat u_t, \hat{\mathbf z}} & \int_0^1
@@ -184,10 +179,10 @@ where now the reconstruction relation is
     \dot{\mathbf q_t} = u_t (\mathbf q_t) + \mathbf z_t\, , 
     \label{dq-m}
 \end{align}
-obtained from the definition of $z$ and $u$, see \cite{?}. 
+obtained from the definition of $z$ and $u$, see \cite{holm2009euler}. 
  before, the boundary conditions are given on the positions $\mathbf q(0)$ and $\mathbf q(1)$, but we now have an extra term in the energy and the reconstruction equation \eqref{dq-m}. 
 
-By taking variations carefully, see again \cite{?}, we directly obtain 
+By taking variations carefully, see again \cite{holm2009euler}, we directly obtain 
 \begin{align}
   m(x) = \frac{1}{\sigma^2} \sum_i z_i\delta(x-q_i)\qquad \Rightarrow \qquad  z_i = \sigma^2 p_i\, , 
 \end{align}
@@ -201,36 +196,10 @@ and the equation of motions are
 \end{align}
 where $u_t$ is defined in \eqref{u-def}. 
 
- %$\sigma$ is a parameter controlling the trade-off between the
-%diffeometric and metamorphosis terms. 
-%In LDDMM, the equations are the same but
-%the boundary conditions are different.  In particular, $q_1$ is not fixed, but
-%an initial momentum, $p_0$, is imposed to close the system. As we see in figure
-%\ref{fig:mm_lddmm}, these frameworks lead to different results. Our goal here is
-%to provide an approach that allows selective delivery of a mix between the
-%purely diffeomorphic LDDMM approach and the metamorphic matching.
+\section{Selective Metamorphosis for Landmarks}\label{sec:select_mm}
 
-
-%For landmarks, the velocity field is explicitly expressed in terms of the
-%momentum and landmarks positions, resulting in a boundary value problem (in
-%time):
-%\begin{subequations}
-%\begin{align}
-%& \dot{q_t} = u(q_t)\\
-%& \dot{p_t} = - \nabla u(q_t)^T p_t\\
-%& q_0,\,q_1\text{ fixed}
-%\end{align}
-%\end{subequations}
-
-%\textbf{$\longrightarrow$ Insert segue and motivation for next section here}
-
-\section{Selective Metamorphosis}\label{sec:select_mm}
-
-
-We can now extend the metamorphosis setting to allow a control of where in the domain $\Rd$ 
-we allow transgression of the diffeomorphic constraint $\dot{q_t} = u\circ q_t$. 
-For this, we introduce a positive smooth bounded function $\nu: \mathbb R^2\to \mathbb R$, with $\mathrm{max}(\nu) = \nu_m$ which will replace the parameter $\sigma^2$ such that of $\nu(x)=\sigma^2$, we will recover the
-classic landmark metamorphosis. 
+We can now extend the metamorphosis setting to be able to locally control the amount of non-diffeomorphic evolution.  
+For this, we introduce a positive smooth bounded function $\nu: \mathbb R^2\to \mathbb R$, with $\mathrm{max}(\nu) = \nu_m$ which will replace the parameter $\sigma^2$ such that of $\nu(x)=\sigma^2$, we will recover the classic landmark metamorphosis. 
 We thus choose the energy functional to be
 \begin{align}
   \begin{split}
@@ -246,46 +215,286 @@ and we have, as before that
 which yields the selective metarmorphosis equations for landmarks as
 \begin{align}
   \begin{split}
-  \dot{\mathbf p_t} &= - \nabla u_t(\mathbf q_t)^T \mathbf p_t + \sum_i \nabla \nu(q_i) |p_i|^2\\ 
-  \dot{\mathbf q_t} &= u_t(\mathbf q_t) +  \nu(q_i)\mathbf p_t \,.
-  \end{split}
+  \dot{\mathbf p}_t &= - \nabla u_t(\mathbf q_t)^T \mathbf p_t - \sum_i \frac12 \nabla \nu(q_i) |p_i|^2\\ 
+  \dot{\mathbf q}_t &= u_t(\mathbf q_t) +  \nu(q_i)\mathbf p_t \,.
+\end{split}
   \label{eq-m-classic}
 \end{align}
+The equation for the variable $\mathbf z_t$ can be written as 
+\begin{align}
+  \dot  z_i &= \nabla_i u(\mathbf q_t) z_i\,, 
+\end{align}
+{\color{blue} indeed, the complete equation is 
+\begin{align}
+  \frac{d}{dt} \left ( \frac{z}{\nu(q)}\right) = \nabla \left ( \frac{z}{\nu(q)} u(q)\right ) - \frac{\nabla \nu(q)}{\nu^2(q)}z^2\, . 
+\end{align}
+}
+Notice that these equations are Hamiltons equation for the Hamiltonian, or energy density function written in term of $\mathbf p_t$ and $\mathbf q_t$
+\begin{align}
+  h(\mathbf q, \mathbf p) =  \frac12 \sum_{i,j}K(q_i-q_j)p_i\cdot p_j+ \frac12 \sum_i \nu(q_i) |p_i|^2\,. 
+\end{align}
 
-
-{\color{red} I AM HERE}
 The goal of this work is to infer the unknown function $\nu$ so as to gather
 information about where in the spatial domain we are most likely to observe
 metamorphic behaviour via a Bayesian framework as in \cite{dashti2017bayesian}.
 
-\begin{remark}[Choice of the form of $\nu$]\label{remark:nu}
-Taking e.g. $\nu(\cdot) = \sum_k \exp(-h(\cdot))$ for some function $h>0$ we
-explicitly state at which locations in space we allow non-diffeomorphic
-evolution, because when $\nu$ goes to zero we observe classical smooth dynamics
-of the landmarks.  It could be useful to develop an algorithm that explores the
-entire space and infers at which location in space (if we had to choose only one
-such location!) it would be best to have metamorphosis. This could provide a
-first-order exploratory tool for physicians, to see if the development of a
-biological feature stems from a few violations of diffeomorphic evolution,
-starting with e.g. an inferred, least-cost, constellation of $\nu$.\\
 
-On the other hand, if we take $\nu(\cdot) = 1 - \sum_k \alpha
-\exp(-h(\cdot))>0$, we could infer at which location(s) $x$ in space we require
-$z_t(x)>0$ in order for the metamorphosis problem to be solved. In contrast,
-this choice is natural as a diagnostic tool instead to infer where in the domain
-we have growth, which health experts can attribute biological meaning. This kind
-of choice allows us to infer where it is best (i.e. cheapest for the functional)
-\emph{physically}.
-\end{remark}
 
-%\begin{subequations}
+
+Using the equation for $z$, we can write $z_t = z_t \circ \varphi^{-1}$, and together with the relations \eqref{q_t} and \eqref{z_eta}, we can write
+\begin{align*}
+  \mathbf q_t &= \varphi_t \mathbf q_0 + \varphi_t \eta_t\\
+   &= \varphi_t \mathbf q_0 + \varphi_t \int \dot \eta_t dt\\
+   &= \varphi_t \mathbf q_0 + \varphi_t \int \varphi_t^{-1} \varphi_t\dot \eta_t dt\\
+   &= \varphi_t \mathbf q_0 + \varphi_t \int  \varphi_t^{-1}\mathbf z dt \\
+   &= \varphi_t \mathbf q_0 + \varphi_t \int  \varphi_t^{-1}\nu(\mathbf q_t) \mathbf p_t  dt\\
+   &= \varphi_t \mathbf q_0 + \varphi_t \int  \varphi_t^{-1}\mathbf z_0\circ \varphi_t^{-1} dt\, , 
+\end{align*}
+and directly verify that it satisfy the equation of motions by computing
+\begin{align*}
+  \dot {\mathbf q}_t = \dot \varphi_t \varphi_t^{-1} \varphi \mathbf q_0 + \dot \varphi_t \varphi_t^{-1} \varphi_t \eta_t + \varphi_t \dot \eta_t  = u_t( \mathbf q_t) + \mathbf z_t\, , 
+\end{align*}
+using $\dot \varphi_t\varphi_t^{-1} = u_t$. 
+This is the integral form of the equation of motion, which is the same equation as in \cite{holm2009euler}[eqn 19], thus the same existence and uniqueness results hold for both the initial value and the boundary value problems. 
+{\color{red} I AM HERE}
+
+\section{Bayesian Framework}\label{sec:bayesian}
+
+We now place a stochastic model on $\nu$, the purpose of which depends on its
+definition as mentioned in remark \eqref{remark:nu}. The goal is to develop an
+algorithm to infer $\nu$, passing via the deterministic problem seen above.\\
+
+First we present some preliminaries on the Bayesian approach to inverse problems
+in section \ref{subs:gf}, essentially quoting results from
+\cite{dashti2017bayesian}.  See also \cite{cotter2013mcmc} for an exposition of
+algorithmic aspects of function space MCMC. Section \ref{subs:finite-dim-param}
+then describes how we apply this stochastic approach to inverse problems to
+$\nu$ by a finite-dimensional family of parameterisations.
+
+\subsection{General Framework}\label{subs:gf}
+% General setting
+Our setting is the following. Given an inverse problem
+
+$\min\quad J$\\
+
+we formally define a centered Gaussian distribution, denoted $N(0, B)$ over this
+space of functions defined up to a constant by the density
 \begin{align}
-\inf_{\substack{u \in L^1([0,1],V)\\ q, p\, \in C^1([0,1],\RdM)}} & S = \int_0^1 \hat l(u_t, q_t, p_t)\diff{t}\label{nu_fnl}\\
-& \dot{q_t^i} =  u(q_t^i) + \nu(q^i_t)p^i_t \\
-    & q_0,\,q_1\text{ fixed}
-  \label{pbl:selective_mm}
+\mu_0 = e^{-J}
 \end{align}
-%\end{subequations}
+In general, for inverse problems on function space, several key properties
+documented in \cite{?} must be verified before the inverse-problem is
+well-posed. Beyond showing existence of the MAP estimator extremising $J$ above,
+the infinite-dimensional version of Bayes' rule must also be check i.e. the
+Radon-Nikodym derivative of the prior with respect to the posterior must exist
+and be absolutely continuous. Finally, we request continuity of the posterior
+distribution w.r.t the initial data corresponding in a sense to Hadamard
+well-posedness in a stochastic framework. Proceeding bona fide we therefore have
+the key ingredients necessary to define a pCN MCMC algorithm:
+\begin{enumerate}
+\item Sample a function.
+\item $f^{k+1} = \alpha f^k + (1-\alpha) f^k$
+\item accept/reject..
+\end{enumerate}
+
+\textbf{$\longrightarrow$ Finish}\\
+
+% Talk about our problem
+\subsection{Finite-dimensional Parameterisation}\label{subs:finite-dim-param}
+
+We now introduce the main problem of this paper in the setting above. We
+consider $\nu$ as a random variable, indeed a random \emph{function}, occupying
+some space yet to be determined. This is an appropriate framework because if the
+lack of uniqueness allows for a qualitative evaluation of a solution to
+selective metamorphosis. In this paper we consider the case where $\nu$ is given
+by a sum of exponentials:
+\begin{equation}
+    \nu_h (x) := \sum_k e^{-\|h_k - x\|_{\Rd}^2}
+\end{equation}
+Here the finite family $h_k$ of centroids in $\Rd$ fully determine $\nu_h$, thus
+greatly reducing the complexity of sampling.
+
+\begin{align}
+	\Phi(a_k) = S(\nu,q_0,q_1) + |\nu|_V^2
+\end{align}
+where, for example $ V = {L_2(\mathcal D)}$.
+
+\newcommand{\mhsample}{\textsc{sampleCentroid}}
+\newcommand{\acceptprob}{\textsc{acceptanceProbability}}
+
+\begin{algorithm}[h!]
+\begin{algorithmic}
+\caption{MCMC on $\nu$}\label{algo:mcmc}
+\Procedure{quasiMCMC}{$N$}
+\State $k \gets 0$
+\State $\nu^k \gets \text{ some initial guess}$
+\While{$k < N$}
+\State $\nu \gets \mhsample ()$\hspace{3cm} \textbf{\# sample a new centroid}
+\State $(q, z, u) \gets $
+\If {\textsc{randomUnit()}$\,< \acceptprob(q, z)$}
+    \State do update
+\Else
+    \State don't do update
+\EndIf
+\State $k\gets k+1$
+\EndWhile
+\Return $q^k,\, z^k,\, u^k$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Note that the $solveMetamorphosis()$ operation, in general, depends on how the
+spatial domain is treated e.g. whether we use landmarks or treat full images.
+In this paper we are only concerned with the former, so we use a standard and
+easily implemented procedure (cite) below 
+
+\textbf{$\longrightarrow$ Describe shooting/solution method}\\
+\begin{algorithm}[h!]
+\begin{algorithmic}
+\caption{Metamorphosis for fixed $\nu$}
+\Procedure{solveMetamorphosis}{}
+\State something either shooting or Firedrake
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\textbf{$\longrightarrow$ Something about adjoints here}\\
+
+\section{Numerical examples}\label{sec:numerical}
+
+This penultimate section displays some numerical results for our method. First,
+as a proof of concept 
+%Stuff that works:
+%\begin{tabular}{ l c r }
+%\text{Test case}   & \beta \text{ (pCN) } & \text{Samples} \\
+%\text{Criss-cross} & & \\ <-- CENTROID
+%\text{Triangle}    & & \\
+%\text{Pringle}     & & \\
+%\text{Squeeze}     & 1 & 500 <-- CENTROID
+%\end{tabular}
+
+As we have seen in figure \ref{fig:mm_lddmm}, classic metamorphosis is an
+appropriate model for non-diffeomorphic matching. We now evaluate our stochastic
+model described in algorithm \ref{algo:mcmc} to the landmark configurations in
+\ref{fig:mm_lddmm}.
+
+\begin{figure}
+\centering
+\begin{minipage}{\textwidth}
+  \centering
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\\[0.25cm]
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}
+    %\subcaption{.}
+    \caption{Selective metamorphosis for the inverted landmarks example The top
+    row displays the geodesics corresponding a sample realisation from the
+    chain, centroid heat map with four MAP estimators, functional histogram and
+    autocorrelation plot. The bottom row shows the geodesics for four MAP
+    estimators.}
+    \label{fig:selective:crisscross}
+\end{minipage}
+\end{figure}
+\begin{figure}
+\centering
+\begin{minipage}{\textwidth}
+  \centering
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\\[0.25cm]
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}
+    %\subcaption{.}
+    \caption{Selective metamorphosis for the pinch example. The top row displays
+    the geodesics corresponding a sample realisation from the chain, centroid
+    heat map with four MAP estimators, functional histogram and autocorrelation
+    plot. The bottom row shows the geodesics for four MAP estimators.}
+    \label{fig:selective:pinch}
+\end{minipage}
+\end{figure}
+
+\textbf{$\longrightarrow$ Explain results}\\
+
+\begin{figure}
+\centering
+\begin{minipage}{\textwidth}
+  \centering
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\\[0.25cm]
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}
+    %\subcaption{.}
+    \caption{Selective metamorphosis for the inverted landmarks example. The top
+    row displays the geodesics corresponding a sample realisation from the
+    chain, centroid heat map with four MAP estimators, functional histogram and
+    autocorrelation plot. The bottom row shows the geodesics for four MAP
+    estimators.}
+    \label{fig:selective:triangle}
+\end{minipage}
+\end{figure}
+
+% Insert Effective Sample size (if time)
+We note that since the Euler-Lagrange equations for $p$ and $q$ are
+time-reversible, the configuration in both lead to a notion of
+collapse and hole creation for the landmarks.\\
+
+
+
+We note that the source code for all of these experiments is documented
+here (insert link to github.io). 
+
+\section{Outlook}\label{sec:outlook}
+
+{\color{red} Nice sentence:} {\color{blue} This could provide a
+first-order exploratory tool for physicians, to see if the development of a
+biological feature stems from a few violations of diffeomorphic evolution.}
+
+
+Another choice is 
+\begin{align}
+    l(q,p) = \|u\|_B^2 + \sum_i p_i\cdot \nu(q_i) \, , 
+\end{align}
+where $\nu:\mathbb R^2 \to \mathbb R^2$, which will give more freedom on the metamorphosis term, and give equations of motion as 
+\begin{align}
+    \dot p_i  &= \nabla u(q_i)p_i  + p_i \cdot \nabla \nu(q_i)\\
+    \dot q &= u(q_i) + \nu(q_i) 
+\end{align}
+
+Natural extensions of this work include fully determining e.g. the Fourier modes
+of $\nu$ via the stochastic framework.\\
+
+Future work also includes extending this framework to images e.g. using the
+kernel framework in \cite{richardson2016metamorphosis}, or developing a
+space-time method. Formalising the measure-theory necessary to consider the
+limit of ? as $k\rightarrow\infty$.\\
+
+Moreover, adding a time-dependency to $\nu$ is also to be
+explored. It is our hope that we can extend the theory developed here to
+encompass classic metamorphosis; that is to say, to develop the necessary theory
+in order to place a stochastic model on the state space consisting of
+velocities and source functions. Being able to sample random pairs (MCMC) of these
+would permit a novel numerical approach to metamorphosis as well as other
+problems shape analysis.
+
+\bibliographystyle{abbrv}
+\bibliography{landmarks}
+
+\end{document}
+
+
+\section{Theorems}
+
 In this section we analyse the problem described in \eqref{pbl:selective_mm} for
 an a priori known function $\nu$ which we denote \emph{selective metamorphosis
 problem}. The first task is to show that the functional attains its infimum,
@@ -374,253 +583,3 @@ There exists a unique (? )solution $u, q, z$ to this system.
 This will give more conditions on $\nu$, like $\nu(x) \in C^{1}(\mathbb R^2)$. 
 \end{theorem}
 
-\section{Bayesian Framework}\label{sec:bayesian}
-
-We now place a stochastic model on $\nu$, the purpose of which depends on its
-definition as mentioned in remark \eqref{remark:nu}. The goal is to develop an
-algorithm to infer $\nu$, passing via the deterministic problem seen above.\\
-
-First we present some preliminaries on the Bayesian approach to inverse problems
-in section \ref{subs:gf}, essentially quoting results from
-\cite{dashti2017bayesian}.  See also \cite{cotter2013mcmc} for an exposition of
-algorithmic aspects of function space MCMC. Section \ref{subs:finite-dim-param}
-then describes how we apply this stochastic approach to inverse problems to
-$\nu$ by a finite-dimensional family of parameterisations.
-
-\subsection{General Framework}\label{subs:gf}
-% General setting
-Our setting is the following. Given an inverse problem
-
-$\min\quad J$\\
-
-we formally define a centered Gaussian distribution, denoted $N(0, B)$ over this
-space of functions defined up to a constant by the density
-\[
-\mu_0 = e^{-J}
-\]
-
-In general, for inverse problems on function space, several key properties
-documented in \cite{?} must be verified before the inverse-problem is
-well-posed. Beyond showing existence of the MAP estimator extremising $J$ above,
-the infinite-dimensional version of Bayes' rule must also be check i.e. the
-Radon-Nikodym derivative of the prior with respect to the posterior must exist
-and be absolutely continuous. Finally, we request continuity of the posterior
-distribution w.r.t the initial data corresponding in a sense to Hadamard
-well-posedness in a stochastic framework. Proceeding bona fide we therefore have
-the key ingredients necessary to define a pCN MCMC algorithm:
-\begin{enumerate}
-\item Sample a function.
-\item $f^{k+1} = \alpha f^k + (1-\alpha) f^k$
-\item accept/reject..
-\end{enumerate}
-
-\textbf{$\longrightarrow$ Finish}\\
-
-% Talk about our problem
-\subsection{Finite-dimensional Parameterisation}\label{subs:finite-dim-param}
-
-We now introduce the main problem of this paper in the setting above. We
-consider $\nu$ as a random variable, indeed a random \emph{function}, occupying
-some space yet to be determined. This is an appropriate framework because if the
-lack of uniqueness allows for a qualitative evaluation of a solution to
-selective metamorphosis. In this paper we consider the case where $\nu$ is given
-by a sum of exponentials:
-\begin{equation}
-    \nu_h (x) := \sum_k e^{-\|h_k - x\|_{\Rd}^2}
-\end{equation}
-Here the finite family $h_k$ of centroids in $\Rd$ fully determine $\nu_h$, thus
-greatly reducing the complexity of sampling.
-
-\begin{align}
-	\Phi(a_k) = S(\nu,q_0,q_1) + |\nu|_V^2
-\end{align}
-where, for example $ V = {L_2(\mathcal D)}$.
-
-\newcommand{\mhsample}{\textsc{sampleCentroid}}
-\newcommand{\acceptprob}{\textsc{acceptanceProbability}}
-
-\begin{algorithm}[h!]
-\begin{algorithmic}
-\caption{MCMC on $\nu$}\label{algo:mcmc}
-\Procedure{quasiMCMC}{$N$}
-\State $k \gets 0$
-\State $\nu^k \gets \text{ some initial guess}$
-\While{$k < N$}
-\State $\nu \gets \mhsample ()$\hspace{3cm} \textbf{\# sample a new centroid}
-\State $(q, z, u) \gets $
-\If {\textsc{randomUnit()}$\,< \acceptprob(q, z)$}
-    \State do update
-\Else
-    \State don't do update
-\EndIf
-\State $k\gets k+1$
-\EndWhile
-\Return $q^k,\, z^k,\, u^k$
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
-
-Note that the $solveMetamorphosis()$ operation, in general, depends on how the
-spatial domain is treated e.g. whether we use landmarks or treat full images.
-In this paper we are only concerned with the former, so we use a standard and
-easily implemented procedure (cite) below 
-
-\textbf{$\longrightarrow$ Describe shooting/solution method}\\
-\begin{algorithm}[h!]
-\begin{algorithmic}
-\caption{Metamorphosis for fixed $\nu$}
-\Procedure{solveMetamorphosis}{}
-\State something either shooting or Firedrake
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
-
-\textbf{$\longrightarrow$ Something about adjoints here}\\
-
-\section{Selective Metamorphosis for Landmarks}\label{sec:numerical}
-
-This penultimate section displays some numerical results for our method. First,
-as a proof of concept 
-%Stuff that works:
-%\begin{tabular}{ l c r }
-%\text{Test case}   & \beta \text{ (pCN) } & \text{Samples} \\
-%\text{Criss-cross} & & \\ <-- CENTROID
-%\text{Triangle}    & & \\
-%\text{Pringle}     & & \\
-%\text{Squeeze}     & 1 & 500 <-- CENTROID
-%\end{tabular}
-
-As we have seen in figure \ref{fig:mm_lddmm}, classic metamorphosis is an
-appropriate model for non-diffeomorphic matching. We now evaluate our stochastic
-model described in algorithm \ref{algo:mcmc} to the landmark configurations in
-\ref{fig:mm_lddmm}.
-
-\begin{figure}
-\centering
-\begin{minipage}{\textwidth}
-  \centering
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\\[0.25cm]
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}
-    %\subcaption{.}
-    \caption{Selective metamorphosis for the pinch example. The top row displays
-    the geodesics corresponding a sample realisation from the chain, centroid
-    heat map with four MAP estimators, functional histogram and autocorrelation
-    plot. The bottom row shows the geodesics for four MAP estimators.}
-    \label{fig:selective:pinch}
-\end{minipage}
-\end{figure}
-
-\textbf{$\longrightarrow$ Explain results}\\
-
-\begin{figure}
-\centering
-\begin{minipage}{\textwidth}
-  \centering
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\\[0.25cm]
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}
-    %\subcaption{.}
-    \caption{Selective metamorphosis for the inverted landmarks example. The top
-    row displays the geodesics corresponding a sample realisation from the
-    chain, centroid heat map with four MAP estimators, functional histogram and
-    autocorrelation plot. The bottom row shows the geodesics for four MAP
-    estimators.}
-    \label{fig:selective:crossing}
-\end{minipage}
-\end{figure}
-
-% Insert Effective Sample size (if time)
-We note that since the Euler-Lagrange equations for $p$ and $q$ are
-time-reversible, the configuration in both lead to a notion of
-collapse and hole creation for the landmarks.\\
-
-\begin{figure}
-\centering
-\begin{minipage}{\textwidth}
-  \centering
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\\[0.25cm]
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}
-    %\subcaption{.}
-    \caption{Selective metamorphosis for the inverted landmarks example The top
-    row displays the geodesics corresponding a sample realisation from the
-    chain, centroid heat map with four MAP estimators, functional histogram and
-    autocorrelation plot. The bottom row shows the geodesics for four MAP
-    estimators.}
-    \label{fig:selective:squeeze}
-\end{minipage}
-\end{figure}
-
-
-\begin{figure}
-\centering
-\begin{minipage}{\textwidth}
-  \centering
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\\[0.25cm]
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}
-    %\subcaption{.}
-    \caption{Selective metamorphosis for the inverted landmarks example The top
-    row displays the geodesics corresponding a sample realisation from the
-    chain, centroid heat map with four MAP estimators, functional histogram and
-    autocorrelation plot. The bottom row shows the geodesics for four MAP
-    estimators.}
-    \label{fig:selective:triangle}
-\end{minipage}
-\end{figure}
-
-We note that the source code for all of these experiments is documented
-here (insert link to github.io). 
-
-\section{Outlook}\label{sec:outlook}
-Another choice is 
-\begin{align}
-    l(q,p) = \|u\|_B^2 + \sum_i p_i\cdot \nu(q_i) \, , 
-\end{align}
-where $\nu:\mathbb R^2 \to \mathbb R^2$, which will give more freedom on the metamorphosis term, and give equations of motion as 
-\begin{align}
-    \dot p_i  &= \nabla u(q_i)p_i  + p_i \cdot \nabla \nu(q_i)\\
-    \dot q &= u(q_i) + \nu(q_i) 
-\end{align}
-
-Natural extensions of this work include fully determining e.g. the Fourier modes
-of $\nu$ via the stochastic framework.\\
-
-Future work also includes extending this framework to images e.g. using the
-kernel framework in \cite{richardson2016metamorphosis}, or developing a
-space-time method. Formalising the measure-theory necessary to consider the
-limit of ? as $k\rightarrow\infty$.\\
-
-Moreover, adding a time-dependency to $\nu$ is also to be
-explored. It is our hope that we can extend the theory developed here to
-encompass classic metamorphosis; that is to say, to develop the necessary theory
-in order to place a stochastic model on the state space consisting of
-velocities and source functions. Being able to sample random pairs (MCMC) of these
-would permit a novel numerical approach to metamorphosis as well as other
-problems shape analysis.
-
-\bibliographystyle{abbrv}
-\bibliography{landmarks}
-
-\end{document}
