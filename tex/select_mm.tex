@@ -96,15 +96,15 @@ For this paper, we will focus on landmark matching, but the theory of selective 
 \centering
 \begin{minipage}{\textwidth}
   \centering
-    \includegraphics[width=.3\textwidth]{../src/vanilla_results/lddmm/lddmm_criss_cross.pdf}\quad
-    \includegraphics[width=.3\textwidth]{../src/vanilla_results/lddmm/lddmm_squeeze.pdf}\quad
-    \includegraphics[width=.3\textwidth]{../src/vanilla_results/lddmm/lddmm_triangle_flip.pdf}\\[0.25cm]
-    \includegraphics[width=.3\textwidth]{../src/vanilla_results/mm/mm_criss_cross.pdf}\quad
-    \includegraphics[width=.3\textwidth]{../src/vanilla_results/mm/mm_squeeze.pdf}\quad
-    \includegraphics[width=.3\textwidth]{../src/vanilla_results/mm/mm_triangle_flip.pdf}\\[0.25cm]
-    \includegraphics[width=.3\textwidth]{../src/vanilla_results/mm/mm_criss_cross.pdf}\quad
-    \includegraphics[width=.3\textwidth]{../src/vanilla_results/mm/mm_squeeze.pdf}\quad
-    \includegraphics[width=.3\textwidth]{../src/vanilla_results/mm/mm_triangle_flip.pdf}
+    \includegraphics[width=.3\textwidth]{lddmm_criss_cross.pdf}\quad
+    \includegraphics[width=.3\textwidth]{lddmm_squeeze.pdf}\quad
+    \includegraphics[width=.3\textwidth]{lddmm_triangle_flip.pdf}\\[0.25cm]
+    \includegraphics[width=.3\textwidth]{mm_criss_cross.pdf}\quad
+    \includegraphics[width=.3\textwidth]{mm_squeeze.pdf}\quad
+    \includegraphics[width=.3\textwidth]{mm_triangle_flip.pdf}\\[0.25cm]
+    \includegraphics[width=.3\textwidth]{mm_criss_cross.pdf}\quad
+    \includegraphics[width=.3\textwidth]{mm_squeeze.pdf}\quad
+    \includegraphics[width=.3\textwidth]{mm_triangle_flip.pdf}
     \caption{This figures illustrates landmark matching with classical LDDMM (top row), metamorphosis (bottom row) and selective metamorphosis (middle row). 
       We chose difficult matching for LDDMM, and we observe unrealistic landmark trajectories, with large resulting energies, or distances, whereas the metamorphosis  matching results in a more realistic landmark trajectories. 
       The selective metamorphosis has the extra advantage of only breaking the diffeomorphic property where needed in along the matching, thus preserving more of the desired diffeomorphic property of the matching. {\color{red} Add the middle row with position of $\nu$ fields as crosses, and value of the energy functional for each (larger for top and middle row)}}
