@@ -147,7 +147,7 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1):
         match_success = np.linalg.norm(xs[-1,0] - q1) < q1_tolerance
         return xs, h, res.success and match_success
 
-    log_dir = 'mcmc_results/' + test_name + '/'
+    log_dir = '../tex/mcmc_results/' + test_name + '/'
     import os
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)

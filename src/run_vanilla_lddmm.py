@@ -8,7 +8,7 @@ import time
 import pylab as plt
 from lib import *
 
-log_dir = 'vanilla_results/lddmm/'
+log_dir = '../tex/lddmm/'
 
 import os
 if not os.path.exists(log_dir):
