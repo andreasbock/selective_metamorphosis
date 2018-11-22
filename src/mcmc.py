@@ -16,7 +16,7 @@ maxiter = 5000  # shooting
 beta = 0.2
 q1_tolerance = 1e-01  # allow for slight mismatch owing to numerics
 
-def run_mcmc(q0, q1, test_name, num_samples, num_nus=1):
+def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
     log_freq = num_samples // min(10, num_samples)
 
     # kernel parameters
@@ -147,7 +147,11 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1):
         match_success = np.linalg.norm(xs[-1,0] - q1) < q1_tolerance
         return xs, h, res.success and match_success
 
-    log_dir = '../tex/mcmc_results/' + test_name + '/'
+    if log_dir is None:
+        log_dir = '../tex/mcmc_results/' + test_name + '/'
+    else:
+        log_dir += test_name + '/'
+
     import os
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
