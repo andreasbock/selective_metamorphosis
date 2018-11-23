@@ -12,6 +12,7 @@
 \usepackage{amsmath,amsfonts}
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
+\usepackage{appendix}
 
 \newcommand{\pp}[2]{\frac{\partial #1}{\partial #2}}
 \newcommand{\dede}[2]{\frac{\delta #1}{\delta #2}}
@@ -32,6 +33,7 @@
 \newcommand{\RdM}{\mathbb{R}^{d\times M}}
 \newcommand{\nuinf}{\nu_\text{inf}}
 
+\newtheorem{assumption}{Assumption}
 
 % Used for displaying a sample figure. If possible, figure files should
 % be included in EPS format.
@@ -258,6 +260,12 @@ bounded function $\nu: \mathbb R^2\to \mathbb R$, with $\mathrm{max}(\nu) =
 \nu_m$ which will replace the parameter $\sigma^2$ such that if
 $\nu(x)=\sigma^2$, we will recover the classic landmark metamorphosis.  We thus
 choose the energy functional to be
+
+We can now extend the metamorphosis setting to be able to locally control the
+amount of non-diffeomorphic evolution.  For this, we introduce a function $\nu:
+\mathbb R^2\to \mathbb R$ replacing the parameter $\sigma^2$ such that if
+$\nu(x)=\sigma^2$, we will recover the classic landmark metamorphosis.
+We thus choose the energy functional to be
 \begin{align}
   \begin{split}
     E_{sm}(u_t,\mathbf z) =\min_{\hat u_t, \hat{\mathbf z}} & \int_0^1
@@ -265,12 +273,31 @@ choose the energy functional to be
   \end{split}
   \label{E_sm-def}
 \end{align}
-and we have, as before that
+
+subject to the reconstruction equation \eqref{dq-m}. We have, as before that
 \begin{align}\label{zp_relation}
   m(x) =  \sum_i \frac{1}{\nu(q_i)} z_i\delta(x-q_i)\qquad \Rightarrow \qquad
   z_i = \nu(q_i) p_i\, , 
 \end{align}
-which yields the selective metarmorphosis equations for landmarks as
+
+We show that the optimisation problem \eqref{E_sm-def} is well-posed. First, we
+have
+\begin{assumption}\label{assumption:nu_bounded}
+$\mathrm{max}(\nu) = \nu_m < \infty$ and $\nu$ is bounded from below
+away from zero by $\nuinf \in \mathbb R$.
+\end{assumption}
+
+\begin{theorem}\label{sm-eu}
+Assumption \ref{assumption:nu_bounded} implies that the problem
+\eqref{pbl:reformulation} attains its unique infimum.\\
+
+Proof: See appendix \ref{app:proof:sm-eu}.
+{\hfill $\square$}
+\end{theorem}
+
+
+The problem defined by \eqref{E_sm-def} yields the following equations for
+selective metarmorphosis for landmarks:
 \begin{align}
   \begin{split}
   \dot{\mathbf p}_t &= - \nabla u_t(\mathbf q_t)^T \mathbf p_t - \sum_i \frac12
@@ -552,30 +579,21 @@ functions. Being able to sample random pairs (MCMC) of these would permit a
 novel numerical approach to metamorphosis as well as other problems shape
 analysis.
 
-\bibliographystyle{abbrv}
-\bibliography{landmarks}
+\appendix
 
-\end{document}
-
-
-\section{Theorems}
-
+\section{Proof of Theorem \ref{sm-eu}}\label{app:proof:sm-eu}
 In this section we analyse the problem described in \eqref{pbl:selective_mm} for
 an a priori known function $\nu$ which we denote \emph{selective metamorphosis
 problem}. The first task is to show that the functional attains its infimum,
 i.e. identification of a minimiser. We begin with the following assumption:
-%\begin{assumption}
-$\|\nu\|_\infty := \sigma^2 <\infty$ and $\nu$ is bounded from below
-away from zero by $\nuinf \in \mathbb R$.
-  \label{assumption:nu_bounded}
-%\end{assumption}
+
+
 Since the limit as $\nu\rightarrow 0$ is well-understood these assumptions do
 not constitute large concessions. Clearly the functional in \eqref{nu_fnl} is
 not convex, so we work with a reformulation to ensure the required weak lower
 semi-continuity. This comes at the cost of showing weak continuity of the
 constraint variables. Specifically, we define a variable $z^i_t = p^i_t
 \sqrt{\nu(q_t^i)}$ in the problem:
-%\begin{subequations}
 \begin{align}
 \inf_{\substack{u \in L^2([0,1],V)\\ q, z\, \in L^2([0,1],\RdM)}}
     & S = \int_0^1 \half\vnorm{u_t}^2 + \half\sum_i |z_t^i|^2 \diff{t}\\
@@ -583,7 +601,6 @@ constraint variables. Specifically, we define a variable $z^i_t = p^i_t
     & q_0,\,q_1\text{ fixed}
   \label{pbl:reformulation}
 \end{align}
-%\end{subequations}
 
 We now show existence of a minimiser to this problem. First, note that owing to
 the constraint effectively being a boundary value problem, we cannot always find
@@ -648,4 +665,12 @@ There exists a unique (? )solution $u, q, z$ to this system.
 
 This will give more conditions on $\nu$, like $\nu(x) \in C^{1}(\mathbb R^2)$. 
 \end{theorem}
+
+\bibliographystyle{abbrv}
+\bibliography{landmarks}
+
+
+
+
+\end{document}
 
