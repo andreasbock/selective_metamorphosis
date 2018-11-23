@@ -70,38 +70,45 @@
 
 \section{Introduction}
 
-In computational anatomy, one of the most fundamental problem is to continuously
-deform an image, or shape into another and thereby obtain a natural notion of
-distance between them, from the energy required for this deformation.  These
-distances can then be used for image registration, atlas construction, etc\dots
-see \cite{younes2010shapes} for more applications. {\color{red} Is this the
-correct citation here?} On of the most common method to compute image
-deformations is based on the notion of diffeomorphic deformations which assume
-that the images are continuously deformed into one another with the additional
-property that the inverse deformation is also continuous.  This is a strong
-requirement for images which implies that the 'mass' of any part of the image is
-conserved: we cannot create or close 'holes'.  This property is also a crucial
-property of fluid mechanics, and in fact, the theory of diffeomorphic matching
-(LDDMM) has been inspired by fluid mechanics ({\color{red} Refs of
-Darryl,etc\dots.}).
+In computational anatomy
+\cite{grenander1994representations,grenander1998computational}, one of the most
+fundamental problem is to continuously deform an image, or shape into another
+and thereby obtain a natural notion of distance between them, from the energy
+required for this deformation.  These distances can then be used for image
+registration, atlas construction, etc\dots see \cite{todo} for more
+applications. On of the most common method to compute image deformations is
+based on the notion of diffeomorphic deformations which assume that the images
+are continuously deformed into one another with the additional property that the
+inverse deformation is also continuous.  This is a strong requirement for images
+which implies that the 'mass' of any part of the image is conserved: we cannot
+create or close 'holes'.  This property is also a crucial property of fluid
+mechanics, and in fact, the theory of diffeomorphic matching carrying the
+moniker \emph{Large Deformation Diffeomorphic Metric Mapping}
+\cite{trouve1998diffeomorphisms,beg2005computing} (LDDMM) has been inspired by
+fluid mechanics. Indeed, one of the central pillars on which this field relies
+is the observation made by Arnold \cite{arnold1966geometrie} that the geodesic
+equations for the diffeomorphism group induced by divergence-free vector fields
+corresponded to that of incompressible flows. See also ({\color{red} Refs of
+Darryl, etc\dots.}{\color{green} Not too sure which fluids papers to reference
+here!}) 
 
 If one does not want or need to have a strict diffeomorphic matching, an
-extension of LDDMM called metamorphosis is available which introduces a
+extension of LDDMM called metamorphosis
+\cite{trouve2005metamorphoses,holm2009euler} is available which introduces a
 parameter $\sigma^2$ parametrizing the deviation from diffeomorphic matching.
-In particular, if $\sigma^2=0$, metamorphosis reduces to LDDMM.  {\color{red}
-This theory has been introduced by ?? with a fluid mechanical interpretation by
-??. MORE REFS!}
-
-This theory allows one to match images of shapes with different topological
-features, which would have been near impossible with the standard LDDMM.
-Indeed, even for if we allow inexact matching in LDDMM, the image deformation
-will have to be close to the limit of the diffeomorphic matching, yielding a
-large and uncertain energy for the matching, thus a useless notion of distance
-between images.  The incertainty comes from the fact that for inexact matching,
-several almost trajectories of deformations can be computed, but with different
-energies.  Introducing the metamorphosis parameter $\sigma^2$ will stabilize
-this matching problem at the cost of breaking the diffeomorphic property on the
-whole image, or shape, and at all time in the deformation. 
+In particular, if $\sigma^2=0$, metamorphosis reduces to LDDMM.  See
+\cite{trouve1995infinite,trouve2005local,miller2001group} for technical details
+pertaining to constructing the metamorphosis problem. This theory allows one to
+match images of shapes with different topological features, which would have
+been near impossible with the standard LDDMM.  Indeed, even for if we allow
+inexact matching in LDDMM, the image deformation will have to be close to the
+limit of the diffeomorphic matching, yielding a large and uncertain energy for
+the matching, thus a useless notion of distance between images.  The incertainty
+comes from the fact that for inexact matching, several almost trajectories of
+deformations can be computed, but with different energies.  Introducing the
+metamorphosis parameter $\sigma^2$ will stabilize this matching problem at the
+cost of breaking the diffeomorphic property on the whole image, or shape, and at
+all time in the deformation. 
 
 In this work, we modify the original metamorphosis problem to include an image
 dependent metamorphosis parameter $\nu(x)$ in order to obtain an almost
@@ -165,24 +172,25 @@ for inferring the local metamorphosis parameter $\nu(x)$ in section
 
 In this paper we are concerned with diffeomorphometric approaches to image and
 shape matching. One of the central pillars on which this field relies is the
-observation made by Arnold '66 (cite) that, under certain conditions, a
-time-dependent velocity field $u$ occupying some Hilbert space $u_t \in V$
-induces a curve on a subgroup $G_V$ of diffeomorphisms \cite{younes2010shapes}
-via the following ordinary differential
-equation
+observation made by Arnold \cite{arnold1966geometrie} that, under certain
+conditions, a time-dependent velocity field $u$ e.g. occupying some Hilbert
+space $u_t \in V$ induces a curve on a subgroup $G_V$ of diffeomorphisms
+\cite{younes2010shapes} via the following ordinary differential equation
 \begin{align}
 & \dot{\varphi_t} = u_t \circ \varphi_t\, , \qquad  \varphi_0 = \text{id}
   \label{diffeo}
 \end{align}
 with $\varphi_t \in G_V$, $\forall t$ and $u_t$ is a time-dependent vector
-field, obtained as a solution of optimisation  
+field, obtained as a solution of the optimisation problem
 \begin{align}
   E(u_t) = \min_{\hat u_t} \int_0^1 \half\vnorm{\hat u_t}^2 \diff{t} +
-  \frac{1}{\lambda} S(I_0\circ\varphi_1, I_1)\, , \label{E-def}
+  \frac{1}{\sigma^2} S(I_0\circ\varphi_1, I_1)\, , \label{E-def}
 \end{align}
-where $S$ denotes a similarity measure between the deformed initial image
-$I_0\circ \varphi_1$ and the target image $I_1$ to allow inexact matching
-parametrised by $\lambda$.  In the sequel, we will set $\lambda=0$ such that we
+where $S$ denotes a similarity measure or norm between the deformed initial
+image $I_0\circ \varphi_1$ and the target image $I_1$ to allow inexact matching
+parametrised by $\sigma^2$. The LDDMM) approach takes $S$ as an $L^2$ norm on the difference between
+its arguments.
+In the sequel, we will set $\lambda=0$ such that we
 only consider exact matching, the hardest problem to solve, especially for
 images non-topologically equivalent, as discussed in the introduction, see also
 Fig. \ref{fig:mm_lddmm}.
