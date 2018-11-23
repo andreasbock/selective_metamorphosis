@@ -363,30 +363,37 @@ then describes how we apply this stochastic approach to inverse problems to
 $\nu$ by a finite-dimensional family of parameterisations.
 
 \subsection{General Framework}\label{subs:gf}
-% General setting
-Our setting is the following. Given an inverse problem
 
-$\min\quad J$\\
+The general framework is based off of the idea that we can cast optimisation
+problems in a probabilistic framework where minimisers, roughly speaking,
+correspond to modes of a certain distribution of function space.  In the context
+of optimisation we define a \emph{likelihood} $\Phi : X\rightarrow Y$, mapping
+some control variable in $X$ to an observable in $Y$.  A \emph{maximum a
+posteriori} (MAP) estimator $f^*$ satisfies $f^* \arg\max_{f\in X} \Phi(f) p(f)$
+where $p$ is a density over $X$. Equipped with a norm $\|\cdot\|_X$ we can then
+define the density by $p(\cdot) \propto e^{-\|\cdot\|_X^2}$.  Supposing further
+that the likelihood is on the form $\Phi(f) = -\|f-\lambda\|_Y^2$ then, at least
+formally, the MAP estimator minimises $J =\|f^*\|_X^2 + \|f^*-\lambda\|_Y^2$.\\
 
-we formally define a centered Gaussian distribution, denoted $N(0, B)$ over this
-space of functions defined up to a constant by the density
-\begin{align}
-\mu_0 = e^{-J}
-\end{align}
 In general, for inverse problems on function space, several key properties
 documented in \cite{?} must be verified before the inverse-problem is
-well-posed. Beyond showing existence of the MAP estimator extremising $J$ above,
+well-posed. Beyond showing existence of the MAP estimator minimising $J$ above,
 the infinite-dimensional version of Bayes' rule must also be check i.e. the
 Radon-Nikodym derivative of the prior with respect to the posterior must exist
 and be absolutely continuous. Finally, we request continuity of the posterior
 distribution w.r.t the initial data corresponding in a sense to Hadamard
-well-posedness in a stochastic framework. Proceeding bona fide we therefore have
-the key ingredients necessary to define a pCN MCMC algorithm:
+well-posedness in a probabilistic framework. Proceeding bona fide we therefore
+have the key ingredients necessary to define a MCMC algorithm
+\cite{cotter2013mcmc}:
 \begin{enumerate}
-\item Sample a function.
-\item $f^{k+1} = \alpha f^k + (1-\alpha) f^k$
-\item accept/reject..
+\item Initialise $k \gets 0;\; f^0 \in X;\; \alpha \in (0,\,1)$ 
+\item Sample $f\in X$
+\item Accept $f^{k+1} \gets \alpha f + (1-\alpha) f^k$ with probability
+$a(f^{k+1}, f^k)$ else $f^{k+1} \gets f^k$
+\item $k \gets k + 1$
 \end{enumerate}
+where we implement the acceptance probability as $a(g,h) = \min(1, e^{-J^{k+1} +
+J^k})$.
 
 \textbf{$\longrightarrow$ Finish}\\
 
@@ -403,8 +410,11 @@ by a sum of exponentials:
     \nu_h (x) := \sum_k e^{-\|h_k - x\|_{\Rd}^2}
 \end{equation}
 Here the finite family $h_k$ of centroids in $\Rd$ fully determine $\nu_h$, thus
-greatly reducing the complexity of sampling.
+greatly reducing the complexity of sampling. We defer sampling from function
+space to future work \cite{.}
 
+Defining a $p_{sm}(u, ) \propto e^{- E_{sm}(}$
+ %E_{sm}(u_t,\mathbf z)
 \begin{align}
 	\Phi(a_k) = S(\nu,q_0,q_1) + |\nu|_V^2
 \end{align}
