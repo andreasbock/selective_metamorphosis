@@ -295,7 +295,6 @@ Proof: See appendix \ref{app:proof:sm-eu}.
 {\hfill $\square$}
 \end{theorem}
 
-
 The problem defined by \eqref{E_sm-def} yields the following equations for
 selective metarmorphosis for landmarks:
 \begin{align}
@@ -582,36 +581,30 @@ analysis.
 \appendix
 
 \section{Proof of Theorem \ref{sm-eu}}\label{app:proof:sm-eu}
-In this section we analyse the problem described in \eqref{pbl:selective_mm} for
-an a priori known function $\nu$ which we denote \emph{selective metamorphosis
-problem}. The first task is to show that the functional attains its infimum,
-i.e. identification of a minimiser. We begin with the following assumption:
-
-
-Since the limit as $\nu\rightarrow 0$ is well-understood these assumptions do
-not constitute large concessions. Clearly the functional in \eqref{nu_fnl} is
-not convex, so we work with a reformulation to ensure the required weak lower
-semi-continuity. This comes at the cost of showing weak continuity of the
-constraint variables. Specifically, we define a variable $z^i_t = p^i_t
+Clearly the functional in \eqref{E_sm-def} is not convex, so we work with a
+reformulation to ensure the required weak lower semi-continuity. Note that
+we cannot do a change of variables using $p_t$ since
+$\frac{1}{\nu(q_t)}|z_t|^2 = \nu(q_t) |p_t|^2$ and we still have a
+non-convexity to deal with. We define a variable $w^i_t = z^i_t
 \sqrt{\nu(q_t^i)}$ in the problem:
 \begin{align}
-\inf_{\substack{u \in L^2([0,1],V)\\ q, z\, \in L^2([0,1],\RdM)}}
-    & S = \int_0^1 \half\vnorm{u_t}^2 + \half\sum_i |z_t^i|^2 \diff{t}\\
-    & \dot{q_t^i} = u(q_t^i) + \sqrt{\nu(q_t^i)} z^i_t\\
+\inf_{\substack{u \in L^2([0,1],V)\\ q, w\, \in H^1([0,1],\RdM)}}
+    & S = \int_0^1 \half\vnorm{u_t}^2 + \half\sum_i |w_t^i|^2 \diff{t}\\
+    & \dot{q_t^i} = u(q_t^i) + \sqrt{\nu(q_t^i)} w^i_t\\
     & q_0,\,q_1\text{ fixed}
   \label{pbl:reformulation}
 \end{align}
 
 We now show existence of a minimiser to this problem. First, note that owing to
 the constraint effectively being a boundary value problem, we cannot always find
-a $q$ for arbitrary pairs of $(u,\,z)$. We define an bounded operator
-$(q,u)\mapsto frac{\dot{q} - u(q)}{\sqrt{\nu(q)}} := z$:
+a $q$ for arbitrary pairs of $(u,\,w)$. We define an bounded operator
+$(q,u)\mapsto frac{\dot{q} - u(q)}{\sqrt{\nu(q)}} := w$:
 \begin{align*}
-\ltwonorm{z}^2 & = \ltwonorm{\frac{\dot{q} - u(q)}{\sqrt{\nu(q)}}}^2\\
+\ltwonorm{w}^2 & = \ltwonorm{\frac{\dot{q} - u(q)}{\sqrt{\nu(q)}}}^2\\
 & \leq \nuinf^{-1}\Big(\ltwonorm{\dot{q}}^2 + \ltwonorm{u(q)}^2\Big)\\
 \end{align*}
 which is clearly bounded since $q\in C^1(0,1,H)$ and since by continuity of $u$.
-From this we generate a minimising sequence $(q^n, u^n, z^n)$ admissible to
+From this we generate a minimising sequence $(q^n, u^n, w^n)$ admissible to
 \eqref{pbl:reformulation}.\\
 
 \textbf{$\longrightarrow$ Show weak continuity of the constraint equation for
@@ -619,58 +612,14 @@ $q$ (the stuff below)}\\
 
 Passing to subsequences where necessary we can by classic results
 \cite{younes2010shapes} extract bounded subsequences converging to weak limits
-where necessary. By convexity of $S$ we have therefore proved the following:
+where necessary to obtain a minimiser. Convexity of $S$ implies the necessary
+weak lower semi-continuity concluding the proof.
 
-\begin{theorem}
-Assumption \ref{assumption:nu_bounded} implies that the problem
-\eqref{pbl:reformulation} attains its unique infimum.
-{\hfill $\square$}
-\end{theorem}
-
-We now derive the optimality conditions of \eqref{pbl:reformulation}.
-Using $p_t^i$ as a Lagrange multiplier and extremising $J$ leads to the
-following equations:
-
-%\begin{subequations}
-\begin{align}
-& \dot{p_t^i} + \nabla u(q_t^i) p_t^i + \half \nabla \nu(q_t^i) |p_t^i|^2 = 0\\
-& \dot{q_t^i} = u(q_t^i) + \nu(q_t^i) p^i_t\\
-& q_0,\,q_1\text{ fixed}
-\end{align}
-  \label{pbm:nonlinear_inner:optimality}
-%\end{subequations}
-
-In this paper we are concerned only with
-landmarks, so we can write the Lagrangian in terms of the state variables $\hat
-l(q, z) = \hat l(u, q, z)$ \cite{younes2010shapes}:
-\begin{align*}
-\vnorm{u}^2 = \sum_{i,j=0}^M K(q^i,q^j) p^i \cdot p^j
-\end{align*}
-
-where supercripts denote the landmark index. 
-%\inf_{\substack{u \in L^2([0,1],V)\\ q, z\, \in L^2([0,1],\RdM)}}
-    %& S = \int_0^1\sum_{i,j=0}^M K(q_t^i,q_t^j)
-  %& \dot{q_t^i} = \sum_{j=0}^M K(q_t^j, q_t^i)p_t^i + \sqrt{\nu(q_t^i)} z^i_t\\
-
-Extremising the action $S$ we obtain the equations: 
-\begin{align}\label{pq:optimality}
-& \dot p_i =\frac12 \sum_j \nabla K(q_i,q_j)p_i\cdot p_j  + \frac12 |p_i|^2
-\nabla \nu(q_i)\\
-& \dot q_i = \sum_j K(q_i,q_j)p_i + \nu(q_i)p_i\\
-& q_0,\,q_1\text{ fixed}
-\end{align}
-
-\begin{theorem}[Optimality Conditions]
-There exists a unique (? )solution $u, q, z$ to this system.
-
-This will give more conditions on $\nu$, like $\nu(x) \in C^{1}(\mathbb R^2)$. 
-\end{theorem}
+%\begin{theorem}[Optimality Conditions]
+%There exists a unique (? )solution $u, q, z$ to this system.
+%This will give more conditions on $\nu$, like $\nu(x) \in C^{1}(\mathbb R^2)$. 
+%\end{theorem}
 
 \bibliographystyle{abbrv}
 \bibliography{landmarks}
-
-
-
-
 \end{document}
-
