@@ -2,9 +2,9 @@
 # Job name
 #PBS -N run_mcmc_criss_cross
 # Time required in hh:mm:ss
-#PBS -l walltime=72:00:00
+#PBS -l walltime=80:00:00
 # Resource requirements
-#PBS -l select=1:ncpus=1:mpiprocs=1:ompthreads=1:mem=25999Mb
+#PBS -l select=1:ncpus=1:mpiprocs=1:ompthreads=1:mem=35999Mb
 # Files to contain standard error and standard output
 #PBS -o stdout_criss_cross
 #PBS -e stderr_criss_cross
@@ -14,7 +14,7 @@
  
 TEST_NUM=0
 NUM_SAMPLES=5000
-NUM_LANDMARKS=10
+NUM_LANDMARKS=8
 NUM_NUS=1
 LOGDIR='results_criss_cross'
  

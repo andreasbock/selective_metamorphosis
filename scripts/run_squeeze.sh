@@ -2,9 +2,9 @@
 # Job name
 #PBS -N run_mcmc_squeeze
 # Time required in hh:mm:ss
-#PBS -l walltime=72:00:00
+#PBS -l walltime=80:00:00
 # Resource requirements
-#PBS -l select=1:ncpus=1:mpiprocs=1:ompthreads=1:mem=25999Mb
+#PBS -l select=1:ncpus=1:mpiprocs=1:ompthreads=1:mem=35999Mb
 # Files to contain standard error and standard output
 #PBS -o stdout_squeeze
 #PBS -e stderr_squeeze
