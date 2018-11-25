@@ -1,5 +1,5 @@
 from mcmc import run_mcmc
-from lib import criss_cross, pringle, squeeze, triangle_flip
+from lib import criss_cross, pringle, squeeze, triangle_flip, pent_to_tri
 import sys
 
 args = sys.argv
@@ -22,6 +22,8 @@ elif test_num == 2:
     run_mcmc(*triangle_flip(num_landmarks=num_landmarks), num_samples, num_nus, log_dir)
 elif test_num == 3:
     run_mcmc(*pringle(num_landmarks=num_landmarks), num_samples, num_nus, log_dir)
+elif test_num == 4:
+    run_mcmc(*pent_to_tri(num_landmarks=num_landmarks), num_samples, num_nus, log_dir)
 else:
     print("No test specified!")
     exit(1)
