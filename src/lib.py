@@ -109,6 +109,68 @@ def triangle_flip(num_landmarks):
 
     return q0, q1, test_name
 
+def triangle_rot(num_landmarks):
+    test_name = 'triangle_rot'
+    q0, _, _ = triangle_flip(num_landmarks)
+
+    # rotate
+    theta = np.pi / 2
+    rot_m = np.array([[np.cos(theta), -np.sin(theta)],
+                      [np.sin(theta),  np.cos(theta)]])
+
+    new_origin = (a + b + c)/ 3. - np.array([-2.5, 0])
+    q1 = np.array(list(map(lambda p: np.dot(rot_m, p), np.copy(q0)))) + new_origin
+    return q0, q1, test_name
+
+def pent_to_square(num_landmarks):
+    test_name = 'pent_to_square'
+
+    if num_landmarks % 5 != 0:
+        print("Want a nice image, so satisfy 'num_landmarks % 5 == 0' !")
+        exit()
+    scale = 1
+
+    a = np.array([0, 0])
+    b = np.array([-.5, .5])
+    c = np.array([0, 1])
+    d = np.array([1, 1])
+    e = np.array([1, 0])
+
+    # interpolate between them to generate points
+    ss = num_landmarks // 5
+
+    pts = lambda x,y : [(1-s/ss) * x + s/ss * y for s in range(ss)]
+    q0 = np.array(pts(a, b) + pts(b, c) + pts(c, d) + pts(d, e) + pts(e, a))
+
+    # collapse B into C
+    q1 = np.array(ss*[a] + pts(a, c) + pts(c, d) + pts(d, e) + pts(e, a))
+    return q0, q1, test_name
+
+def pent_to_tri(num_landmarks):
+    test_name = 'pent_to_tri'
+
+    if num_landmarks % 5 != 0:
+        print("Want a nice image, so satisfy 'num_landmarks % 5 == 0' !")
+        exit()
+    scale = 1
+
+    a = np.array([0, 0])
+    b = np.array([-.5, .5])
+    c = np.array([0, 1])
+    d = np.array([1, 1])
+    e = np.array([1, 0])
+
+    # interpolate between them to generate points
+    ss = num_landmarks // 5
+
+    pts = lambda x,y : [(1-s/ss) * x + s/ss * y for s in range(ss)]
+    q0 = np.array(pts(a, b) + pts(b, c) + pts(c, d) + pts(d, e) + pts(e, a))
+
+    # collapse A&C into B
+    q1 = np.array(2*ss*[b] + pts(b, c) + pts(c, a) + pts(a, b))
+
+    return q0, q1, test_name
+
 def plot_target(q0, q1, fname=None):
     fig = plt.figure()
     q0_plt = np.append(q0, [q0[0,:]], axis=0)
@@ -197,7 +259,7 @@ def plot_q(x0, xs, N, fname, nus=None, title=None):
     plot_landmarks(xs[-1], start_style='x:', label='$q_1$', markersize=15)
     if title:
         plt.title(title)
-    if nus:
+    if nus is not None:
         nx, ny = np.array(nus).T
         s = [12*2**4] * len(nus)
         plt.scatter(nx, ny, s=s, color='purple', alpha=.3, label='centroid')
