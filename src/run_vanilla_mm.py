@@ -131,6 +131,7 @@ def run_mm(q0, q1, test_name):
 
     plot_q(x0, xs, num_landmarks, log_dir + 'mm_' + test_name)
 
+run_mm(*pent_to_tri(num_landmarks=25))
 run_mm(*criss_cross(num_landmarks=20))
 run_mm(*squeeze(num_landmarks=36))
 run_mm(*pringle(num_landmarks=16))

@@ -126,6 +126,7 @@ def run_lddmm(q0, q1, test_name):
 
     plot_q(x0, xs, num_landmarks, log_dir + 'lddmm_' + test_name)
 
+run_lddmm(*pent_to_tri(num_landmarks=40))
 run_lddmm(*criss_cross(num_landmarks=20))
 run_lddmm(*squeeze(num_landmarks=36))
 run_lddmm(*pringle(num_landmarks=16))
