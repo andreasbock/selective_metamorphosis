@@ -239,7 +239,8 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
         # log realisation for inspection
         if i % log_freq == 0 and term_colour == 'green':
             msg += "\n\t ! Saving sample!"
-            plot_q(x0, xs_prop, num_landmarks, log_dir + 'sample_{}'.format(i))
+            plot_q(x0, xs_prop, num_landmarks, log_dir + 'sample_{}'.format(i),
+                nus=centers)
 
         fnls.append(fnl)
         c_samples.append(centers)
@@ -269,7 +270,7 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
             # log and plot this MAP estimator
             fh.write("\t Functional = {} with center {}\n".format(val, me.centers))
             name = 'MAP_center_{}'.format(j)
-            plot_q(x0, me.xs, num_landmarks, log_dir + name)
+            plot_q(x0, me.xs, num_landmarks, log_dir + name, nus=centers)
 
             # serialise too because we can
             po = open(log_dir + name + ".pickle", "wb")
