@@ -433,22 +433,10 @@ algorithm:
 \end{algorithmic}
 \end{algorithm}
 
-Note that the $solveMetamorphosis()$ operation, in general, depends on how the
-spatial domain is treated e.g. whether we use landmarks or treat full images.
-In this paper we are only concerned with the former, so we use a standard and
-easily implemented procedure (cite) below 
-
-\textbf{$\longrightarrow$ Describe shooting/solution method}\\
-\begin{algorithm}[h!]
-\begin{algorithmic}
-\caption{Metamorphosis for fixed $\nu$}
-\Procedure{solveMetamorphosis}{}
-\State something either shooting or Firedrake
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
-
-\textbf{$\longrightarrow$ Something about adjoints here}\\
+The numerical solutions to the equations \eqref{?} are obtained using Theano
+\cite{team2016theano} which automatically generates the discrete adjoint
+equation used to shoot for the final conditions. The next section shows the
+algorithm above in practice.
 
 \section{Numerical examples}\label{sec:numerical}
 
