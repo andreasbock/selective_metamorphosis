@@ -414,14 +414,15 @@ algorithm:
 \begin{algorithm}[h!]
 \begin{algorithmic}
 \caption{MCMC on $\nu$}\label{algo:mcmc}
-\Procedure{mcmc}{$N$, $K$, $q_0$, $q_1$}
+\Procedure{mcmc}{$N$, $K$, $q_0$, $q_1$, $\beta\in (0,1]$}
 \State $j \gets 1$
-\State $\nu^j \gets \text{\emph{initial guess in} } \RdK$
+\State $\nu^j \gets \text{initial guess in } \RdK$
 \State Solve \eqref{?} with $\nu^j$ and $q_0,\,q_1$ to obtain $w^0 = (q^0,\, z^0,\, u^0)$
 \While{$j \leq N$}
-\State $\nu \gets \mhsample ()$\hspace{3cm} \emph{sample a new centroid}
+\State Sample a random point $\xi \in \mathcal N(0, \text{Id}_{\mathbb R^d})$
+\State $\nu \gets \beta \xi + (1-\beta) \nu^j$
 \State Solve \eqref{?} with $\nu$ and $q_0,\,q_1$ to obtain $w = (q,\, z,\, u)$
-\If {\textsc{randomUnit()}$\,< \min(1, e^{- E_{sm}^{\nu^j}(w^j) + E_{sm}^{\nu}(w)})$}
+\If {\textsc{randomUnit()}$\,< \min(1,\, e^{- E_{sm}^{\nu^j}(w^j) + E_{sm}^{\nu}(w)})$}
     \State $\nu^{j+1} \gets \nu$
 \Else
     \State $\nu^{j+1} \gets \nu^j$
