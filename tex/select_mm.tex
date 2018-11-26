@@ -95,23 +95,23 @@ corresponded to that of incompressible flows. See also ({\color{red} Refs of
 Darryl, etc\dots.}{\color{green} Not too sure which fluids papers to reference
 here!}) 
 
-If one does not want or need to have a strict diffeomorphic matching, an
-extension of LDDMM called metamorphosis
-\cite{trouve2005metamorphoses,holm2009euler} is available which introduces a
-parameter $\sigma^2$ parametrizing the deviation from diffeomorphic matching.
-In particular, if $\sigma^2=0$, metamorphosis reduces to LDDMM.  See
-\cite{trouve1995infinite,trouve2005local,miller2001group} for technical details
-pertaining to constructing the metamorphosis problem. This theory allows one to
-match images of shapes with different topological features, which would have
-been near impossible with the standard LDDMM.  Indeed, even for if we allow
-inexact matching in LDDMM, the image deformation will have to be close to the
-limit of the diffeomorphic matching, yielding a large and uncertain energy for
-the matching, thus a useless notion of distance between images.  The incertainty
-comes from the fact that for inexact matching, several almost trajectories of
-deformations can be computed, but with different energies.  Introducing the
-metamorphosis parameter $\sigma^2$ will stabilize this matching problem at the
-cost of breaking the diffeomorphic property on the whole image, or shape, and at
-all time in the deformation. 
+If a strictly diffeomorphic matching is not necessary, an extension of LDDMM
+called metamorphosis \cite{trouve2005metamorphoses,holm2009euler} is available
+which introduces a parameter $\sigma^2$ parametrizing the deviation from
+diffeomorphic matching.  In particular, if $\sigma^2=0$, metamorphosis reduces
+to LDDMM.  See \cite{trouve1995infinite,trouve2005local,miller2001group} for
+technical details pertaining to constructing the metamorphosis problem.  While
+diffeomorphic paths always exists for landmark problems
+\cite{guo2006diffeomorphic} this theory allows one to match images of shapes
+with different topological features, which is ill-conditioned for standard
+LDDMM. Indeed, even for if we allow inexact matching in LDDMM, the image
+deformation will have to be close to the limit of the diffeomorphic matching,
+yielding a large and uncertain energy for the matching, thus a useless notion of
+distance between images. The incertainty comes from the fact that for inexact
+matching, several almost trajectories of deformations can be computed, but with
+different energies.  Introducing the metamorphosis parameter $\sigma^2$ will
+stabilize this matching problem at the cost of breaking the diffeomorphic
+property on the whole image, or shape, and at all time in the deformation. 
 
 In this work, we modify the original metamorphosis problem to include an image
 dependent metamorphosis parameter $\nu(x)$ in order to obtain an almost
@@ -197,6 +197,7 @@ In the sequel, we will set $\lambda=0$ such that we
 only consider exact matching, the hardest problem to solve, especially for
 images non-topologically equivalent, as discussed in the introduction, see also
 Fig. \ref{fig:mm_lddmm}.
+
 
 In order to simplify the exposition, we will consider singular solutions of this
 problem, which are given by \begin{align}
@@ -413,8 +414,8 @@ algorithm:
 \newcommand{\acceptprob}{\textsc{accept}}
 \begin{algorithm}[h!]
 \begin{algorithmic}
-\caption{MCMC on $\nu$}\label{algo:mcmc}
-\Procedure{mcmc}{$N$, $K$, $q_0$, $q_1$, $\beta\in (0,1]$}
+\caption{MCMC for selective metamorphosis}\label{algo:mcmc}
+\Procedure{mcmcSM}{$N$, $K$, $q_0$, $q_1$, $\beta\in (0,1]$}
 \State $j \gets 1$
 \State $\nu^j \gets \text{initial guess in } \RdK$
 \State Solve \eqref{?} with $\nu^j$ and $q_0,\,q_1$ to obtain $w^0 = (q^0,\, z^0,\, u^0)$
