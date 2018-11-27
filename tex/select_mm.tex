@@ -212,6 +212,7 @@ The vector field is thus
 where $K:\mathbb R^2\times \mathbb R^2\to \mathbb R$ is the kernel associated to
 the norm $\|\cdot \|_V$.  For metamorphosis, we introduce a discrete template
 variable $\boldsymbol \eta_t$ such that the deformation of a set of landmarks is
+written as the composition of the template position and deformation as
 \begin{align}
   \mathbf q_t = \varphi_t \boldsymbol \eta_t\, . 
   \label{q_t}
@@ -224,7 +225,7 @@ Then, we can define the template velocity as
 and extend the energy \eqref{E-def} to 
 \begin{align}
   \begin{split}
-    E_m(u_t, \mathbf z) = & \int_0^1
+    E_m(\mathbf q_t, \mathbf p_t, \mathbf z_t) = & \int_0^1
     \half  \left (\vnorm{u_t}^2 + \frac{1}{\sigma^2} \sum_{i=1}^M |z_t^i|^2\right )\diff{t}
   \end{split}
   \label{E_m-def}
@@ -234,15 +235,16 @@ where now the reconstruction relation is
     \dot{\mathbf q_t} = u_t (\mathbf q_t) + \mathbf z_t\, , 
     \label{dq-m}
 \end{align}
-obtained from the definition of $z$ and $u$, see \cite{holm2009euler}.  before,
-the boundary conditions are given on the positions $\mathbf q(0)$ and $\mathbf
+obtained from \eqref{z_eta} and \eqref{q_t} together with  $u= \dot \varphi_t \varphi^{-1}$, 
+see \cite{holm2009euler} for more details.  
+Before, the boundary conditions are given on the positions $\mathbf q(0)$ and $\mathbf
 q(1)$, but we now have an extra term in the energy and the reconstruction
 equation \eqref{dq-m}. 
 
 By taking variations carefully, see again \cite{holm2009euler}, we directly obtain 
 \begin{align}
-  m(x) = \frac{1}{\sigma^2} \sum_i z_i\delta(x-q_i)\qquad \Rightarrow \qquad
-  z_i = \sigma^2 p_i\, , 
+  \mathbf m(x) = \frac{1}{\sigma^2} \sum_i z_i\delta(x-q_i)\qquad \Rightarrow \qquad
+  \mathbf z = \sigma^2 \mathbf p_i\, , 
 \end{align}
 and the equation of motions are
 \begin{align}
@@ -258,27 +260,39 @@ where $u_t$ is defined in \eqref{u-def}.
 
 We can now extend the metamorphosis setting to be able to locally control the
 amount of non-diffeomorphic evolution.  For this, we introduce a function $\nu:
-\mathbb R^2\to \mathbb R$ replacing the parameter $\sigma^2$ such that if
-$\nu(x)=\sigma^2$, we will recover the classic landmark metamorphosis.
-We thus choose to minimise the follwing energy functional:
+\mathbb R^2\to \mathbb R$ replacing the parameter $\sigma^2$ such that
+$\nu(x)=\sigma^2$ corresponds to the classic landmark metamorphosis.
+We thus choose to minimise the following energy functional:
 \begin{align}
   \begin{split}
-    E_{sm}^\nu(u_t, \mathbf q, \mathbf z) = & \int_0^1
-    \half  \left (\vnorm{u_t}^2 +\sum_{i=1}^M \frac{1}{\nu(q_t^i)}|z_tî|^2\right )\diff{t}
+    E_{sm}^\nu(\mathbf q_t, \mathbf p_t, \mathbf z_t) = & \int_0^1
+    \half  \left (\vnorm{u_t}^2 +\sum_{i=1}^M \frac{1}{\nu(q_t^i)}|z_t^i|^2\right )\diff{t}
   \end{split}
   \label{E_sm-def}
 \end{align}
 subject to the reconstruction equation \eqref{dq-m}. We have, as before that
 \begin{align}\label{zp_relation}
-  m(x) =  \sum_i \frac{1}{\nu(q_i)} z_i\delta(x-q_i)\qquad \Rightarrow \qquad
-  z_i = \nu(q_i) p_i\, , 
+  \mathbf m(x) =  \sum_i \frac{1}{\nu(q_i)} z_i\delta(x-q_i)\qquad \Rightarrow \qquad
+  z_i = \nu(q_i) p_i\quad \forall i\, , 
 \end{align}
-
+so we can get rid of the template variable $\mathbf z_t$ and write. 
+\begin{align}
+  \begin{split}
+    E_{sm}^\nu(\mathbf q_t, \mathbf p_t) = & \int_0^1
+    \half  \left (h_l(\mathbf q_t,\mathbf p_r)  +\sum_{i=1}^M \nu(q_t^i)|p_t^i|^2\right )\diff{t}\, , 
+  \end{split}
+  \label{E_sm-def_p}
+\end{align}
+for the standard landmark Hamiltonian
+\begin{align}
+  h_l(\mathbf q, \mathbf p) =  \frac12 \sum_{i,j}K(q_i-q_j)p_i\cdot p_j\, . 
+\label{hamiltonian}
+\end{align}
 We show that the optimisation problem \eqref{E_sm-def} is well-posed. First, we
-have
+need the assumption
 \begin{assumption}\label{assumption:nu_bounded}
-$\mathrm{max}(\nu) = \nu_m < \infty$ and $\nu$ is bounded from below
-away from zero by $\nuinf \in \mathbb R$.
+  $\mathrm{max}_\mathcal{D}(\nu) = \nu_m < \infty$ %and $\nu$ is bounded from below
+%away from zero by $\nuinf \in \mathbb R$.
 \end{assumption}
 
 \begin{theorem}\label{sm-eu}
@@ -288,60 +302,44 @@ Assumption \ref{assumption:nu_bounded} implies that the problem
 Proof: See appendix \ref{app:proof:sm-eu}.
 {\hfill $\square$}
 \end{theorem}
+{\color{red} I think we don't need $\nu>0$, using the $p$ variable it is fine to have $\nu=0$ on some subset of the domain $\mathcal D$, or even the whole domain is we don't want metamorphosis. 
+In this fully finite dimensional system, with only $p$ and $q$ as variables, how shall we proceed to prove this minimizer? No sure how to do that now\dots
+}
 
-The problem defined by \eqref{E_sm-def} yields the following equations for
+The problem defined by \eqref{E_sm-def_p} yields the following equations for
 selective metarmorphosis for landmarks:
 \begin{align}
   \begin{split}
   \dot{\mathbf p}_t &= - \nabla u_t(\mathbf q_t)^T \mathbf p_t - \sum_i \frac12
   \nabla \nu(q_i) |p_i|^2\\ \dot{\mathbf q}_t &= u_t(\mathbf q_t) +
-  \nu(q_i)\mathbf p_t \,.
+  \nu(q_i)\mathbf p_t \,,
 \end{split}
   \label{eq-m-classic}
 \end{align}
-Note that via relation \eqref{zp_relation}, if $\nu(x)=0$ in parts of the domain
-these equations allow the diffeomorphism to attain non-zero momentum without
-moving the image. The equation for the variable $\mathbf z_t$ can be written as 
+whereas the equation for the variable $\mathbf z_t$ is simply 
 \begin{align}
-  \dot  z_i &= \nabla_i u(\mathbf q_t) z_i\,, 
+  \dot  {\mathbf z}_t&= \nabla u(\mathbf q_t)^T \mathbf z_t\,, 
 \end{align}
-{\color{blue} indeed, the complete equation is 
-\begin{align}
-  \frac{d}{dt} \left ( \frac{z}{\nu(q)}\right) = \nabla \left ( \frac{z}{\nu(q)}
-  u(q)\right ) - \frac{\nabla \nu(q)}{\nu^2(q)}z^2\, .
-\end{align}
-}
+
+Note that if $\nu(x)=0$ in parts of the domain, the dynamics will follow
+the standard LDDMM landmark dynamics. This can also be seen in the relation 
+\eqref{zp_relation}, where $\nu(x)=0$  implies that $z_t=0$, this the template
+does not move. 
+
 Notice that these equations are Hamiltons equation for the Hamiltonian, or
 energy density function written in term of $\mathbf p_t$ and $\mathbf q_t$
 \begin{align}
-  h(\mathbf q, \mathbf p) =  \frac12 \sum_{i,j}K(q_i-q_j)p_i\cdot p_j+ \frac12
-\sum_i \nu(q_i) |p_i|^2\,.  \end{align}
+  h(\mathbf q, \mathbf p) = h_l(\mathbf q_t, \mathbf p_t)+ \frac12 \sum_i \nu(q_i) |p_i|^2\,,  
+\end{align}
+thus the metamorphosis term act as a local correction to the kinetic energy. 
 
 The goal of this work is to infer the unknown function $\nu$ so as to gather
 information about where in the spatial domain we are most likely to observe
 metamorphic behaviour via a Bayesian framework as in \cite{dashti2017bayesian}.
 
-Using the equation for $z$, we can write $z_t = z_t \circ \varphi^{-1}$, and
-together with the relations \eqref{q_t} and \eqref{z_eta}, we can write
-\begin{align*}
-  \mathbf q_t &= \varphi_t \mathbf q_0 + \varphi_t \eta_t\\
-   &= \varphi_t \mathbf q_0 + \varphi_t \int \dot \eta_t dt\\
-   &= \varphi_t \mathbf q_0 + \varphi_t \int \varphi_t^{-1} \varphi_t\dot \eta_t dt\\
-   &= \varphi_t \mathbf q_0 + \varphi_t \int  \varphi_t^{-1}\mathbf z dt \\
-   &= \varphi_t \mathbf q_0 + \varphi_t \int  \varphi_t^{-1}\nu(\mathbf q_t) \mathbf p_t  dt\\
-   &= \varphi_t \mathbf q_0 + \varphi_t \int  \varphi_t^{-1}\mathbf z_0\circ \varphi_t^{-1} dt\, , 
-\end{align*}
-and directly verify that it satisfy the equation of motions by computing
-\begin{align*}
-  \dot {\mathbf q}_t = \dot \varphi_t \varphi_t^{-1} \varphi \mathbf q_0 + \dot
-  \varphi_t \varphi_t^{-1} \varphi_t \eta_t + \varphi_t \dot \eta_t  = u_t(
-  \mathbf q_t) + \mathbf z_t\, ,
-\end{align*}
-using $\dot \varphi_t\varphi_t^{-1} = u_t$. 
-This is the integral form of the equation of motion, which is the same equation
-as in \cite{holm2009euler}[eqn 19], thus the same existence and uniqueness
-results hold for both the initial value and the boundary value problems.
-{\color{red} I AM HERE}
+\begin{theorem}
+  Equation well-posed, \dots see appendix. 
+\end{theorem}
 
 \section{Bayesian Framework}\label{sec:bayesian}
 
@@ -409,7 +407,8 @@ complexity of sampling. We defer sampling from function space to future work
 \cite{.}. Defining a density $p_{sm} \propto e^{- E_{sm}^\nu}$ over the space of
 selective metamorphoses for a prescribed $\nu$ leading to the following MCMC
 algorithm:
-
+{\color{red} Are you doing the pCN algorithm  of \cite{cotter2013mcmc} with the 
+$\beta$ paramter? They have $\sqrt{1-\beta^2}$ instead of $1-\beta$, does this matter?}
 \newcommand{\mhsample}{\textsc{sampleCentroid}}
 \newcommand{\acceptprob}{\textsc{accept}}
 \begin{algorithm}[h!]
@@ -541,23 +540,26 @@ first-order exploratory tool for physicians, to see if the development of a
 biological feature stems from a few violations of diffeomorphic evolution.}
 
 
-Another choice is 
-\begin{align}
-    l(q,p) = \|u\|_B^2 + \sum_i p_i\cdot \nu(q_i) \, , 
-\end{align}
-where $\nu:\mathbb R^2 \to \mathbb R^2$, which will give more freedom on the
-metamorphosis term, and give equations of motion as \begin{align}
-    \dot p_i  &= \nabla u(q_i)p_i  + p_i \cdot \nabla \nu(q_i)\\
-    \dot q &= u(q_i) + \nu(q_i) 
-\end{align}
+%Another choice is 
+%\begin{align}
+%    l(q,p) = \|u\|_B^2 + \sum_i p_i\cdot \nu(q_i) \, , 
+%\end{align}
+%where $\nu:\mathbb R^2 \to \mathbb R^2$, which will give more freedom on the
+%metamorphosis term, and give equations of motion as \begin{align}
+%    \dot p_i  &= \nabla u(q_i)p_i  + p_i \cdot \nabla \nu(q_i)\\
+%    \dot q &= u(q_i) + \nu(q_i) 
+%\end{align}
 
-Natural extensions of this work include fully determining e.g. the Fourier modes
-of $\nu$ via the stochastic framework.\\
+{\color{red} We should say that this paper is a first step toward image matching, 
+with topological features such as growth, etc\dots}
 
 Future work also includes extending this framework to images e.g. using the
 kernel framework in \cite{richardson2016metamorphosis}, or developing a
 space-time method. Formalising the measure-theory necessary to consider the
 limit of ? as $k\rightarrow\infty$.\\
+
+Natural extensions of this work include fully determining e.g. the Fourier modes
+of $\nu$ via the MCMC framework.\\
 
 Moreover, adding a time-dependency to $\nu$ is also to be explored. It is our
 hope that we can extend the theory developed here to encompass classic
@@ -608,6 +610,34 @@ weak lower semi-continuity concluding the proof.
 %There exists a unique (? )solution $u, q, z$ to this system.
 %This will give more conditions on $\nu$, like $\nu(x) \in C^{1}(\mathbb R^2)$. 
 %\end{theorem}
+
+\section{Well-posedness of the equation of motion}
+Using the equation for $z$, we can formally write $z_t = z_t \circ \varphi^{-1}$,
+which corresponds to writing the initial $z_0(x) = \sum_i z_0^i\delta(x-x_0^i)$, 
+and the time dependent solution $z_t(x) = \sum_i z_0^i\delta(x-q_t^i)$ (see 
+\cite{holm2009euler}[sec 11.2] for more details). Together with the relations 
+\eqref{q_t} and \eqref{z_eta} and $\eta_0 = q_0$ as $\varphi_0 = Id$, we can write
+\begin{align*}
+  \mathbf q_t &= \varphi_t \eta_t\\
+   &= \varphi_t \mathbf q_0 + \varphi_t \eta_t-\varphi_t \eta_0\\
+   &= \varphi_t \mathbf q_0 + \varphi_t \int \dot \eta_t dt\\
+   &= \varphi_t \mathbf q_0 + \varphi_t \int \varphi_t^{-1} \varphi_t\dot \eta_t dt\\
+   &= \varphi_t \mathbf q_0 + \varphi_t \int  \varphi_t^{-1}\mathbf z dt \\
+   &= \varphi_t \mathbf q_0 + \varphi_t \int  \varphi_t^{-1}\nu(\mathbf q_t) \mathbf p_t  dt\\
+   &= \varphi_t \mathbf q_0 + \varphi_t \int  \varphi_t^{-1}\mathbf z_0\circ \varphi_t^{-1} dt\, , 
+\end{align*}
+and directly verify that it satisfy the equation of motions by computing
+\begin{align*}
+  \dot {\mathbf q}_t = \dot \varphi_t \varphi_t^{-1} \varphi \mathbf q_0 + \dot
+  \varphi_t \varphi_t^{-1} \varphi_t \eta_t + \varphi_t \dot \eta_t  = u_t(
+  \mathbf q_t) + \mathbf z_t\, ,
+\end{align*}
+using $\dot \varphi_t\varphi_t^{-1} = u_t$. 
+This is the integral form of the equation of motion, which is the same equation
+as in \cite{holm2009euler}[eqn 19], with the only difference in the term $\nu(q) p_i$ 
+in the reconstruction relation. 
+{\color{red} Can we simply redo the same proof, but being careful when they need this term, 
+and make sure that $\nu(x)<\nu_{max}$ is enough? maybe the derivative needs to be smooth, too. }
 
 \bibliographystyle{abbrv}
 \bibliography{landmarks}
