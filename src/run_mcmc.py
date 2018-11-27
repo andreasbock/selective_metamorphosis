@@ -9,8 +9,8 @@ if len(args) < 2:
     exit(1)
 
 test_num      = int(args[1])
-num_landmarks = int(args[2])
-num_samples   = int(args[3])
+num_samples   = int(args[2])
+num_landmarks = int(args[3])
 num_nus       = int(args[4])
 log_dir       = str(args[5])
 
