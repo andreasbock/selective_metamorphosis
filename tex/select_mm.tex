@@ -31,6 +31,7 @@
 \newcommand{\V}{\mathbf{v}}
 \newcommand{\Rd}{\mathbb{R}^{d}}
 \newcommand{\RdM}{\mathbb{R}^{d\times M}}
+\newcommand{\RdK}{\mathbb{R}^{d\times K}}
 \newcommand{\nuinf}{\nu_\text{inf}}
 
 \newtheorem{assumption}{Assumption}
@@ -94,23 +95,23 @@ corresponded to that of incompressible flows. See also ({\color{red} Refs of
 Darryl, etc\dots.}{\color{green} Not too sure which fluids papers to reference
 here!}) 
 
-If one does not want or need to have a strict diffeomorphic matching, an
-extension of LDDMM called metamorphosis
-\cite{trouve2005metamorphoses,holm2009euler} is available which introduces a
-parameter $\sigma^2$ parametrizing the deviation from diffeomorphic matching.
-In particular, if $\sigma^2=0$, metamorphosis reduces to LDDMM.  See
-\cite{trouve1995infinite,trouve2005local,miller2001group} for technical details
-pertaining to constructing the metamorphosis problem. This theory allows one to
-match images of shapes with different topological features, which would have
-been near impossible with the standard LDDMM.  Indeed, even for if we allow
-inexact matching in LDDMM, the image deformation will have to be close to the
-limit of the diffeomorphic matching, yielding a large and uncertain energy for
-the matching, thus a useless notion of distance between images.  The incertainty
-comes from the fact that for inexact matching, several almost trajectories of
-deformations can be computed, but with different energies.  Introducing the
-metamorphosis parameter $\sigma^2$ will stabilize this matching problem at the
-cost of breaking the diffeomorphic property on the whole image, or shape, and at
-all time in the deformation. 
+If a strictly diffeomorphic matching is not necessary, an extension of LDDMM
+called metamorphosis \cite{trouve2005metamorphoses,holm2009euler} is available
+which introduces a parameter $\sigma^2$ parametrizing the deviation from
+diffeomorphic matching.  In particular, if $\sigma^2=0$, metamorphosis reduces
+to LDDMM.  See \cite{trouve1995infinite,trouve2005local,miller2001group} for
+technical details pertaining to constructing the metamorphosis problem.  While
+diffeomorphic paths always exists for landmark problems
+\cite{guo2006diffeomorphic} this theory allows one to match images of shapes
+with different topological features, which is ill-conditioned for standard
+LDDMM. Indeed, even for if we allow inexact matching in LDDMM, the image
+deformation will have to be close to the limit of the diffeomorphic matching,
+yielding a large and uncertain energy for the matching, thus a useless notion of
+distance between images. The incertainty comes from the fact that for inexact
+matching, several almost trajectories of deformations can be computed, but with
+different energies.  Introducing the metamorphosis parameter $\sigma^2$ will
+stabilize this matching problem at the cost of breaking the diffeomorphic
+property on the whole image, or shape, and at all time in the deformation. 
 
 In this work, we modify the original metamorphosis problem to include an image
 dependent metamorphosis parameter $\nu(x)$ in order to obtain an almost
@@ -183,10 +184,10 @@ space $u_t \in V$ induces a curve on a subgroup $G_V$ of diffeomorphisms
   \label{diffeo}
 \end{align}
 with $\varphi_t \in G_V$, $\forall t$ and $u_t$ is a time-dependent vector
-field, obtained as a solution of the optimisation problem
+field, obtained by minimising the following energy
 \begin{align}
-  E(u_t) = \min_{\hat u_t} \int_0^1 \half\vnorm{\hat u_t}^2 \diff{t} +
-  \frac{1}{\sigma^2} S(I_0\circ\varphi_1, I_1)\, , \label{E-def}
+  E(u) = \int_0^1 \half\vnorm{u_t}^2 \diff{t} + \frac{1}{\sigma^2}
+  S(I_0\circ\varphi_1, I_1)\, , \label{E-def}
 \end{align}
 where $S$ denotes a similarity measure or norm between the deformed initial
 image $I_0\circ \varphi_1$ and the target image $I_1$ to allow inexact matching
@@ -196,6 +197,7 @@ In the sequel, we will set $\lambda=0$ such that we
 only consider exact matching, the hardest problem to solve, especially for
 images non-topologically equivalent, as discussed in the introduction, see also
 Fig. \ref{fig:mm_lddmm}.
+
 
 In order to simplify the exposition, we will consider singular solutions of this
 problem, which are given by \begin{align}
@@ -222,8 +224,8 @@ Then, we can define the template velocity as
 and extend the energy \eqref{E-def} to 
 \begin{align}
   \begin{split}
-    E_m(u_t,\mathbf z) =\min_{\hat u_t, \hat{\mathbf z}} & \int_0^1
-    \half  \left (\vnorm{\hat u_t}^2 + \frac{1}{\sigma^2} \sum_i |\hat{z_i}|^2\right )\diff{t}
+    E_m(u_t, \mathbf z) = & \int_0^1
+    \half  \left (\vnorm{u_t}^2 + \frac{1}{\sigma^2} \sum_{i=1}^M |z_t^i|^2\right )\diff{t}
   \end{split}
   \label{E_m-def}
 \end{align}
@@ -255,25 +257,17 @@ where $u_t$ is defined in \eqref{u-def}.
 \section{Selective Metamorphosis for Landmarks}\label{sec:select_mm}
 
 We can now extend the metamorphosis setting to be able to locally control the
-amount of non-diffeomorphic evolution.  For this, we introduce a positive smooth
-bounded function $\nu: \mathbb R^2\to \mathbb R$, with $\mathrm{max}(\nu) =
-\nu_m$ which will replace the parameter $\sigma^2$ such that if
-$\nu(x)=\sigma^2$, we will recover the classic landmark metamorphosis.  We thus
-choose the energy functional to be
-
-We can now extend the metamorphosis setting to be able to locally control the
 amount of non-diffeomorphic evolution.  For this, we introduce a function $\nu:
 \mathbb R^2\to \mathbb R$ replacing the parameter $\sigma^2$ such that if
 $\nu(x)=\sigma^2$, we will recover the classic landmark metamorphosis.
-We thus choose the energy functional to be
+We thus choose to minimise the follwing energy functional:
 \begin{align}
   \begin{split}
-    E_{sm}(u_t,\mathbf z) =\min_{\hat u_t, \hat{\mathbf z}} & \int_0^1
-    \half  \left (\vnorm{\hat u_t}^2 +\sum_i \frac{1}{\nu(q_i)} |\hat{z_i}|^2\right )\diff{t}
+    E_{sm}^\nu(u_t, \mathbf q, \mathbf z) = & \int_0^1
+    \half  \left (\vnorm{u_t}^2 +\sum_{i=1}^M \frac{1}{\nu(q_t^i)}|z_tî|^2\right )\diff{t}
   \end{split}
   \label{E_sm-def}
 \end{align}
-
 subject to the reconstruction equation \eqref{dq-m}. We have, as before that
 \begin{align}\label{zp_relation}
   m(x) =  \sum_i \frac{1}{\nu(q_i)} z_i\delta(x-q_i)\qquad \Rightarrow \qquad
@@ -392,7 +386,7 @@ have the key ingredients necessary to define a MCMC algorithm
 $a(f^{k+1}, f^k)$ else $f^{k+1} \gets f^k$
 \item $k \gets k + 1$
 \end{enumerate}
-where we implement the acceptance probability as $a(g,h) = \min(1, e^{-J^{k+1} +
+where we implement the acceptance probability as $\min(1, e^{-J^{k+1} +
 J^k})$.
 
 \textbf{$\longrightarrow$ Finish}\\
@@ -404,62 +398,47 @@ We now introduce the main problem of this paper in the setting above. We
 consider $\nu$ as a random variable, indeed a random \emph{function}, occupying
 some space yet to be determined. This is an appropriate framework because if the
 lack of uniqueness allows for a qualitative evaluation of a solution to
-selective metamorphosis. In this paper we consider the case where $\nu$ is given
-by a sum of exponentials:
+selective metamorphosis. We consider the case where $\nu$ is given by a sum of
+exponentials:
 \begin{equation}
-    \nu_h (x) := \sum_k e^{-\|h_k - x\|_{\Rd}^2}
+    \nu_h (x) = \sum_{k=1}^K e^{ -\sigma_\nu^{-2}\|h_k - x\|_{\Rd}^2}
 \end{equation}
-Here the finite family $h_k$ of centroids in $\Rd$ fully determine $\nu_h$, thus
-greatly reducing the complexity of sampling. We defer sampling from function
-space to future work \cite{.}
-
-Defining a $p_{sm}(u, ) \propto e^{- E_{sm}(}$
- %E_{sm}(u_t,\mathbf z)
-\begin{align}
-	\Phi(a_k) = S(\nu,q_0,q_1) + |\nu|_V^2
-\end{align}
-where, for example $ V = {L_2(\mathcal D)}$.
+Here the finite family $h_k$ of centroids in $\Rd$ together with the uniform
+length-scale $\sigma_\nu$ fully determine $\nu_h$, thus greatly reducing the
+complexity of sampling. We defer sampling from function space to future work
+\cite{.}. Defining a density $p_{sm} \propto e^{- E_{sm}^\nu}$ over the space of
+selective metamorphoses for a prescribed $\nu$ leading to the following MCMC
+algorithm:
 
 \newcommand{\mhsample}{\textsc{sampleCentroid}}
-\newcommand{\acceptprob}{\textsc{acceptanceProbability}}
-
+\newcommand{\acceptprob}{\textsc{accept}}
 \begin{algorithm}[h!]
 \begin{algorithmic}
-\caption{MCMC on $\nu$}\label{algo:mcmc}
-\Procedure{quasiMCMC}{$N$}
-\State $k \gets 0$
-\State $\nu^k \gets \text{ some initial guess}$
-\While{$k < N$}
-\State $\nu \gets \mhsample ()$\hspace{3cm} \textbf{\# sample a new centroid}
-\State $(q, z, u) \gets $
-\If {\textsc{randomUnit()}$\,< \acceptprob(q, z)$}
-    \State do update
+\caption{MCMC for selective metamorphosis}\label{algo:mcmc}
+\Procedure{mcmcSM}{$N$, $K$, $q_0$, $q_1$, $\beta\in (0,1]$}
+\State $j \gets 1$
+\State $\nu^j \gets \text{initial guess in } \RdK$
+\State Solve \eqref{?} with $\nu^j$ and $q_0,\,q_1$ to obtain $w^0 = (q^0,\, z^0,\, u^0)$
+\While{$j \leq N$}
+\State Sample a random point $\xi \in \mathcal N(0, \text{Id}_{\mathbb R^d})$
+\State $\nu \gets \beta \xi + (1-\beta) \nu^j$
+\State Solve \eqref{?} with $\nu$ and $q_0,\,q_1$ to obtain $w = (q,\, z,\, u)$
+\If {\textsc{randomUnit()}$\,< \min(1,\, e^{- E_{sm}^{\nu^j}(w^j) + E_{sm}^{\nu}(w)})$}
+    \State $\nu^{j+1} \gets \nu$
 \Else
-    \State don't do update
+    \State $\nu^{j+1} \gets \nu^j$
 \EndIf
-\State $k\gets k+1$
+\State $j\gets j+1$
 \EndWhile
-\Return $q^k,\, z^k,\, u^k$
+\Return $\{\nu^j,\, q^j,\, z^j,\, u^j\}_{j=1}^N$
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
 
-Note that the $solveMetamorphosis()$ operation, in general, depends on how the
-spatial domain is treated e.g. whether we use landmarks or treat full images.
-In this paper we are only concerned with the former, so we use a standard and
-easily implemented procedure (cite) below 
-
-\textbf{$\longrightarrow$ Describe shooting/solution method}\\
-\begin{algorithm}[h!]
-\begin{algorithmic}
-\caption{Metamorphosis for fixed $\nu$}
-\Procedure{solveMetamorphosis}{}
-\State something either shooting or Firedrake
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
-
-\textbf{$\longrightarrow$ Something about adjoints here}\\
+The numerical solutions to the equations \eqref{?} are obtained using Theano
+\cite{team2016theano} which automatically generates the discrete adjoint
+equation used to shoot for the final conditions. The next section shows the
+algorithm above in practice.
 
 \section{Numerical examples}\label{sec:numerical}
 
