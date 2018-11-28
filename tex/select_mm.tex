@@ -33,6 +33,7 @@
 \newcommand{\RdM}{\mathbb{R}^{d\times M}}
 \newcommand{\RdK}{\mathbb{R}^{d\times K}}
 \newcommand{\nuinf}{\nu_\text{inf}}
+\newcommand{\mdiv}{\text{div}}
 
 \newtheorem{assumption}{Assumption}
 
@@ -75,59 +76,53 @@
 
 In computational anatomy
 \cite{grenander1994representations,grenander1998computational}, one of the most
-fundamental problem is to continuously deform an image, or shape into another
-and thereby obtain a natural notion of distance between them, from the energy
-required for this deformation.  These distances can then be used for image
-registration, atlas construction, etc\dots see \cite{todo} for more
-applications. On of the most common method to compute image deformations is
-based on the notion of diffeomorphic deformations which assume that the images
-are continuously deformed into one another with the additional property that the
-inverse deformation is also continuous.  This is a strong requirement for images
-which implies that the 'mass' of any part of the image is conserved: we cannot
-create or close 'holes'.  This property is also a crucial property of fluid
-mechanics, and in fact, the theory of diffeomorphic matching carrying the
-moniker \emph{Large Deformation Diffeomorphic Metric Mapping}
-\cite{trouve1998diffeomorphisms,beg2005computing} (LDDMM) has been inspired by
-fluid mechanics. Indeed, one of the central pillars on which this field relies
-is the observation made by Arnold \cite{arnold1966geometrie} that the geodesic
-equations for the diffeomorphism group induced by divergence-free vector fields
-corresponded to that of incompressible flows. See also ({\color{red} Refs of
-Darryl, etc\dots.}{\color{green} Not too sure which fluids papers to reference
-here!}) 
+fundamental problem is to continuously deform an image or shape into another and
+thereby obtain a natural notion of distance between them as the energy required
+for this deformation.  These distances can then be used for image registration,
+atlas construction, etc\dots see \cite{todo} for more applications. One of the
+most common method to compute image deformations is based on diffeomorphic
+deformations which assume that the images are continuously deformed into one
+another with the additional property that the inverse deformation is also
+continuous.  This is a strong requirement for images which implies that the
+'mass' of any part of the image is conserved: we cannot create or close 'holes'.
+This property is also a crucial property of fluid mechanics, and in fact, the
+theory of diffeomorphic matching carrying the moniker \emph{Large Deformation
+Diffeomorphic Metric Mapping} \cite{trouve1998diffeomorphisms,beg2005computing}
+(LDDMM) has been inspired by fluid mechanics. Indeed, one of the central pillars
+on which this field relies is the observation made by Arnold
+\cite{arnold1966geometrie} that the geodesic equations for the diffeomorphism
+group induced by divergence-free vector fields corresponded to that of
+incompressible flows. See also ({\color{red} Refs of Darryl,
+etc\dots.}{\color{green} Not too sure which fluids papers to reference here!}) 
 
-If a strictly diffeomorphic matching is not necessary, an extension of LDDMM
-called metamorphosis \cite{trouve2005metamorphoses,holm2009euler} is available
-which introduces a parameter $\sigma^2$ parametrizing the deviation from
-diffeomorphic matching.  In particular, if $\sigma^2=0$, metamorphosis reduces
-to LDDMM.  See \cite{trouve1995infinite,trouve2005local,miller2001group} for
-technical details pertaining to constructing the metamorphosis problem.  While
-diffeomorphic paths always exists for landmark problems
-\cite{guo2006diffeomorphic} this theory allows one to match images of shapes
-with different topological features, which is ill-conditioned for standard
-LDDMM. Indeed, even for if we allow inexact matching in LDDMM, the image
-deformation will have to be close to the limit of the diffeomorphic matching,
-yielding a large and uncertain energy for the matching, thus a useless notion of
-distance between images. The incertainty comes from the fact that for inexact
-matching, several almost trajectories of deformations can be computed, but with
-different energies.  Introducing the metamorphosis parameter $\sigma^2$ will
-stabilize this matching problem at the cost of breaking the diffeomorphic
-property on the whole image, or shape, and at all time in the deformation. 
+If a strictly diffeomorphic matching is not possible or necessary, an extension
+of LDDMM called metamorphosis \cite{trouve2005metamorphoses,holm2009euler} is
+available which introduces a parameter $\sigma^2$ parametrizing the deviation
+from diffeomorphic matching.  In particular, if $\sigma^2=0$ the deformation is
+purely diffeomorphic as in LDDMM. See
+\cite{trouve1995infinite,trouve2005local,miller2001group} for technical details
+pertaining to constructing the metamorphosis problem.  While diffeomorphic paths
+always exists for landmark problems \cite{guo2006diffeomorphic} this theory
+allows one to match images of shapes with different topological features, which
+is ill-conditioned for standard LDDMM. Indeed, even inexact matching in LDDMM
+for such problems yields large energies and spurious geodesics that do not
+contribute to an intuitive macthing see e.g. figure \ref{fig:mm_lddmm}. As
+observed here, introducing $\sigma^2>0$ regularises the problem and qualitative
+improves the matching.\\
 
-In this work, we modify the original metamorphosis problem to include an image
-dependent metamorphosis parameter $\nu(x)$ in order to obtain an almost
-diffeomorphic matching, but without the energy or inexact matching problem, see
-figure \ref{fig:mm_lddmm}.  If $\nu(x) = \sigma^2$, our theory will reduces to
-the standard metamorphosis model, but with a localised $\nu(x)$, we can
+In this work, we modify the original metamorphosis problem to include a
+spatially dependent metamorphosis parameter $\nu(x)$ in order to obtain an
+almost diffeomorphic matching. If $\nu(x) = \sigma^2$, our theory will reduces
+to the standard metamorphosis model, but with a localised $\nu(x)$, we can
 selectively introduce metamorphosis on an image and model local topological
 effects, such as hole creation or annihilation.  The difficulty of this problem
 is to infer the function $\nu(x)$ without a priory knowledge of the location of
-the topological effects.  We will use a Markov chain approach to infer good
-functions $\nu(x)$, such that the topological effects are well described and a
-large part of the matching remains diffeomorphic.  For this paper, we will focus
-on landmark matching, but the theory of selective metamorphosis can be extended
-to any data structures that the classical metamorphosis of LDDMM theory can
-handle, see {\color{red} cite next paper in preparation!}. 
-
+the topological effects.  We will use a Markov chain approach to infer
+appropriate functions $\nu(x)$, such that the topological effects are well
+described and a large part of the matching remains diffeomorphic.  For this
+paper, we will focus on landmark matching, but the theory of selective
+metamorphosis can be extended to any data structures that the classical
+metamorphosis of LDDMM theory can handle \cite{bockarnaudoncotter2019}.
 
 \begin{figure}
 \centering
@@ -189,24 +184,20 @@ field, obtained by minimising the following energy
   E(u) = \int_0^1 \half\vnorm{u_t}^2 \diff{t} + \frac{1}{\sigma^2}
   S(I_0\circ\varphi_1, I_1)\, , \label{E-def}
 \end{align}
-where $S$ denotes a similarity measure or norm between the deformed initial
-image $I_0\circ \varphi_1$ and the target image $I_1$ to allow inexact matching
-parametrised by $\sigma^2$. The LDDMM) approach takes $S$ as an $L^2$ norm on the difference between
-its arguments.
-In the sequel, we will set $\lambda=0$ such that we
-only consider exact matching, the hardest problem to solve, especially for
-images non-topologically equivalent, as discussed in the introduction, see also
-Fig. \ref{fig:mm_lddmm}.
-
+where $S$ denotes a similarity measure between the deformed initial image
+$I_0\circ \varphi_1$ and the target image $I_1$ to allow inexact matching
+parametrised by $\sigma^2$. The LDDMM approach takes $S$ as an $L^2$ norm on
+the difference between its arguments.\\
 
 In order to simplify the exposition, we will consider singular solutions of this
-problem, which are given by \begin{align}
-  \frac{\delta l}{\delta u} = m(x) = \sum_i p_i \delta(x-q_i)\,, 
-\end{align}
-for $N$ landmarks with position $q_i\in \mathbb R^2 $ and momenta $p_i \in \mathbb R^2$. 
-The vector field is thus 
+problem, which are given by
 \begin{align}
-  u(x) = \sum_i p_i K(x-q_i)\,, 
+  \frac{\delta l}{\delta u} = \mathbf m(x) = \sum_{i=1}^M p_t^i \delta(x-q_t^i)\,, 
+\end{align}
+for $N$ landmarks with position $q_t^i\in \mathbb R^2 $ and momenta $p_t^i \in
+\mathbb R^2$. The vector field is thus 
+\begin{align}
+  u(x) = \sum_{i=1}^M p_t^i K(x-q_t^i)\,, 
   \label{u-def}
 \end{align}
 where $K:\mathbb R^2\times \mathbb R^2\to \mathbb R$ is the kernel associated to
@@ -243,18 +234,27 @@ equation \eqref{dq-m}.
 
 By taking variations carefully, see again \cite{holm2009euler}, we directly obtain 
 \begin{align}
-  \mathbf m(x) = \frac{1}{\sigma^2} \sum_i z_i\delta(x-q_i)\qquad \Rightarrow \qquad
+  \mathbf m(x) = \frac{1}{\sigma^2} \sum_{i=1}^M z_t^i\delta(x-q_i)\qquad \Rightarrow \qquad
   \mathbf z = \sigma^2 \mathbf p_i\, , 
 \end{align}
 and the equation of motions are
 \begin{align}
   \begin{split}
-  \dot{\mathbf p_t} &= - \nabla u_t(\mathbf q_t)^T \mathbf p_t\\ 
+  \dot{\mathbf p_t} &= -\mdiv (u_t(\mathbf q_t)^T \mathbf p_t)\\ 
   \dot{\mathbf q_t} &= u_t(\mathbf q_t) +  \sigma^2\mathbf p_t \,,
   \end{split}
   \label{eq-m-classic}
 \end{align}
-where $u_t$ is defined in \eqref{u-def}. 
+
+where $u_t$ is defined in \eqref{u-def}. We emphasise a subtlety - the landmark
+equations above are actually those for \emph{measure metamorphosis}
+\cite[Section 11.1, equation 33]{holm2009euler}. However, since $p_t$ does not
+explicitly depend on the landmark positions above the momentum equation
+simplifies to $\dot{\mathbf p_t} = - \nabla u_t(\mathbf q_t)^T \mathbf p_t$.\\
+
+In the next section we generalise the penalty parameter above and introduce a
+spatially dependent $\sigma^2$. We analyse the resulting optimisation problem
+and extend the equations \eqref{eq-m-classic}.
 
 \section{Selective Metamorphosis for Landmarks}\label{sec:select_mm}
 
@@ -270,10 +270,11 @@ We thus choose to minimise the following energy functional:
   \end{split}
   \label{E_sm-def}
 \end{align}
-subject to the reconstruction equation \eqref{dq-m}. We have, as before that
+subject to the reconstruction equation \eqref{dq-m} and the boundary conditions
+$\mathbf q_0$ and $\mathbf q_1$ at time $t=0,\,1$. We have, as before that
 \begin{align}\label{zp_relation}
-  \mathbf m(x) =  \sum_i \frac{1}{\nu(q_i)} z_i\delta(x-q_i)\qquad \Rightarrow \qquad
-  z_i = \nu(q_i) p_i\quad \forall i\, , 
+  \mathbf m(x) = \sum_{i=1}^M \frac{1}{\nu(q_t^i)} z_t^i\delta(x-q_i)\qquad \Rightarrow \qquad
+  z_t^i = \nu(q_t^i) p_t^i\quad \forall i\, , 
 \end{align}
 so we can get rid of the template variable $\mathbf z_t$ and write. 
 \begin{align}
@@ -285,7 +286,7 @@ so we can get rid of the template variable $\mathbf z_t$ and write.
 \end{align}
 for the standard landmark Hamiltonian
 \begin{align}
-  h_l(\mathbf q, \mathbf p) =  \frac12 \sum_{i,j}K(q_i-q_j)p_i\cdot p_j\, . 
+  h_l(\mathbf q, \mathbf p) =  \frac12 \sum_{i,j=1}^M K(q_i-q_j)p_i\cdot p_j\, . 
 \label{hamiltonian}
 \end{align}
 We show that the optimisation problem \eqref{E_sm-def} is well-posed. First, we
@@ -310,13 +311,14 @@ The problem defined by \eqref{E_sm-def_p} yields the following equations for
 selective metarmorphosis for landmarks:
 \begin{align}
   \begin{split}
-  \dot{\mathbf p}_t &= - \nabla u_t(\mathbf q_t)^T \mathbf p_t - \sum_i \frac12
+  \dot{\mathbf p}_t &= - \mdiv(u_t(\mathbf q_t)^T \mathbf p_t) - \sum_i \frac12
   \nabla \nu(q_i) |p_i|^2\\ \dot{\mathbf q}_t &= u_t(\mathbf q_t) +
   \nu(q_i)\mathbf p_t \,,
 \end{split}
-  \label{eq-m-classic}
+  \label{eq-m-selective}
 \end{align}
-whereas the equation for the variable $\mathbf z_t$ is simply 
+with $\mathbf q_0,\, \mathbf q_1 \text{ fixed}$ whereas the equation for the
+variable $\mathbf z_t$ is simply (see appendix \ref{app:z_derivation}):
 \begin{align}
   \dot  {\mathbf z}_t&= \nabla u(\mathbf q_t)^T \mathbf z_t\,, 
 \end{align}
@@ -333,26 +335,29 @@ energy density function written in term of $\mathbf p_t$ and $\mathbf q_t$
 \end{align}
 thus the metamorphosis term act as a local correction to the kinetic energy. 
 
-The goal of this work is to infer the unknown function $\nu$ so as to gather
-information about where in the spatial domain we are most likely to observe
-metamorphic behaviour via a Bayesian framework as in \cite{dashti2017bayesian}.
-
+We now show that the system \eqref{eq-m-selective} is invertible subject to the
+boundary conditions
 \begin{theorem}
-  Equation well-posed, \dots see appendix. 
+Equation well-posed, \dots see appendix or cite in preparation
+\cite{bockarnaudoncotter2019}.
 \end{theorem}
+
+We have established that for a prescribed $\nu$, solutions of the geodesic
+equations obtain. The main goal of this work is described in the next section
+where we infer the unknown function $\nu$ so as to gather information about
+where in the spatial domain we are most likely to observe metamorphic behaviour
+via a Bayesian framework as in \cite{dashti2017bayesian}.
 
 \section{Bayesian Framework}\label{sec:bayesian}
 
-We now place a stochastic model on $\nu$, the purpose of which depends on its
-definition as mentioned in remark \eqref{remark:nu}. The goal is to develop an
-algorithm to infer $\nu$, passing via the deterministic problem seen above.\\
-
-First we present some preliminaries on the Bayesian approach to inverse problems
-in section \ref{subs:gf}, essentially quoting results from
-\cite{dashti2017bayesian}.  See also \cite{cotter2013mcmc} for an exposition of
-algorithmic aspects of function space MCMC. Section \ref{subs:finite-dim-param}
-then describes how we apply this stochastic approach to inverse problems to
-$\nu$ by a finite-dimensional family of parameterisations.
+We now place a stochastic model on $\nu$. The goal is to develop an algorithm to
+infer $\nu$, passing via the deterministic problem seen above.  First we present
+some preliminaries on the Bayesian approach to inverse problems in section
+\ref{subs:gf}, essentially quoting results from \cite{dashti2017bayesian}.  See
+also \cite{cotter2013mcmc} for an exposition of algorithmic aspects of function
+space MCMC. Section \ref{subs:finite-dim-param} then formally describes how we
+apply this stochastic approach to inverse problems to $\nu$ by a
+finite-dimensional family of parameterisations.
 
 \subsection{General Framework}\label{subs:gf}
 
@@ -387,28 +392,30 @@ $a(f^{k+1}, f^k)$ else $f^{k+1} \gets f^k$
 where we implement the acceptance probability as $\min(1, e^{-J^{k+1} +
 J^k})$.
 
+Rigorously treating this Bayesian inverse problem is subject to further study in
+the forthcoming work \cite{bockarnaudoncotter2019}.
+
 \textbf{$\longrightarrow$ Finish}\\
 
 % Talk about our problem
 \subsection{Finite-dimensional Parameterisation}\label{subs:finite-dim-param}
 
 We now introduce the main problem of this paper in the setting above. We
-consider $\nu$ as a random variable, indeed a random \emph{function}, occupying
-some space yet to be determined. This is an appropriate framework because if the
-lack of uniqueness allows for a qualitative evaluation of a solution to
-selective metamorphosis. We consider the case where $\nu$ is given by a sum of
-exponentials:
-\begin{equation}
+consider $\nu$ as a random variable, indeed a random \emph{function}. This is an
+appropriate framework because if the lack of uniqueness allows for a qualitative
+evaluation of a solution to selective metamorphosis. We consider the case where
+$\nu$ is given by a sum of exponentials:
+\begin{equation}\label{nu_h}
     \nu_h (x) = \sum_{k=1}^K e^{ -\sigma_\nu^{-2}\|h_k - x\|_{\Rd}^2}
 \end{equation}
-Here the finite family $h_k$ of centroids in $\Rd$ together with the uniform
-length-scale $\sigma_\nu$ fully determine $\nu_h$, thus greatly reducing the
-complexity of sampling. We defer sampling from function space to future work
-\cite{.}. Defining a density $p_{sm} \propto e^{- E_{sm}^\nu}$ over the space of
-selective metamorphoses for a prescribed $\nu$ leading to the following MCMC
-algorithm:
-{\color{red} Are you doing the pCN algorithm  of \cite{cotter2013mcmc} with the 
-$\beta$ paramter? They have $\sqrt{1-\beta^2}$ instead of $1-\beta$, does this matter?}
+Here the finite family $h_k$ of centroids in $\Rd$ together with
+the uniform length-scale $\sigma_\nu$ fully determine $\nu_h$, thus greatly
+reducing the complexity of sampling. We defer sampling from function space to
+future work \cite{bockarnaudoncotter2019}. Defining a density $p_{sm} \propto
+e^{- E_{sm}^\nu}$ over the space of selective metamorphoses for a prescribed
+$\nu$ leading to the following MCMC algorithm:
+{\color{red} It turns out MCMC does not converge on Hilbert space if you use
+$\beta/(1-\beta)$. Since we are in finite dimension we should be OK!}
 \newcommand{\mhsample}{\textsc{sampleCentroid}}
 \newcommand{\acceptprob}{\textsc{accept}}
 \begin{algorithm}[h!]
@@ -417,11 +424,11 @@ $\beta$ paramter? They have $\sqrt{1-\beta^2}$ instead of $1-\beta$, does this m
 \Procedure{mcmcSM}{$N$, $K$, $q_0$, $q_1$, $\beta\in (0,1]$}
 \State $j \gets 1$
 \State $\nu^j \gets \text{initial guess in } \RdK$
-\State Solve \eqref{?} with $\nu^j$ and $q_0,\,q_1$ to obtain $w^0 = (q^0,\, z^0,\, u^0)$
+\State Solve \eqref{eq-m-selective} with $\nu^j$ and $q_0,\,q_1$ to obtain $w^0 = (q^0,\, z^0,\, u^0)$
 \While{$j \leq N$}
 \State Sample a random point $\xi \in \mathcal N(0, \text{Id}_{\mathbb R^d})$
 \State $\nu \gets \beta \xi + (1-\beta) \nu^j$
-\State Solve \eqref{?} with $\nu$ and $q_0,\,q_1$ to obtain $w = (q,\, z,\, u)$
+\State Solve \eqref{eq-m-selective} with $\nu$ and $q_0,\,q_1$ to obtain $w = (q,\, z,\, u)$
 \If {\textsc{randomUnit()}$\,< \min(1,\, e^{- E_{sm}^{\nu^j}(w^j) + E_{sm}^{\nu}(w)})$}
     \State $\nu^{j+1} \gets \nu$
 \Else
@@ -433,13 +440,18 @@ $\beta$ paramter? They have $\sqrt{1-\beta^2}$ instead of $1-\beta$, does this m
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
-
-The numerical solutions to the equations \eqref{?} are obtained using Theano
-\cite{team2016theano} which automatically generates the discrete adjoint
-equation used to shoot for the final conditions. The next section shows the
-algorithm above in practice.
+In the above, $N$ denotes the desired number of samples and $K$ the number of
+terms in \eqref{nu_h}.  The numerical solutions to the equations
+\eqref{eq-m-selective} are obtained using Theano \cite{team2016theano} which
+automatically generates the discrete adjoint equation used to shoot for the
+final conditions. The next section shows the algorithm above in practice.
 
 \section{Numerical examples}\label{sec:numerical}
+\begin{align}
+\frac{d}{dt} \left ( \frac{z}{\nu(q)}\right) = \nabla \left ( \frac{z}{\nu(q)}
+u(q)\right ) - \frac{\nabla \nu(q)}{\nu^2(q)}z^2\, .
+\dot  {\mathbf z}_t&= \nabla u(\mathbf q_t)^T \mathbf z_t\,,
+\end{align}
 
 This penultimate section displays some numerical results for our method. First,
 as a proof of concept 
@@ -570,29 +582,52 @@ novel numerical approach to metamorphosis as well as other problems shape
 analysis.
 
 \appendix
+\section{$z_t$ derivation}\label{app:z_derivation}
+
+We show $z$ satisfies the continuity equation. Using $z_t = \nu(q_t)p_t$:
+\begin{align*}
+0 & = \dot{\mathbf p}_t + \mdiv(u_t(\mathbf q_t)^T \mathbf p_t) + \frac12\nabla\nu(q_i) |p_i|^2\\
+& = \frac{d}{dt}\frac{\mathbf z_t}{\mathbf \nu(q_t)} + \mdiv(u_t(\mathbf q_t)^T \frac{\mathbf z_t}{\mathbf \nu(q_t)}) 
+    +  \frac12\nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
+& = \frac{\dot{\mathbf z_t}}{\nu(q_t)} - \frac{\mathbf z_t \nabla\nu(q_t)\dot{q}_t}{\nu^2(q_t)} + 
+\nabla u_t(\mathbf q_t)^T \frac{\mathbf z_t}{\mathbf \nu(q_t)}
+- u_t(\mathbf q_t)^T \frac{\mathbf z_t\nabla \nu(q_t)}{\mathbf \nu^2(q_t)}
+    + \frac12\nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
+& = \frac{\dot{\mathbf z_t}}{\nu(q_t)} - \frac{\mathbf z_t \nabla\nu(q_t)(u(q_t)+ \mathbf z_t)}{\nu^2(q_t)} + 
+\nabla u_t(\mathbf q_t)^T \frac{\mathbf z_t}{\mathbf \nu(q_t)}
+- u_t(\mathbf q_t)^T \frac{\mathbf z_t\nabla \nu(q_t)}{\mathbf \nu^2(q_t)}
+    + \frac12\nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
+& = \frac{\dot{\mathbf z_t}}{\nu(q_t)} - \frac{\mathbf z_t\nabla \nu(q_t)}{\mathbf \nu^2(q_t)}u_t(\mathbf q_t)
+ - \nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
+&+  \nabla u_t(\mathbf q_t)^T \frac{\mathbf z_t}{\mathbf \nu(q_t)}
+- u_t(\mathbf q_t)^T \frac{\mathbf z_t\nabla \nu(q_t)}{\mathbf \nu^2(q_t)})
+    + \frac12\nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
+& = \frac{\dot{\mathbf z_t}}{\nu(q_t)}
+ - \nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
+& + \nabla u_t(\mathbf q_t)^T \frac{\mathbf z_t}{\mathbf \nu(q_t)} + \frac12\nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
+\end{align*}
+
 
 \section{Proof of Theorem \ref{sm-eu}}\label{app:proof:sm-eu}
-Clearly the functional in \eqref{E_sm-def} is not convex, so we work with a
-reformulation to ensure the required weak lower semi-continuity. Note that
-we cannot do a change of variables using $p_t$ since
-$\frac{1}{\nu(q_t)}|z_t|^2 = \nu(q_t) |p_t|^2$ and we still have a
-non-convexity to deal with. We define a variable $w^i_t = z^i_t
-\sqrt{\nu(q_t^i)}$ in the problem:
+The functional in \eqref{E_sm-def_p} is not convex so we work with a
+reformulation to ensure the required lower semi-continuity. Define a
+variable $w^i_t = \sqrt{\nu(q_t^i)} p^i_t$ in the problem:
+
 \begin{align}
 \inf_{\substack{u \in L^2([0,1],V)\\ q, w\, \in H^1([0,1],\RdM)}}
-    & S = \int_0^1 \half\vnorm{u_t}^2 + \half\sum_i |w_t^i|^2 \diff{t}\\
-    & \dot{q_t^i} = u(q_t^i) + \sqrt{\nu(q_t^i)} w^i_t\\
-    & q_0,\,q_1\text{ fixed}
+    & \int_0^1\half\left (h_l(\mathbf q_t,\mathbf p_t)  +\sum_{i=1}^M |w_t^i|^2\right )\diff{t}\\
+    & \dot{q_t^i} = u(\mathbf q_t) + \sqrt{\nu(q_t^i)} w^i_t\\
+    & \mathbf q_0,\,\mathbf q_1\text{ fixed}
   \label{pbl:reformulation}
 \end{align}
 
 We now show existence of a minimiser to this problem. First, note that owing to
 the constraint effectively being a boundary value problem, we cannot always find
-a $q$ for arbitrary pairs of $(u,\,w)$. We define an bounded operator
-$(q,u)\mapsto frac{\dot{q} - u(q)}{\sqrt{\nu(q)}} := w$:
+a $\mathbf q$ for arbitrary pairs of $(u,\,w)$. We define an bounded operator
+$(\mathbf q,\, u)\mapsto \frac{\dot{q_t} - u(q_t)}{\sqrt{\nu(q_t^i)}} := w$:
 \begin{align*}
-\ltwonorm{w}^2 & = \ltwonorm{\frac{\dot{q} - u(q)}{\sqrt{\nu(q)}}}^2\\
-& \leq \nuinf^{-1}\Big(\ltwonorm{\dot{q}}^2 + \ltwonorm{u(q)}^2\Big)\\
+\ltwonorm{w}^2 & = \ltwonorm{\frac{\dot{q}_t^i - u(q_t^i)}{\sqrt{\nu(q_t^i)}}}^2\\
+& \leq \nuinf^{-1}\Big(\ltwonorm{\dot{q}_t^i}^2 + \ltwonorm{u(q_t)}^2\Big)\\
 \end{align*}
 which is clearly bounded since $q\in C^1(0,1,H)$ and since by continuity of $u$.
 From this we generate a minimising sequence $(q^n, u^n, w^n)$ admissible to
