@@ -207,12 +207,12 @@ def centroid_plot(c_samples, log_dir):
     plt.plot(cx, cy, 'go-', alpha=0.3)
     plt.savefig(log_dir + 'centroid_evolution.pdf', bbox_inches='tight')
 
-def centroid_heatmap(c_samples, log_dir):
+def centroid_heatmap(c_samples, log_dir, bins=50):
     cs = np.array(c_samples)[:, 0, :]
     cx, cy = cs[:, 0], cs[:, 1]
 
     plt.figure()
-    plt.hist2d(cx, cy, bins=len(cy))
+    plt.hist2d(cx, cy, bins=bins)
     plt.xlabel('$x$-coordinate')
     plt.ylabel('$y$-coordinate')
     plt.colorbar()
