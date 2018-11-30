@@ -128,7 +128,7 @@ appropriate functions $\nu(x)$, such that the topological effects are well
 described and a large part of the matching remains diffeomorphic.  For this
 paper, we will focus on landmark matching, but the theory of selective
 metamorphosis can be extended to any data structures that the classical
-metamorphosis of LDDMM theory can handle \cite{bockarnaudoncotter2019}.
+metamorphosis or LDDMM theory can handle \cite{bockarnaudoncotter2019}.
 
 \begin{figure}
 \centering
@@ -356,14 +356,15 @@ via a Bayesian framework as in \cite{dashti2017bayesian}.
 
 \section{Bayesian Framework}\label{sec:bayesian}
 
-We now place a stochastic model on $\nu$. The goal is to develop an algorithm to
-infer $\nu$, passing via the deterministic problem seen above.  First we present
-some preliminaries on the Bayesian approach to inverse problems in section
-\ref{subs:gf}, essentially quoting results from \cite{dashti2017bayesian}.  See
-also \cite{cotter2013mcmc} for an exposition of algorithmic aspects of function
-space MCMC. Section \ref{subs:finite-dim-param} then formally describes how we
-apply this stochastic approach to inverse problems to $\nu$ by a
-finite-dimensional family of parameterisations.
+We now place a stochastic model on $\nu$ inspired by the approach taken in
+\cite{cotter2013bayesian}. The goal is to develop an algorithm to infer $\nu$,
+passing via the deterministic problem seen above.  First we present some
+preliminaries on the Bayesian approach to inverse problems in section
+\ref{subs:gf}, essentially quoting concepts and results from
+\cite{dashti2017bayesian}. See also \cite{cotter2013mcmc} for an exposition of
+algorithmic aspects of function space MCMC. Section \ref{subs:finite-dim-param}
+then formally describes how we apply this stochastic approach to inverse
+problems to $\nu$ by a finite-dimensional family of parameterisations.
 
 \subsection{General Framework}\label{subs:gf}
 
@@ -405,16 +406,23 @@ $\nu$ is given by a sum of exponentials:
 \begin{equation}\label{nu_h}
     \nu_h (x) = \sum_{k=1}^K e^{ -\sigma_\nu^{-2}\|h_k - x\|_{\Rd}^2}
 \end{equation}
-Here the finite family $h_k$ of centroids in $\Rd$ together with
-the uniform length-scale $\sigma_\nu$ fully determine $\nu_h$, thus greatly
-reducing the complexity of sampling. We defer sampling from function space to
-future work \cite{bockarnaudoncotter2019}. Defining a density $p_{sm} \propto
-e^{- E_{sm}^\nu}$ over the space of selective metamorphoses for a prescribed
-$\nu$ leading to the following MCMC algorithm:
-{\color{red} It turns out MCMC does not converge on Hilbert space if you use
-$\beta/(1-\beta)$. Since we are in finite dimension we should be OK!}
-\newcommand{\mhsample}{\textsc{sampleCentroid}}
-\newcommand{\acceptprob}{\textsc{accept}}
+Here the finite family $h_k$ of centroids in $\Rd$ together with the uniform
+length-scale $\sigma_\nu$ fully determine $\nu_h$, thus greatly reducing the
+complexity of sampling. We defer sampling from function space to future work
+\cite{bockarnaudoncotter2019}. Defining a density $p_{sm} \propto e^{-
+E_{sm}^\nu}$ over the space of selective metamorphoses for a prescribed $\nu$
+leading to algorithm \ref{algo:mcmc}. Here, $N$ denotes the desired number of
+samples and $K$ the number of terms in \eqref{nu_h}. \textsc{randomUnit()}
+denotes a randomly generated number in $[0,\,1]$. The coefficient $\beta$ scales
+between the previoius sample and the new step $\xi$. Setting it too low
+increases the acceptance rate by taking shorter steps at the cost of slow
+exploration of the state space. Conversely, a too high value of $\beta$ results
+in lower acceptance and thus convergence. In the next section we choose
+$\beta=.3$ as a compromise between correlation and convergence. Further, the
+numerical solutions to the equations \eqref{eq-m-selective} are obtained using
+Theano \cite{team2016theano} which automatically generates the discrete adjoint
+equation used to shoot for the final conditions. The next section shows the
+algorithm above in practice.
 \begin{algorithm}[h!]
 \begin{algorithmic}
 \caption{MCMC for selective metamorphosis}\label{algo:mcmc}
@@ -437,33 +445,13 @@ $\beta/(1-\beta)$. Since we are in finite dimension we should be OK!}
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
-In the above, $N$ denotes the desired number of samples and $K$ the number of
-terms in \eqref{nu_h}.  The numerical solutions to the equations
-\eqref{eq-m-selective} are obtained using Theano \cite{team2016theano} which
-automatically generates the discrete adjoint equation used to shoot for the
-final conditions. The next section shows the algorithm above in practice.
 
 \section{Numerical examples}\label{sec:numerical}
-\begin{align}
-\frac{d}{dt} \left ( \frac{z}{\nu(q)}\right) = \nabla \left ( \frac{z}{\nu(q)}
-u(q)\right ) - \frac{\nabla \nu(q)}{\nu^2(q)}z^2\, .
-\dot  {\mathbf z}_t&= \nabla u(\mathbf q_t)^T \mathbf z_t\,,
-\end{align}
 
-This penultimate section displays some numerical results for our method. First,
-as a proof of concept 
-%Stuff that works:
-%\begin{tabular}{ l c r }
-%\text{Test case}   & \beta \text{ (pCN) } & \text{Samples} \\
-%\text{Criss-cross} & & \\ <-- CENTROID
-%\text{Triangle}    & & \\
-%\text{Pringle}     & & \\
-%\text{Squeeze}     & 1 & 500 <-- CENTROID
-%\end{tabular}
-
-As we have seen in figure \ref{fig:mm_lddmm}, classic metamorphosis is an
-appropriate model for non-diffeomorphic matching. We now evaluate our stochastic
-model described in algorithm \ref{algo:mcmc} to the landmark configurations in
+This penultimate section displays some numerical results for our method. As we
+have seen in figure \ref{fig:mm_lddmm}, classic metamorphosis is an appropriate
+model for non-diffeomorphic matching. We now evaluate our stochastic model
+described in algorithm \ref{algo:mcmc} to the landmark configurations in
 \ref{fig:mm_lddmm}.
 
 \begin{figure}
@@ -537,53 +525,48 @@ We note that since the Euler-Lagrange equations for $p$ and $q$ are
 time-reversible, the configuration in both lead to a notion of
 collapse and hole creation for the landmarks.\\
 
-
-
 We note that the source code for all of these experiments is documented
 here (insert link to github.io). 
 
 \section{Outlook}\label{sec:outlook}
 
-{\color{red} Nice sentence:} {\color{blue} This could provide a
-first-order exploratory tool for physicians, to see if the development of a
-biological feature stems from a few violations of diffeomorphic evolution.}
+We have presented a preliminary approach for selectively adding photometric
+variation in a diffeomorphic image matching. This generalises LDDMM and
+metamorphosis and  could provide a first-order exploratory tool for physicians,
+to see if the development of a biological feature stems from a few violations of
+diffeomorphic evolution. This paper paves the way towards surgically
+investigating growth phenomena between topologically different images in certain
+areas of the target and template.\\
 
+We outline the future work necessary to this end. Firstly, we aim to extend the
+equations of section \ref{sec:select_mm} to images e.g. using the kernel
+framework in \cite{richardson2016metamorphosis} or developing a space-time
+method. Further, as outlined in \ref{sec:bayesian} there are many aspects of the
+probabilistic framework that needs rigorous treatment. Beyond the references
+therein, see also the work in \cite{dashti2013map}. Natural extensions of our
+probabilistic ansatz also includes taking $\nu$ as a function and interpreting
+the resulting inverse problem through the appropriate measure-theoretical lens.
+Moreover, adding a time-dependency to $\nu$ is also to be explored. Determining
+truncated Fourier modes of $\nu$ could lead to efficient numerical methods.\\
 
-%Another choice is 
-%\begin{align}
-%    l(q,p) = \|u\|_B^2 + \sum_i p_i\cdot \nu(q_i) \, , 
-%\end{align}
-%where $\nu:\mathbb R^2 \to \mathbb R^2$, which will give more freedom on the
-%metamorphosis term, and give equations of motion as \begin{align}
-%    \dot p_i  &= \nabla u(q_i)p_i  + p_i \cdot \nabla \nu(q_i)\\
-%    \dot q &= u(q_i) + \nu(q_i) 
-%\end{align}
+Finally, it is our hope that we can extend the theory developed here to
+encompass classic metamorphosis; that is to say, to develop the necessary theory
+in order to place a stochastic model on the state space consisting of velocities
+and source functions. Being able to sample random pairs (MCMC) of these would
+permit a novel numerical approach to metamorphosis as well as other problems
+shape analysis.
 
-{\color{red} We should say that this paper is a first step toward image matching, 
-with topological features such as growth, etc\dots}
+%Another choice is \begin{align} l(q,p) = \|u\|_B^2 + \sum_i p_i\cdot \nu(q_i)
+%\, , \end{align} where $\nu:\mathbb R^2 \to \mathbb R^2$, which will give more
+%freedom on the metamorphosis term, and give equations of motion as
+%\begin{align} \dot p_i  &= \nabla u(q_i)p_i  + p_i \cdot \nabla \nu(q_i)\\ \dot
+%q &= u(q_i) + \nu(q_i) \end{align}
 
-Future work also includes extending this framework to images e.g. using the
-kernel framework in \cite{richardson2016metamorphosis}, or developing a
-space-time method. Formalising the measure-theory necessary to consider the
-limit of ? as $k\rightarrow\infty$.\\
-
-Natural extensions of this work include fully determining e.g. the Fourier modes
-of $\nu$ via the MCMC framework.\\
-
-Moreover, adding a time-dependency to $\nu$ is also to be explored. It is our
-hope that we can extend the theory developed here to encompass classic
-metamorphosis; that is to say, to develop the necessary theory in order to place
-a stochastic model on the state space consisting of velocities and source
-functions. Being able to sample random pairs (MCMC) of these would permit a
-novel numerical approach to metamorphosis as well as other problems shape
-analysis.
-
-\appendix
-\section{$z_t$ derivation}\label{app:z_derivation}
+\appendix \section{$z_t$ derivation}\label{app:z_derivation}
 
 We show $z$ satisfies the continuity equation. Using $z_t = \nu(q_t)p_t$:
-\begin{align*}
-0 & = \dot{\mathbf p}_t + \mdiv(u_t(\mathbf q_t)^T \mathbf p_t) + \frac12\nabla\nu(q_i) |p_i|^2\\
+\begin{align*} 0 & = \dot{\mathbf p}_t + \mdiv(u_t(\mathbf q_t)^T \mathbf p_t) +
+\frac12\nabla\nu(q_i) |p_i|^2\\
 & = \frac{d}{dt}\frac{\mathbf z_t}{\mathbf \nu(q_t)} + \mdiv(u_t(\mathbf q_t)^T \frac{\mathbf z_t}{\mathbf \nu(q_t)}) 
     +  \frac12\nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
 & = \frac{\dot{\mathbf z_t}}{\nu(q_t)} - \frac{\mathbf z_t \nabla\nu(q_t)\dot{q}_t}{\nu^2(q_t)} + 
