@@ -3,8 +3,8 @@
 *.blg
 *.dvi
 *.log
-*.pdf
 *.toc
 *.swp
 *.swo
 *.pyc
+select_mm.pdf
