@@ -67,8 +67,14 @@
 \maketitle              % typeset the header of the contribution
 
 \begin{abstract}
-
-
+We present a framework for shape matching allowing users control of the degree
+which the matching is either homeomorphic or diffeomorphic. This control is
+given as a function over the domain in which the images are embedded.
+Well-posedness of this new problem is shown together with an analysis of the
+associated geodesic equations. Moreover, a stochastic framework is placed on the
+selective control and inferred through a proof-of-concept Markov chain Monte
+Carlo algorithm illustrated with landmark matching. Preliminary numerical
+results are shown and future paths of investigation are laid out.
 \keywords{LDDMM \and MCMC \and Metamorphosis.}
 \end{abstract}
 
@@ -366,11 +372,13 @@ problems in a probabilistic framework where minimisers, roughly speaking,
 correspond to modes of a certain distribution of function space.  In the context
 of optimisation we define a \emph{likelihood} $\Phi : X\rightarrow Y$, mapping
 some control variable in $X$ to an observable in $Y$.  A \emph{maximum a
-posteriori} (MAP) estimator $f^*$ satisfies $f^* \arg\max_{f\in X} \Phi(f) p(f)$
-where $p$ is a density over $X$. Equipped with a norm $\|\cdot\|_X$ we can then
-define the density by $p(\cdot) \propto e^{-\|\cdot\|_X^2}$.  Supposing further
-that the likelihood is on the form $\Phi(f) = -\|f-\lambda\|_Y^2$ then, at least
-formally, the MAP estimator minimises $J =\|f^*\|_X^2 + \|f^*-\lambda\|_Y^2$.\\
+posteriori} (MAP) estimator $f^*$ satisfies $f^* = \arg\max_{f\in X} \Phi(f)
+p(f)$ where $p$ is a Gaussian density over $X$. Equipped with a norm
+$\|\cdot\|_X$ we can then define the density by $p(\cdot) \propto
+e^{-\|\cdot\|_X^2}$.  Supposing further that the likelihood is on the form, say,
+$\log \Phi(f) = -\|f-\lambda\|_Y^2$, for a certain control desiderata $\lambda\in Y$
+then, at least formally, the MAP estimator minimises $J =\|f^*\|_X^2 +
+\|f^*-\lambda\|_Y^2$.\\
 
 In general, for inverse problems on function space, several key properties
 documented in \cite{?} must be verified before the inverse-problem is
@@ -383,9 +391,9 @@ well-posedness in a probabilistic framework. Proceeding bona fide we therefore
 have the key ingredients necessary to define a MCMC algorithm
 \cite{cotter2013mcmc}:
 \begin{enumerate}
-\item Initialise $k \gets 0;\; f^0 \in X;\; \alpha \in (0,\,1)$ 
+\item Initialise $k \gets 0;\; f^0 \in X;\; \beta \in (0,\,1)$ 
 \item Sample $f\in X$
-\item Accept $f^{k+1} \gets \alpha f + (1-\alpha) f^k$ with probability
+\item Accept $f^{k+1} \gets \beta f + (1-\beta) f^k$ with probability
 $a(f^{k+1}, f^k)$ else $f^{k+1} \gets f^k$
 \item $k \gets k + 1$
 \end{enumerate}
