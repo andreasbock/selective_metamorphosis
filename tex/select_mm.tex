@@ -136,13 +136,13 @@ metamorphosis of LDDMM theory can handle \cite{bockarnaudoncotter2019}.
   \centering
     \includegraphics[width=.3\textwidth]{lddmm_criss_cross.pdf}\quad
     \includegraphics[width=.3\textwidth]{lddmm_squeeze.pdf}\quad
-    \includegraphics[width=.3\textwidth]{lddmm_triangle_flip.pdf}\\[0.25cm]
+    \includegraphics[width=.291\textwidth]{lddmm_pent_to_tri.pdf}\\[0.25cm]
+    \includegraphics[width=.3\textwidth]{custom_nu_criss_cross.pdf}\quad
+    \includegraphics[width=.3\textwidth]{custom_nu_squeeze.pdf}\quad
+    \includegraphics[width=.291\textwidth]{custom_nu_pent_to_tri.pdf}\\[0.25cm]
     \includegraphics[width=.3\textwidth]{mm_criss_cross.pdf}\quad
     \includegraphics[width=.3\textwidth]{mm_squeeze.pdf}\quad
-    \includegraphics[width=.3\textwidth]{mm_triangle_flip.pdf}\\[0.25cm]
-    \includegraphics[width=.3\textwidth]{mm_criss_cross.pdf}\quad
-    \includegraphics[width=.3\textwidth]{mm_squeeze.pdf}\quad
-    \includegraphics[width=.3\textwidth]{mm_triangle_flip.pdf}
+    \includegraphics[width=.291\textwidth]{mm_pent_to_tri.pdf}
     \caption{This figures illustrates landmark matching with classical LDDMM
     (top row), metamorphosis (bottom row) and selective metamorphosis (middle
     row).  We chose difficult matching for LDDMM, and we observe unrealistic
@@ -387,18 +387,7 @@ the infinite-dimensional version of Bayes' rule must also be check i.e. the
 Radon-Nikodym derivative of the prior with respect to the posterior must exist
 and be absolutely continuous. Finally, we request continuity of the posterior
 distribution w.r.t the initial data corresponding in a sense to Hadamard
-well-posedness in a probabilistic framework. Proceeding bona fide we therefore
-have the key ingredients necessary to define a MCMC algorithm
-\cite{cotter2013mcmc}:
-\begin{enumerate}
-\item Initialise $k \gets 0;\; f^0 \in X;\; \beta \in (0,\,1)$ 
-\item Sample $f\in X$
-\item Accept $f^{k+1} \gets \beta f + (1-\beta) f^k$ with probability
-$a(f^{k+1}, f^k)$ else $f^{k+1} \gets f^k$
-\item $k \gets k + 1$
-\end{enumerate}
-where we implement the acceptance probability as $\min(1, e^{-J^{k+1} +
-J^k})$.
+well-posedness in a probabilistic framework.
 
 Rigorously treating this Bayesian inverse problem is subject to further study in
 the forthcoming work \cite{bockarnaudoncotter2019}.
