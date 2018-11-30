@@ -181,7 +181,7 @@ def plot_target(q0, q1, fname=None):
     plt.legend(loc='best')
 
     if fname:
-        plt.savefig(fname)
+        plt.savefig(fname, bbox_inches='tight')
     else:
         plt.show()
 
@@ -195,7 +195,7 @@ def trace_plot(fnls, log_dir):
     plt.xlabel('Iteration')
     plt.ylabel('Functional')
     plt.plot(range(len(fnls)), fnls, 'r*-')
-    plt.savefig(log_dir + 'functional_traceplot.pdf')
+    plt.savefig(log_dir + 'functional_traceplot.pdf', bbox_inches='tight')
 
 def centroid_plot(c_samples, log_dir):
     cs = np.array(c_samples)[:, 0, :]
@@ -205,7 +205,7 @@ def centroid_plot(c_samples, log_dir):
     plt.xlabel('Iteration')
     plt.ylabel('Centroid position')
     plt.plot(cx, cy, 'go-', alpha=0.3)
-    plt.savefig(log_dir + 'centroid_evolution.pdf')
+    plt.savefig(log_dir + 'centroid_evolution.pdf', bbox_inches='tight')
 
 def centroid_heatmap(c_samples, log_dir):
     cs = np.array(c_samples)[:, 0, :]
@@ -216,7 +216,7 @@ def centroid_heatmap(c_samples, log_dir):
     plt.xlabel('$x$-coordinate')
     plt.ylabel('$y$-coordinate')
     plt.colorbar()
-    plt.savefig(log_dir + 'centroid_heat.pdf')
+    plt.savefig(log_dir + 'centroid_heat.pdf', bbox_inches='tight')
 
 def sample_autocov(k, m):
     num_samples, num_kernels, _ = m.shape
@@ -241,7 +241,7 @@ def plot_autocorr(c_samples, fname):
     plt.xlabel('Lag')
     plt.ylabel('Sample autocorrelation')
     plt.grid(linestyle='dotted')
-    plt.savefig(fname + 'autocorrelation.pdf')
+    plt.savefig(fname + 'autocorrelation.pdf', bbox_inches='tight')
 
 def fnl_histogram(fnls, fname):
     plt.figure()
@@ -250,7 +250,7 @@ def fnl_histogram(fnls, fname):
     plt.xlabel('Metamorphosis functional')
     plt.ylabel('Number of observed values')
     plt.grid(linestyle='dotted')
-    plt.savefig(fname + 'functional_histogram.pdf')
+    plt.savefig(fname + 'functional_histogram.pdf', bbox_inches='tight')
 
 def plot_q(x0, xs, N, fname, nus=None, title=None):
     plt.figure()
@@ -265,7 +265,7 @@ def plot_q(x0, xs, N, fname, nus=None, title=None):
         plt.scatter(nx, ny, s=s, color='purple', alpha=.3, label='centroid')
     plt.legend(loc='best')
     plt.grid(linestyle='dotted')
-    plt.savefig(fname + '.pdf')
+    plt.savefig(fname + '.pdf', bbox_inches='tight')
     plt.close()
 
 def plot_landmarks_traj(x, N, lw=.1):
