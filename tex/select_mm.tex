@@ -455,18 +455,18 @@ described in algorithm \ref{algo:mcmc} to the landmark configurations in
 \centering
 \begin{minipage}{\textwidth}
   \centering
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\\[0.25cm]
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}
+    \includegraphics[width=.23\textwidth]{../results/results_criss_cross/sample_4500.pdf}
+    \includegraphics[width=.23\textwidth]{../results/results_criss_cross/centroid_heat.pdf}
+    \includegraphics[width=.23\textwidth]{../results/results_criss_cross/functional_histogram.pdf}
+    \includegraphics[width=.23\textwidth]{../results/results_criss_cross/autocorrelation.pdf}\\[0.23cm]
+    \includegraphics[width=.23\textwidth]{../results/results_criss_cross/MAP_center_0.pdf}
+    \includegraphics[width=.23\textwidth]{../results/results_criss_cross/MAP_center_1.pdf}
+    \includegraphics[width=.23\textwidth]{../results/results_criss_cross/MAP_center_2.pdf}
+    \includegraphics[width=.23\textwidth]{../results/results_criss_cross/MAP_center_3.pdf}
     %\subcaption{.}
     \caption{Selective metamorphosis for the inverted landmarks example The top
     row displays the geodesics corresponding a sample realisation from the
-    chain, centroid heat map with four MAP estimators, functional histogram and
+    chain, centroid heat map, functional histogram and
     autocorrelation plot. The bottom row shows the geodesics for four MAP
     estimators.}
     \label{fig:selective:crisscross}
@@ -522,8 +522,11 @@ We note that since the Euler-Lagrange equations for $p$ and $q$ are
 time-reversible, the configuration in both lead to a notion of
 collapse and hole creation for the landmarks.\\
 
+Note that in this expository paper we take $\max \nu = 1$, resulting in
+elevated acceptance rates.
+
 We note that the source code for all of these experiments is documented
-here (insert link to github.io). 
+here (insert link to github.io).
 
 \section{Outlook}\label{sec:outlook}
 
