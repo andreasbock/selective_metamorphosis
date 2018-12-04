@@ -126,8 +126,16 @@ def run_lddmm(q0, q1, test_name):
 
     plot_q(x0, xs, num_landmarks, log_dir + 'lddmm_' + test_name)
 
-run_lddmm(*pent_to_tri(num_landmarks=40))
-run_lddmm(*criss_cross(num_landmarks=20))
-run_lddmm(*squeeze(num_landmarks=36))
-run_lddmm(*pringle(num_landmarks=16))
-run_lddmm(*triangle_flip(num_landmarks=15))
+    return {test_name: (h, res[1])}
+
+to_pickle = dict()
+to_pickle.update(run_lddmm(*pent_to_tri(num_landmarks=40)))
+to_pickle.update(run_lddmm(*criss_cross(num_landmarks=20)))
+to_pickle.update(run_lddmm(*squeeze(num_landmarks=36)))
+to_pickle.update(run_lddmm(*pringle(num_landmarks=16)))
+to_pickle.update(run_lddmm(*triangle_flip(num_landmarks=15)))
+
+import pickle
+po = open("lddmm.pickle", "wb")
+pickle.dump(to_pickle, po)
+po.close()

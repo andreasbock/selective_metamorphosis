@@ -44,9 +44,12 @@ def run_mm(q0, q1, test_name):
         #return T.tensordot(nu(q),T.tensordot(p,p,[[1],[1]]).diagonal(),[[0],[0]])
         return T.tensordot(p, p, [[0, 1], [0, 1]])#.diagonal()
 
-    def H(q,p):
+    def Hv(q, p):
         return 0.5*T.tensordot(p, T.tensordot(Ker(q, q), p, [[1], [0]]), [[0, 1],
-            [0, 1]]) + met(p)
+            [0, 1]])
+
+    def H(q, p):
+        return Hv(q, p) + met(p)
 
     # compile the previous functions
     pe = T.matrix('p')
@@ -59,6 +62,7 @@ def run_mm(q0, q1, test_name):
     metf = function([pe], met(pe))
     Ksigmaf = function([qe1, qe2, sigma], Ksigma(qe1, qe2, sigma))
     Hf = function([qe, pe], H(qe, pe))
+    Hvf = function([qe, pe], Hv(qe, pe))
 
     # compute gradients
     dq = lambda q,p: T.grad(H(q, p), p)
@@ -125,14 +129,24 @@ def run_mm(q0, q1, test_name):
     res = shoot(q0, p0)
     xs = simf(np.array([q0,res[0].reshape([N.eval(),DIM])]).astype(theano.config.floatX))
     h = []
+    m = []
     for i in range(np.shape(xs)[0]):
-        h.append(Hf(xs[i,0],xs[i,1]))
+        h.append(Hvf(xs[i, 0], xs[i, 1]))
+        m.append(metf(xs[i, 1]))
     h = np.array(h).sum()*dt.eval()
+    m = np.array(m).sum()*dt.eval()
+    #plot_q(x0, xs, num_landmarks, log_dir + 'mm_' + test_name)
 
-    plot_q(x0, xs, num_landmarks, log_dir + 'mm_' + test_name)
+    return {test_name: (h, res[1])}
 
-run_mm(*pent_to_tri(num_landmarks=25))
-run_mm(*criss_cross(num_landmarks=20))
-run_mm(*squeeze(num_landmarks=36))
-run_mm(*pringle(num_landmarks=16))
-run_mm(*triangle_flip(num_landmarks=15))
+to_pickle = dict()
+to_pickle.update(run_mm(*pent_to_tri(num_landmarks=40)))
+to_pickle.update(run_mm(*criss_cross(num_landmarks=20)))
+to_pickle.update(run_mm(*squeeze(num_landmarks=36)))
+to_pickle.update(run_mm(*pringle(num_landmarks=16)))
+to_pickle.update(run_mm(*triangle_flip(num_landmarks=15)))
+
+import pickle
+po = open("mm.pickle", "wb")
+pickle.dump(to_pickle, po)
+po.close()

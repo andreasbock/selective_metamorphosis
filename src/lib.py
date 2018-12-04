@@ -227,8 +227,8 @@ def sample_autocov(k, m):
     return est / num_samples
 
 def plot_autocorr(c_samples, fname):
-    num = 100
-    lags = np.linspace(0, len(c_samples), num, dtype=int)
+    num = min(100, len(c_samples))
+    lags = np.linspace(1, len(c_samples), num, dtype=int)
 
     c_samples_np = np.array(c_samples)
     mean = np.mean(c_samples_np, axis=0)
@@ -239,6 +239,8 @@ def plot_autocorr(c_samples, fname):
     plt.figure()
     plt.plot(lags, acf, 'r.-')
     plt.xlabel('Lag')
+    plt.xlim((1, len(lags)))
+    plt.xticks(lags)
     plt.ylabel('Sample autocorrelation')
     plt.grid(linestyle='dotted')
     plt.savefig(fname + 'autocorrelation.pdf', bbox_inches='tight')

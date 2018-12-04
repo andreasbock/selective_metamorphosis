@@ -13,7 +13,7 @@ timesteps = 100
 
 # mcmc parameters
 maxiter = 5000  # shooting
-beta = 0.2
+beta = 0.4
 q1_tolerance = 1e-01  # allow for slight mismatch owing to numerics
 
 def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
@@ -129,11 +129,12 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
             options={'disp': False, 'maxiter': maxiter})
 
     def solve_mm(nus):
+        nu_scaling = 1
         nu_vals = []
         for nu in nus:
             nx, ny = nu
             nu_vals.append([nx, ny])
-        NU.set_value(nu_vals)
+        NU.set_value(nu_scaling * nu_vals)
 
         res = shoot(q0,p0)
         xs = simf(np.array([q0, res.x.reshape([N.eval(),
@@ -173,7 +174,7 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
         return res
 
     def propose_center(centers):
-        c = centers + beta * np.random.normal(size=centers.shape)
+        c = (1 - beta) * centers + beta * np.random.normal(size=centers.shape)
         x, y = c[:, 0], c[:, 1]
         px, py = periodic(x, x_min, x_max), periodic(y, y_min, y_max)
         return np.dstack((px, py))[0]

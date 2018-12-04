@@ -414,10 +414,9 @@ denotes a randomly generated number in $[0,\,1]$. The coefficient $\beta$ scales
 between the previoius sample and the new step $\xi$. Setting it too low
 increases the acceptance rate by taking shorter steps at the cost of slow
 exploration of the state space. Conversely, a too high value of $\beta$ results
-in lower acceptance and thus convergence. In the next section we choose
-$\beta=.3$ as a compromise between correlation and convergence. Further, the
-numerical solutions to the equations \eqref{eq-m-selective} are obtained using
-Theano \cite{team2016theano} which automatically generates the discrete adjoint
+in lower acceptance and thus convergence. Further, the numerical solutions to
+the equations \eqref{eq-m-selective} are obtained using Theano
+\cite{team2016theano} which automatically generates the discrete adjoint
 equation used to shoot for the final conditions. The next section shows the
 algorithm above in practice.
 \begin{algorithm}[h!]
@@ -469,7 +468,8 @@ described in algorithm \ref{algo:mcmc} to the landmark configurations in
     chain, centroid heat map, functional histogram and
     autocorrelation plot. The bottom row shows the geodesics for four MAP
     estimators. Here the radius is set to $\sigma_nu = 0.2$, and $0.7$ for the
-    velocity kernel and $\beta=0.2$ across $5000$ samples.}
+    velocity kernel and $\beta=0.2$ across $5000$ samples. Moreover we take
+    $\max\nu = 1$ resulting in a higher acceptance rate?}
     \label{fig:selective:crisscross}
 \end{minipage}
 \end{figure}
@@ -477,13 +477,13 @@ described in algorithm \ref{algo:mcmc} to the landmark configurations in
 \centering
 \begin{minipage}{\textwidth}
   \centering
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}
+    \includegraphics[width=.2\textwidth]{example-image-a}
+    \includegraphics[width=.2\textwidth]{example-image-a}
     \includegraphics[width=.2\textwidth]{example-image-a}\\[0.25cm]
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}
+    \includegraphics[width=.2\textwidth]{example-image-a}
+    \includegraphics[width=.2\textwidth]{example-image-a}
     \includegraphics[width=.2\textwidth]{example-image-a}
     %\subcaption{.}
     \caption{Selective metamorphosis for the pinch example. The top row displays
@@ -498,13 +498,13 @@ described in algorithm \ref{algo:mcmc} to the landmark configurations in
 \centering
 \begin{minipage}{\textwidth}
   \centering
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}
+    \includegraphics[width=.2\textwidth]{example-image-a}
+    \includegraphics[width=.2\textwidth]{example-image-a}
     \includegraphics[width=.2\textwidth]{example-image-a}\\[0.25cm]
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
-    \includegraphics[width=.2\textwidth]{example-image-a}\quad
+    \includegraphics[width=.2\textwidth]{example-image-a}
+    \includegraphics[width=.2\textwidth]{example-image-a}
+    \includegraphics[width=.2\textwidth]{example-image-a}
     \includegraphics[width=.2\textwidth]{example-image-a}
     %\subcaption{.}
     \caption{Selective metamorphosis for the inverted landmarks example. The top
@@ -517,12 +517,9 @@ described in algorithm \ref{algo:mcmc} to the landmark configurations in
 \end{figure}
 
 % Insert Effective Sample size (if time)
-We note that since the Euler-Lagrange equations for $p$ and $q$ are
-time-reversible, the configuration in both lead to a notion of
-collapse and hole creation for the landmarks.\\
-
-Note that in this expository paper we take $\max \nu = 1$, resulting in
-elevated acceptance rates.
+We note that the geodesic equations for $p$ and $q$ are time-reversible meaning
+that the configuration in figure \ref{fig:selective:pinch} corresponds to both
+particle collapse as well as hole creation.\\
 
 We note that the source code for all of these experiments is documented
 here (insert link to github.io).

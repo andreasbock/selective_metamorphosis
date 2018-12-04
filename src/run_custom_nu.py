@@ -60,8 +60,12 @@ def run_mm_custom_nu(q0, q1, test_name, nus):
     def met(q,p):
         return T.tensordot(nu(q),T.tensordot(p, p, [[1], [1]]).diagonal(), [[0], [0]])
 
-    def H(q,p):
-        return 0.5 * T.tensordot(p, T.tensordot(Ker(q, q), p, [[1], [0]]), [[0,1], [0,1]]) + met(q,p)
+    def Hv(q, p):
+        return 0.5*T.tensordot(p, T.tensordot(Ker(q, q), p, [[1], [0]]), [[0, 1],
+            [0, 1]])
+
+    def H(q, p):
+        return Hv(q, p) + met(p, q)
 
     # compile the previous functions
     pe = T.matrix('p')
@@ -74,6 +78,7 @@ def run_mm_custom_nu(q0, q1, test_name, nus):
     metf = function([qe, pe],met(qe, pe))
     Ksigmaf = function([qe1, qe2, sigma], Ksigma(qe1, qe2, sigma))
     nuf= function([qe], nu(qe))
+    Hvf = function([qe, pe], Hv(qe, pe))
     Hf = function([qe, pe],H(qe, pe))
 
     # compute gradients
@@ -139,10 +144,25 @@ def run_mm_custom_nu(q0, q1, test_name, nus):
     res = shoot(q0, p0)
     xs = simf(np.array([q0, res.x.reshape([N.eval(),
         DIM])]).astype(theano.config.floatX))
+    h = []
+    m = []
+    for i in range(np.shape(xs)[0]):
+        h.append(Hvf(xs[i, 0], xs[i, 1]))
+        m.append(metf(xs[i, 0], xs[i, 1]))
+    h = np.array(h).sum()*dt.eval()
+    m = np.array(m).sum()*dt.eval()
+
     print(res.success)
     print(log_dir + 'custom_nu_' + test_name)
     plot_q(x0, xs, num_landmarks, log_dir + 'custom_nu_' + test_name, nus=nus)
+    return {test_name: (h, m)}
 
-run_mm_custom_nu(*criss_cross(num_landmarks=20), nus=[[0, 0]])
-run_mm_custom_nu(*squeeze(num_landmarks=36),     nus=[[0, 0]])
-run_mm_custom_nu(*pent_to_tri(num_landmarks=40), nus=[[-.5, .5]])
+to_pickle = dict()
+to_pickle.update(run_mm_custom_nu(*criss_cross(num_landmarks=20), nus=[[0, 0]]))
+to_pickle.update(run_mm_custom_nu(*squeeze(num_landmarks=36),     nus=[[0, 0]]))
+to_pickle.update(run_mm_custom_nu(*pent_to_tri(num_landmarks=40), nus=[[-.5, .5]]))
+
+import pickle
+po = open("custom_nu.pickle", "wb")
+pickle.dump(to_pickle, po)
+po.close()
