@@ -13,7 +13,7 @@ timesteps = 100
 
 # mcmc parameters
 maxiter = 5000  # shooting
-beta = 0.4
+beta = 0.2
 q1_tolerance = 1e-01  # allow for slight mismatch owing to numerics
 
 def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
@@ -68,6 +68,7 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
     qe2 = T.matrix('q')
     sigma = T.scalar()
 
+    print('Start compiling...')
     Kf = function([qe1, qe2], Ker(qe1, qe2))
     metf = function([qe, pe],met(qe, pe))
     Ksigmaf = function([qe1, qe2, sigma], Ksigma(qe1, qe2, sigma))
@@ -128,6 +129,7 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
         return minimize(fopts, p0.flatten(), method='L-BFGS-B', jac=True,
             options={'disp': False, 'maxiter': maxiter})
 
+    print('...compilation over!')
     def solve_mm(nus):
         nu_scaling = 1
         nu_vals = []
@@ -174,10 +176,16 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
         return res
 
     def propose_center(centers):
-        c = (1 - beta) * centers + beta * np.random.normal(size=centers.shape)
+        c = np.sqrt(1. - beta**2) * centers + beta * np.random.normal(size=centers.shape)
         x, y = c[:, 0], c[:, 1]
-        px, py = periodic(x, x_min, x_max), periodic(y, y_min, y_max)
-        return np.dstack((px, py))[0]
+
+        while abs(x)>1 or abs(y)>1:
+            c = np.sqrt(1. - beta**2) * centers + beta * np.random.normal(size=centers.shape)
+            x, y = c[:, 0], c[:, 1]
+
+        #px, py = periodic(x, x_min, x_max), periodic(y, y_min, y_max)
+
+        return np.dstack((x, y))[0]
 
     def acceptance_prob(h, h_prop):
         if shoot_success:
@@ -212,7 +220,6 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
         msg += "\n\t proposal   = {}".format(center_prop)
 
         xs_prop, fnl_prop, shoot_success = solve_mm(center_prop)
-
         # compute acceptance probability
         acc = acceptance_prob(fnl, fnl_prop)
         msg += "\n\t acc. prob. = {}".format(acc)
@@ -234,6 +241,9 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
                 msg += "\n\t ! Saving MAP estimator"
                 map_estimators_vals[arg_max] = fnl
                 map_estimators[arg_max] = map_estimator(xs_prop, center_prop)
+
+            fnls.append(fnl)
+            c_samples.append(centers)
         else:
             term_colour = 'red'
 
@@ -243,8 +253,6 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
             plot_q(x0, xs_prop, num_landmarks, log_dir + 'sample_{}'.format(i),
                 nus=centers)
 
-        fnls.append(fnl)
-        c_samples.append(centers)
 
         # flush message buffer
         msg += "\n\t functional = {}".format(fnl)
@@ -289,7 +297,7 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
     po.close()
 
     # plotting
-    centroid_heatmap(c_samples, log_dir)
-    centroid_plot(c_samples, log_dir)
+    centroid_heatmap(c_samples, log_dir, x_min, x_max, y_min, y_max)
+    centroid_plot(c_samples, log_dir, x_min, x_max, y_min, y_max)
     plot_autocorr(c_samples, log_dir)
     fnl_histogram(fnls, log_dir)

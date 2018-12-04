@@ -1,8 +1,8 @@
 import numpy as np
 import pylab as plt
 
-plt.rc('text', usetex=True)
-plt.rc('font', family='serif')
+#plt.rc('text', usetex=True)
+#plt.rc('font', family='serif')
 
 def sample_circle(num_landmarks, scale=1, shift=0):
     thetas = np.linspace(0, 2*np.pi, num=num_landmarks+1)[:-1]
@@ -197,22 +197,25 @@ def trace_plot(fnls, log_dir):
     plt.plot(range(len(fnls)), fnls, 'r*-')
     plt.savefig(log_dir + 'functional_traceplot.pdf', bbox_inches='tight')
 
-def centroid_plot(c_samples, log_dir):
+def centroid_plot(c_samples, log_dir, x_min, x_max, y_min, y_max):
     cs = np.array(c_samples)[:, 0, :]
     cx, cy = cs[:, 0], cs[:, 1]
 
     plt.figure()
     plt.xlabel('Iteration')
     plt.ylabel('Centroid position')
+    plt.plot(cx[0], cy[0], 'r>-', alpha=1)
+    plt.plot(cx[-1], cy[-1], 'b<-', alpha=1)
     plt.plot(cx, cy, 'go-', alpha=0.3)
+    plt.axis([x_min, x_max, y_min, y_max])
     plt.savefig(log_dir + 'centroid_evolution.pdf', bbox_inches='tight')
 
-def centroid_heatmap(c_samples, log_dir, bins=50):
+def centroid_heatmap(c_samples, log_dir, x_min, x_max, y_min, y_max, bins=10):
     cs = np.array(c_samples)[:, 0, :]
     cx, cy = cs[:, 0], cs[:, 1]
 
     plt.figure()
-    plt.hist2d(cx, cy, bins=bins)
+    plt.hist2d(cx, cy, bins=bins, range = [ [x_min, x_max], [y_min,y_max]] )
     plt.xlabel('$x$-coordinate')
     plt.ylabel('$y$-coordinate')
     plt.colorbar()
@@ -239,15 +242,15 @@ def plot_autocorr(c_samples, fname):
     plt.figure()
     plt.plot(lags, acf, 'r.-')
     plt.xlabel('Lag')
-    plt.xlim((1, len(lags)))
-    plt.xticks(lags)
+    #plt.xlim((1, len(lags)))
+    #plt.xticks(lags)
     plt.ylabel('Sample autocorrelation')
-    plt.grid(linestyle='dotted')
+    #plt.grid(linestyle='dotted')
     plt.savefig(fname + 'autocorrelation.pdf', bbox_inches='tight')
 
-def fnl_histogram(fnls, fname):
+def fnl_histogram(fnls, fname, bins=10):
     plt.figure()
-    bins = len(fnls) // 1
+    #bins = len(fnls) // 1
     plt.hist(fnls, bins=bins, density=1, facecolor='green', alpha=0.75)
     plt.xlabel('Metamorphosis functional')
     plt.ylabel('Number of observed values')
