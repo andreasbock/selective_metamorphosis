@@ -9,7 +9,7 @@
 \usepackage{subfigure}
 \usepackage{braket}
 \usepackage[final]{fixme}
-\usepackage{amsmath,amsfonts}
+\usepackage{amsmath,amsfonts,amssymb}
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 \usepackage{appendix}
@@ -181,20 +181,21 @@ for inferring the local metamorphosis parameter $\nu(x)$ in section
 \section{Metamorphosis with landmarks}\label{sec:bg}
 
 In this paper we are concerned with diffeomorphometric approaches to image and
-shape matching. One of the central pillars on which this field relies is the
-observation made by Arnold \cite{arnold1966geometrie} that, under certain
-conditions, a time-dependent velocity field $u$ e.g. occupying some Hilbert
-space $u_t \in V$ induces a curve on a subgroup $G_V$ of diffeomorphisms
+shape matching. One of the pillars on which this field relies is the observation
+made by Arnold \cite{arnold1966geometrie} that, under certain conditions, a
+time-dependent velocity field $u$ e.g. occupying some Hilbert space $u_t \in V$,
+where $V$ is continuously embedded in $\textsf{C}_0^k(\Rd)$, $k\geq 1$ induces a
+curve $\varphi_t$ on a subgroup $\text{Diff}_V$ of diffeomorphisms
 \cite{younes2010shapes} via the following ordinary differential equation
 \begin{align}
 & \dot{\varphi_t} = u_t \circ \varphi_t\, , \qquad  \varphi_0 = \text{id}
   \label{diffeo}
 \end{align}
-with $\varphi_t \in G_V$, $\forall t$ and $u_t$ is a time-dependent vector
-field, obtained by minimising the following energy
+This is often used in a minmisation problem where the objective is to match two
+images $I_0$ and $I_1$:
 \begin{align}
   E(u) = \int_0^1 \half\vnorm{u_t}^2 \diff{t} + \frac{1}{\sigma^2}
-  S(I_0\circ\varphi_1, I_1)\, , \label{E-def}
+  S(I_0\circ\varphi_1, I_1)\longrightarrow \text{min}\, , \label{E-def}
 \end{align}
 where $S$ denotes a similarity measure between the deformed initial image
 $I_0\circ \varphi_1$ and the target image $I_1$ to allow inexact matching
@@ -340,18 +341,41 @@ the standard LDDMM landmark dynamics. This can also be seen in the relation
 \eqref{zp_relation}, where $\nu(x)=0$  implies that $z_t=0$, this the template
 does not move. 
 
-Notice that these equations are Hamiltons equation for the Hamiltonian, or
-energy density function written in term of $\mathbf p_t$ and $\mathbf q_t$
-\begin{align}
-  h(\mathbf q, \mathbf p) = h_l(\mathbf q_t, \mathbf p_t)+ \frac12 \sum_i \nu(q_i) |p_i|^2\,,  
-\end{align}
-thus the metamorphosis term act as a local correction to the kinetic energy. 
-
-We now show that the system \eqref{eq-m-selective} is invertible subject to the
-boundary conditions
+We now show that the shooting system \eqref{eq-m-selective} is invertible:
 \begin{theorem}
-Equation well-posed, \dots see appendix or cite in preparation
-\cite{bockarnaudoncotter2019}.
+Assume $\nu \in W^{2, \infty}_\text{loc}(\Rd)$ and
+$V\subset\textsf{C}_0^k(\Rd)$, $k\geq 1$. Them, given $\mathbf p_0,\,\mathbf
+q_0, \in \RdM$, \eqref{eq-m-selective} are integrable for all time.\\
+
+Proof:\\
+
+This is a simple ODE system which we integrate by establishing appropriate
+Lipschitz conditions. First, the mapping $(u,\,q)\mapsto u\circ q$ is clearly 
+Lipschitz. For $u(q)\mapsto\nabla u(q)^T$ consider $v,\,w \in V$ and
+$x,\,y\in\Rd$:
+\begin{align}
+\ltwonorm{\nabla v(x) - \nabla w(y)} \lesssim \vnorm{v} \ltwonorm{x-y} + \vnorm{v-w}\ltwonorm{y}
+\end{align}
+
+Given the conditions on $\nu$ the mappings
+\begin{align}
+  \begin{split}
+    & (q,\,p)\mapsto \nu(q)p\\
+    &(q,\,p)\mapsto \nabla \nu(q)|p|^2
+  \end{split}\label{nu_maps}
+\end{align}
+are locally Lipschitz. Consequently we verify that for any $(\mathbf
+p_0,\,\mathbf q_0)\in B(0,r)\subset \RdM\times\RdM$, the system
+\eqref{eq-m-selective} is locally Lipschitz with constant $L_{r,t}$.
+Now notice that \eqref{eq-m-selective} are Hamilton's equation for the
+Hamiltonian written in term of $\mathbf p_t$ and $\mathbf q_t$
+\begin{align}
+  h(\mathbf q, \mathbf p) = h_l(\mathbf q_t,\mathbf p_t)+\frac12\sum_i\nu(q_i) |p_i|^2\,,  
+\end{align}
+so we can easily verify $\dot h \equiv 0$ meaning that it is a conserved
+quantity. Due to this fact the existence of solutions to \eqref{eq-m-selective}
+can be extended to arbitrary $t>0$ with a $t$-independent Lipschitz constant.
+{\hfill $\square$}
 \end{theorem}
 
 We have established that for a prescribed $\nu$, solutions of the geodesic
