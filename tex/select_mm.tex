@@ -46,7 +46,7 @@
 
 \begin{document}
 %
-\title{MCMC for selective metamorphosis with applications to landmarks}
+\title{Selective metamorphosis for growth modelling with applications to landmarks}
 %
 %\titlerunning{Abbreviated paper title}
 % If the paper title is too long for the running head, you can set
@@ -68,13 +68,19 @@
 
 \begin{abstract}
 We present a framework for shape matching allowing users control of the degree
-which the matching is either homeomorphic or diffeomorphic. This control is
-given as a function over the domain in which the images are embedded.
-Well-posedness of this new problem is shown together with an analysis of the
-associated geodesic equations. Moreover, a stochastic framework is placed on the
-selective control and inferred through a proof-of-concept Markov chain Monte
-Carlo algorithm illustrated with landmark matching. Preliminary numerical
-results are shown and future paths of investigation are laid out.
+which the matching is diffeomorphic in computational anatomy. 
+This control is given as a function defined over the image
+and parametrises the template deformation.
+By modelling localised template deformation, we have a mathematical description of growth 
+only in specified parts of an image. 
+The location can either be specified from prior knowledge of the growth location, or learned 
+from data. 
+For simplicity we consider landmark matching and infer the distribution 
+of a finite dimensional parametrisation of the control via a Markov chain Carlo algorithm.
+Preliminary numerical results are shown and future paths of investigation are laid out.
+Well-posedness of this new problem is also shown together with an analysis of the
+associated geodesic equations. 
+
 \keywords{LDDMM \and MCMC \and Metamorphosis.}
 \end{abstract}
 
@@ -135,15 +141,15 @@ metamorphosis or LDDMM theory can handle \cite{bockarnaudoncotter2019}.
 \begin{minipage}{\textwidth}
   \centering
     \includegraphics[width=.3\textwidth]{lddmm_criss_cross.pdf}\quad
-    \includegraphics[width=.3\textwidth]{lddmm_squeeze.pdf}\quad
-    \includegraphics[width=.291\textwidth]{lddmm_pent_to_tri.pdf}\\[0.25cm]
     \includegraphics[width=.3\textwidth]{custom_nu_criss_cross.pdf}\quad
+    \includegraphics[width=.3\textwidth]{mm_criss_cross.pdf}\quad\\[0.25cm]
+    \includegraphics[width=.3\textwidth]{lddmm_squeeze.pdf}\quad
     \includegraphics[width=.3\textwidth]{custom_nu_squeeze.pdf}\quad
-    \includegraphics[width=.291\textwidth]{custom_nu_pent_to_tri.pdf}\\[0.25cm]
-    \includegraphics[width=.3\textwidth]{mm_criss_cross.pdf}\quad
     \includegraphics[width=.3\textwidth]{mm_squeeze.pdf}\quad
-    \includegraphics[width=.291\textwidth]{mm_pent_to_tri.pdf}
-    \caption{This figures illustrates landmark matching with classical LDDMM
+    %\includegraphics[width=.291\textwidth]{lddmm_pent_to_tri.pdf}\\[0.25cm]
+    %\includegraphics[width=.291\textwidth]{custom_nu_pent_to_tri.pdf}\\[0.25cm]
+    %\includegraphics[width=.291\textwidth]{mm_pent_to_tri.pdf}
+    \caption{{\color{red} Caption to be updated!}This figures illustrates landmark matching with classical LDDMM
     (top row), metamorphosis (bottom row) and selective metamorphosis (middle
     row).  We chose difficult matching for LDDMM, and we observe unrealistic
     landmark trajectories, with large resulting energies, or distances, whereas
