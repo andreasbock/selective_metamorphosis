@@ -68,18 +68,16 @@
 
 \begin{abstract}
 We present a framework for shape matching allowing users control of the degree
-which the matching is diffeomorphic in computational anatomy. 
-This control is given as a function defined over the image
-and parametrises the template deformation.
-By modelling localised template deformation, we have a mathematical description of growth 
-only in specified parts of an image. 
-The location can either be specified from prior knowledge of the growth location, or learned 
-from data. 
-For simplicity we consider landmark matching and infer the distribution 
-of a finite dimensional parametrisation of the control via a Markov chain Carlo algorithm.
-Preliminary numerical results are shown and future paths of investigation are laid out.
-Well-posedness of this new problem is also shown together with an analysis of the
-associated geodesic equations. 
+to which the matching is diffeomorphic in computational anatomy. This control is
+given as a function defined over the image and parametrises the template
+deformation. By modelling localised template deformation we have a mathematical
+description of growth only in specified parts of an image. The location can
+either be specified from prior knowledge of the growth location or learned from
+data. For simplicity we consider landmark matching and infer the distribution of
+a finite dimensional parametrisation of the control via Markov chain Carlo.
+Preliminary numerical results are shown and future paths of investigation are
+laid out. Well-posedness of this new problem is also shown together with an
+analysis of the associated geodesic equations. 
 
 \keywords{LDDMM \and MCMC \and Metamorphosis.}
 \end{abstract}
@@ -253,7 +251,7 @@ By taking variations carefully, see again \cite{holm2009euler}, we directly obta
 and the equation of motions are
 \begin{align}
   \begin{split}
-  \dot{\mathbf p_t} &= -\mdiv (u_t(\mathbf q_t)^T \mathbf p_t)\\ 
+  \dot{\mathbf p_t} &= - \nabla u_t(\mathbf q_t)^T \mathbf p_t\\ 
   \dot{\mathbf q_t} &= u_t(\mathbf q_t) +  \sigma^2\mathbf p_t \,,
   \end{split}
   \label{eq-m-classic}
@@ -324,17 +322,18 @@ The problem defined by \eqref{E_sm-def_p} yields the following equations for
 selective metarmorphosis for landmarks:
 \begin{align}
   \begin{split}
-  \dot{\mathbf p}_t &= - \mdiv(u_t(\mathbf q_t)^T \mathbf p_t) - \sum_i \frac12
-  \nabla \nu(q_i) |p_i|^2\\ \dot{\mathbf q}_t &= u_t(\mathbf q_t) +
-  \nu(q_i)\mathbf p_t \,,
+  \dot{\mathbf p}_t &= - \nabla u_t(\mathbf q_t)^T \mathbf p_t - \frac12
+  \nabla \nu(\mathbf q_t ) |\mathbf p_t|^2\\ \dot{\mathbf q}_t &= u_t(\mathbf q_t) +
+  \nu(\mathbf q_t)\mathbf p_t \,,
 \end{split}
   \label{eq-m-selective}
 \end{align}
-with $\mathbf q_0,\, \mathbf q_1 \text{ fixed}$ whereas the equation for the
-variable $\mathbf z_t$ is simply (see appendix \ref{app:z_derivation}):
-\begin{align}
-  \dot  {\mathbf z}_t&= \nabla u(\mathbf q_t)^T \mathbf z_t\,, 
-\end{align}
+with $\mathbf q_0,\, \mathbf q_1 \text{ fixed}$.
+%whereas the equation for the
+%variable $\mathbf z_t$ is simply (see appendix \ref{app:z_derivation}):
+%\begin{align}
+  %\dot  {\mathbf z}_t&= \nabla u(\mathbf q_t)^T \mathbf z_t\,, 
+%\end{align}
 
 Note that if $\nu(x)=0$ in parts of the domain, the dynamics will follow
 the standard LDDMM landmark dynamics. This can also be seen in the relation 
@@ -588,7 +587,9 @@ shape analysis.
 %\begin{align} \dot p_i  &= \nabla u(q_i)p_i  + p_i \cdot \nabla \nu(q_i)\\ \dot
 %q &= u(q_i) + \nu(q_i) \end{align}
 
-\appendix \section{$z_t$ derivation}\label{app:z_derivation}
+\appendix
+\iffalse
+\section{$z_t$ derivation}\label{app:z_derivation}
 
 We show $z$ satisfies the continuity equation. Using $z_t = \nu(q_t)p_t$:
 \begin{align*} 0 & = \dot{\mathbf p}_t + \mdiv(u_t(\mathbf q_t)^T \mathbf p_t) +
@@ -612,7 +613,7 @@ We show $z$ satisfies the continuity equation. Using $z_t = \nu(q_t)p_t$:
  - \nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
 & + \nabla u_t(\mathbf q_t)^T \frac{\mathbf z_t}{\mathbf \nu(q_t)} + \frac12\nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
 \end{align*}
-
+\fi
 
 \section{Proof of Theorem \ref{sm-eu}}\label{app:proof:sm-eu}
 The functional in \eqref{E_sm-def_p} is not convex so we work with a
@@ -652,6 +653,7 @@ weak lower semi-continuity concluding the proof.
 %This will give more conditions on $\nu$, like $\nu(x) \in C^{1}(\mathbb R^2)$. 
 %\end{theorem}
 
+\iffalse
 \section{Well-posedness of the equation of motion}
 Using the equation for $z$, we can formally write $z_t = z_t \circ \varphi^{-1}$,
 which corresponds to writing the initial $z_0(x) = \sum_i z_0^i\delta(x-x_0^i)$, 
@@ -679,6 +681,7 @@ as in \cite{holm2009euler}[eqn 19], with the only difference in the term $\nu(q)
 in the reconstruction relation. 
 {\color{red} Can we simply redo the same proof, but being careful when they need this term, 
 and make sure that $\nu(x)<\nu_{max}$ is enough? maybe the derivative needs to be smooth, too. }
+\fi
 
 \bibliographystyle{abbrv}
 \bibliography{landmarks}
