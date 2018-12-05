@@ -95,7 +95,7 @@ deformations which assume that the images are continuously deformed into one
 another with the additional property that the inverse deformation is also
 continuous.  This is a strong requirement for images which implies that the
 'mass' of any part of the image is conserved: we cannot create or close 'holes'.
-This property is also a crucial property of fluid mechanics, and in fact, the
+This property is also a crucial property of fluid mechanics and in fact the
 theory of diffeomorphic matching carrying the moniker \emph{Large Deformation
 Diffeomorphic Metric Mapping} \cite{trouve1998diffeomorphisms,beg2005computing}
 (LDDMM) has been inspired by fluid mechanics. Indeed, one of the central pillars
@@ -108,31 +108,33 @@ etc\dots.}{\color{green} Not too sure which fluids papers to reference here!})
 If a strictly diffeomorphic matching is not possible or necessary, an extension
 of LDDMM called metamorphosis \cite{trouve2005metamorphoses,holm2009euler} is
 available which introduces a parameter $\sigma^2$ parametrizing the deviation
-from diffeomorphic matching.  In particular, if $\sigma^2=0$ the deformation is
-purely diffeomorphic as in LDDMM. See
+from diffeomorphic matching allowing for topological variations e.g. growth via
+image intensity. In particular, if $\sigma^2=0$ the deformation is purely
+diffeomorphic as in LDDMM. See
 \cite{trouve1995infinite,trouve2005local,miller2001group} for technical details
-pertaining to constructing the metamorphosis problem.  While diffeomorphic paths
-always exists for landmark problems \cite{guo2006diffeomorphic} this theory
-allows one to match images of shapes with different topological features, which
-is ill-conditioned for standard LDDMM. Indeed, even inexact matching in LDDMM
-for such problems yields large energies and spurious geodesics that do not
-contribute to an intuitive macthing see e.g. figure \ref{fig:mm_lddmm}. As
-observed here, introducing $\sigma^2>0$ regularises the problem and qualitative
-improves the matching.\\
+pertaining to constructing the metamorphosis problem. x While diffeomorphic
+paths always exists for landmark problems \cite{guo2006diffeomorphic} this
+theory allows one to match images of shapes with different topological features,
+which is ill-conditioned for standard LDDMM. Indeed, even inexact matching in
+LDDMM for such problems yields large energies and spurious geodesics that do not
+contribute to an intuitive macthing, see figure \ref{fig:mm_lddmm}. As observed
+here, introducing $\sigma^2>0$ regularises the problem and qualitative improves
+the matching.\\
 
-In this work, we modify the original metamorphosis problem to include a
-spatially dependent metamorphosis parameter $\nu(x)$ in order to obtain an
-almost diffeomorphic matching. If $\nu(x) = \sigma^2$, our theory will reduces
-to the standard metamorphosis model, but with a localised $\nu(x)$, we can
-selectively introduce metamorphosis on an image and model local topological
-effects, such as hole creation or annihilation.  The difficulty of this problem
-is to infer the function $\nu(x)$ without a priory knowledge of the location of
-the topological effects.  We will use a Markov chain approach to infer
-appropriate functions $\nu(x)$, such that the topological effects are well
-described and a large part of the matching remains diffeomorphic.  For this
-paper, we will focus on landmark matching, but the theory of selective
-metamorphosis can be extended to any data structures that the classical
-metamorphosis or LDDMM theory can handle \cite{bockarnaudoncotter2019}.
+In this work we modify metamorphosis to include a spatially dependent control
+parameter $\nu(x)$ in order to selectively allow non-diffeomorphic
+(\emph{metamorphic}) matching in parts of the image. For $\nu(x) = \sigma^2$ our
+theory recovers the standard metamorphosis model. However, with a localised
+$\nu(x)$ (e.g. Gaussian), we can selectively introduce metamorphosis in an image
+and model local topological effects such as growth phenomena. The difficulty of
+this problem is to infer the function $x\mapsto\nu(x)$ without prior knowledge
+of the location of the topological effects. We will use a Markov chain Monte
+Carlo (MCMC) approach to infer appropriate functions $\nu(x)$, such that the
+topological effects are well described and a large part of the matching remains
+diffeomorphic. For this paper, we will focus on landmark matching, but the
+theory of selective metamorphosis can be extended to any data structures that
+the classical metamorphosis or LDDMM theory can handle
+\cite{bockarnaudoncotter2019}.
 
 \begin{figure}
 \centering
@@ -176,7 +178,7 @@ for inferring the local metamorphosis parameter $\nu(x)$ in section
 \ref{sec:bayesian} and apply this theory to a few landmark examples in section
 \ref{sec:numerical}.
 
-\section{Metamorphosis with landmarks}\label{sec:bg}
+\section{Metamorphosis for Landmarks}\label{sec:bg}
 
 In this paper we are concerned with diffeomorphometric approaches to image and
 shape matching. One of the pillars on which this field relies is the observation
@@ -265,7 +267,7 @@ simplifies to $\dot{\mathbf p_t} = - \nabla u_t(\mathbf q_t)^T \mathbf p_t$.\\
 
 In the next section we generalise the penalty parameter above and introduce a
 spatially dependent $\sigma^2$. We analyse the resulting optimisation problem
-and extend the equations \eqref{eq-m-classic}.
+and extend the equations in \eqref{eq-m-classic}.
 
 \section{Selective Metamorphosis for Landmarks}\label{sec:select_mm}
 
@@ -295,7 +297,7 @@ so we can get rid of the template variable $\mathbf z_t$ and write.
   \end{split}
   \label{E_sm-def_p}
 \end{align}
-for the standard landmark Hamiltonian
+where we have used \eqref{u-def} for the standard landmark Hamiltonian
 \begin{align}
   h_l(\mathbf q, \mathbf p) =  \frac12 \sum_{i,j=1}^M K(q_i-q_j)p_i\cdot p_j\, . 
 \label{hamiltonian}
@@ -303,8 +305,7 @@ for the standard landmark Hamiltonian
 We show that the optimisation problem \eqref{E_sm-def} is well-posed. First, we
 need the assumption
 \begin{assumption}\label{assumption:nu_bounded}
-  $\mathrm{max}_\mathcal{D}(\nu) = \nu_m < \infty$ %and $\nu$ is bounded from below
-%away from zero by $\nuinf \in \mathbb R$.
+$\nu$ is bounded from below away from zero by $\nuinf \in \mathbb R$.
 \end{assumption}
 
 \begin{theorem}\label{sm-eu}
@@ -328,22 +329,14 @@ selective metarmorphosis for landmarks:
 \end{split}
   \label{eq-m-selective}
 \end{align}
-with $\mathbf q_0,\, \mathbf q_1 \text{ fixed}$.
-%whereas the equation for the
-%variable $\mathbf z_t$ is simply (see appendix \ref{app:z_derivation}):
-%\begin{align}
-  %\dot  {\mathbf z}_t&= \nabla u(\mathbf q_t)^T \mathbf z_t\,, 
-%\end{align}
-
-Note that if $\nu(x)=0$ in parts of the domain, the dynamics will follow
-the standard LDDMM landmark dynamics. This can also be seen in the relation 
-\eqref{zp_relation}, where $\nu(x)=0$  implies that $z_t=0$, this the template
-does not move. 
-
-We now show that the shooting system \eqref{eq-m-selective} is invertible:
+with $\mathbf q_0,\, \mathbf q_1 \text{ fixed}$. Note that if $\nu(x)=0$ in
+parts of the domain, the dynamics will follow the standard LDDMM landmark
+dynamics. This can also be seen in the relation \eqref{zp_relation}, where
+$\nu(x)=0$  implies that $z_t=0$, this the template does not move. We now show
+that the shooting system \eqref{eq-m-selective} is invertible:
 \begin{theorem}
 Assume $\nu \in W^{2, \infty}_\text{loc}(\Rd)$ and
-$V\subset\textsf{C}_0^k(\Rd)$, $k\geq 1$. Them, given $\mathbf p_0,\,\mathbf
+$V\subset\textsf{C}_0^k(\Rd)$, $k\geq 1$. The, given $\mathbf p_0,\,\mathbf
 q_0, \in \RdM$, \eqref{eq-m-selective} are integrable for all time.\\
 
 Proof:\\
@@ -555,13 +548,15 @@ here (insert link to github.io).
 
 \section{Outlook}\label{sec:outlook}
 
-We have presented a preliminary approach for selectively adding photometric
-variation in a diffeomorphic image matching. This generalises LDDMM and
-metamorphosis and  could provide a first-order exploratory tool for physicians,
-to see if the development of a biological feature stems from a few violations of
-diffeomorphic evolution. This paper paves the way towards surgically
-investigating growth phenomena between topologically different images in certain
-areas of the target and template.\\
+We have presented a preliminary approach for selectively allowing photometric
+variation in a diffeomorphic image matching. We analysed the selective
+metamorphosis problem and the associated geodesic equation and demonstrated a
+proof of concept MCMC approach of inferring the $\nu$ control. This generalises
+LDDMM and metamorphosis and could provide a first-order exploratory tool for
+physicians to see if the development of a biological feature stems from a few
+violations of diffeomorphic evolution. This paper paves the way towards
+surgically investigating growth phenomena between topologically different images
+in certain areas of the target and template. 
 
 We outline the future work necessary to this end. Firstly, we aim to extend the
 equations of section \ref{sec:select_mm} to images e.g. using the kernel
@@ -569,10 +564,11 @@ framework in \cite{richardson2016metamorphosis} or developing a space-time
 method. Further, as outlined in \ref{sec:bayesian} there are many aspects of the
 probabilistic framework that needs rigorous treatment. Beyond the references
 therein, see also the work in \cite{dashti2013map}. Natural extensions of our
-probabilistic ansatz also includes taking $\nu$ as a function and interpreting
-the resulting inverse problem through the appropriate measure-theoretical lens.
-Moreover, adding a time-dependency to $\nu$ is also to be explored. Determining
-truncated Fourier modes of $\nu$ could lead to efficient numerical methods.\\
+probabilistic ansatz also includes fully treating $\nu$ as a function and
+interpreting the resulting inverse problem through the appropriate
+measure-theoretical lens. Moreover, adding a time-dependency to $\nu$ is also to
+be explored. Determining truncated Fourier modes of $\nu$ could lead to
+efficient numerical methods.\\
 
 Finally, it is our hope that we can extend the theory developed here to
 encompass classic metamorphosis; that is to say, to develop the necessary theory
@@ -580,12 +576,6 @@ in order to place a stochastic model on the state space consisting of velocities
 and source functions. Being able to sample random pairs (MCMC) of these would
 permit a novel numerical approach to metamorphosis as well as other problems
 shape analysis.
-
-%Another choice is \begin{align} l(q,p) = \|u\|_B^2 + \sum_i p_i\cdot \nu(q_i)
-%\, , \end{align} where $\nu:\mathbb R^2 \to \mathbb R^2$, which will give more
-%freedom on the metamorphosis term, and give equations of motion as
-%\begin{align} \dot p_i  &= \nabla u(q_i)p_i  + p_i \cdot \nabla \nu(q_i)\\ \dot
-%q &= u(q_i) + \nu(q_i) \end{align}
 
 \appendix
 \iffalse
