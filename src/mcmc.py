@@ -242,8 +242,6 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
                 map_estimators_vals[arg_max] = fnl
                 map_estimators[arg_max] = map_estimator(xs_prop, center_prop)
 
-            fnls.append(fnl)
-            c_samples.append(centers)
         else:
             term_colour = 'red'
 
@@ -253,6 +251,9 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
             plot_q(x0, xs_prop, num_landmarks, log_dir + 'sample_{}'.format(i),
                 nus=centers)
 
+        if acc>0:
+            fnls.append(fnl)
+            c_samples.append(centers)
 
         # flush message buffer
         msg += "\n\t functional = {}".format(fnl)
