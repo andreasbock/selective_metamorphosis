@@ -213,9 +213,9 @@ def centroid_plot(c_samples, log_dir, x_min, x_max, y_min, y_max):
 def centroid_heatmap(c_samples, log_dir, x_min, x_max, y_min, y_max, bins=10):
     cs = np.array(c_samples)[:, 0, :]
     cx, cy = cs[:, 0], cs[:, 1]
-
+    import matplotlib.colors as mcolors
     plt.figure()
-    plt.hist2d(cx, cy, bins=bins, range = [ [x_min, x_max], [y_min,y_max]] )
+    plt.hist2d(cx, cy, bins=bins, range = [ [x_min, x_max], [y_min,y_max]])
     plt.xlabel('$x$-coordinate')
     plt.ylabel('$y$-coordinate')
     plt.colorbar()
@@ -229,9 +229,9 @@ def sample_autocov(k, m):
             est += np.dot(m[i + k, j, :], m[i, j, :])
     return est / num_samples
 
-def plot_autocorr(c_samples, fname):
+def plot_autocorr(c_samples, fname,lag_max=1000):
     num = min(100, len(c_samples))
-    lags = np.linspace(1, len(c_samples), num, dtype=int)
+    lags = np.linspace(1, lag_max, num, dtype=int)
 
     c_samples_np = np.array(c_samples)
     mean = np.mean(c_samples_np, axis=0)
@@ -245,7 +245,7 @@ def plot_autocorr(c_samples, fname):
     #plt.xlim((1, len(lags)))
     #plt.xticks(lags)
     plt.ylabel('Sample autocorrelation')
-    #plt.grid(linestyle='dotted')
+    plt.grid(linestyle='dotted')
     plt.savefig(fname + 'autocorrelation.pdf', bbox_inches='tight')
 
 def fnl_histogram(fnls, fname, bins=10):
