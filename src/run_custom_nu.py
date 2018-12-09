@@ -20,7 +20,7 @@ timesteps = 100
 # mcmc parameters
 maxiter = 7500 # shooting
 
-def run_mm_custom_nu(q0, q1, test_name, nus):
+def run_mm_custom_nu(q0, q1, test_name, nus, return_dict=True, plot=True):
     # kernel parameters
     sigma    = 0.5
     sigma_nu = 0.5
@@ -141,18 +141,26 @@ def run_mm_custom_nu(q0, q1, test_name, nus):
     xs = simf(np.array([q0, res.x.reshape([N.eval(),
         DIM])]).astype(theano.config.floatX))
 
-    print(res.success)
-    print(log_dir + 'custom_nu_' + test_name)
-    plot_q(x0, xs, num_landmarks, log_dir + 'custom_nu_' + test_name, nus=nus)
+    h = []
+    for i in range(np.shape(xs)[0]):
+        h.append(Hf(xs[i, 0], xs[i, 1]))
+    h = np.array(h).sum()*dt.eval()
 
-    return {test_name: (0, 0)}  # <--- should be (velocity_norm, |z|^2)!
+    if plot:
+        plot_q(x0, xs, num_landmarks, log_dir + 'custom_nu_' + test_name, nus=nus)
 
-to_pickle = dict()
-to_pickle.update(run_mm_custom_nu(*criss_cross(num_landmarks=20), nus=[[0, 0]]))
-to_pickle.update(run_mm_custom_nu(*squeeze(num_landmarks=36),     nus=[[0, 0]]))
-to_pickle.update(run_mm_custom_nu(*pent_to_tri(num_landmarks=40), nus=[[-.5, .5]]))
+    if return_dict:
+        return {test_name: h}  # <--- should be (velocity_norm, |z|^2)!
+    else:
+        return h
 
-import pickle
-po = open("custom_nu.pickle", "wb")
-pickle.dump(to_pickle, po)
-po.close()
+if __name__ == "__main__":
+    to_pickle = dict()
+    to_pickle.update(run_mm_custom_nu(*criss_cross(num_landmarks=20), nus=[[0, 0]]))
+    to_pickle.update(run_mm_custom_nu(*squeeze(num_landmarks=36),     nus=[[0, 0]]))
+    to_pickle.update(run_mm_custom_nu(*pent_to_tri(num_landmarks=40), nus=[[-.5, .5]]))
+
+    import pickle
+    po = open("custom_nu.pickle", "wb")
+    pickle.dump(to_pickle, po)
+    po.close()

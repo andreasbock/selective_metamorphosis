@@ -135,7 +135,7 @@ def run_mm(q0, q1, test_name):
         m.append(metf(xs[i, 1]))
     h = np.array(h).sum()*dt.eval()
     m = np.array(m).sum()*dt.eval()
-    #plot_q(x0, xs, num_landmarks, log_dir + 'mm_' + test_name)
+    plot_q(x0, xs, num_landmarks, log_dir + 'mm_' + test_name)
 
     return {test_name: (h, res[1])}
 

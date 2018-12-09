@@ -1,8 +1,8 @@
 import numpy as np
 import pylab as plt
 
-#plt.rc('text', usetex=True)
-#plt.rc('font', family='serif')
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')
 
 def sample_circle(num_landmarks, scale=1, shift=0):
     thetas = np.linspace(0, 2*np.pi, num=num_landmarks+1)[:-1]
