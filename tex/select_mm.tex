@@ -274,17 +274,19 @@ and extend the equations in \eqref{eq-m-classic}.
 We can now extend the metamorphosis setting to be able to locally control the
 amount of non-diffeomorphic evolution.  For this, we introduce a function $\nu:
 \mathbb R^2\to \mathbb R$ replacing the parameter $\sigma^2$ such that
-$\nu(x)=\sigma^2$ corresponds to the classic landmark metamorphosis.
-We thus choose to minimise the following energy functional:
+$\nu(x)=\sigma^2$ corresponds to the classic landmark metamorphosis. The energy
+for selective metamorphosis takes on the following form in the most general
+setting:
 \begin{align}
   \begin{split}
-    E_{sm}^\nu(\mathbf q_t, \mathbf p_t, \mathbf z_t) = & \int_0^1
+    E_{sm}^\nu(\mathbf q_t, u_t, \mathbf z_t) = & \int_0^1
     \half  \left (\vnorm{u_t}^2 +\sum_{i=1}^M \frac{1}{\nu(q_t^i)}|z_t^i|^2\right )\diff{t}
   \end{split}
   \label{E_sm-def}
 \end{align}
-subject to the reconstruction equation \eqref{dq-m} and the boundary conditions
-$\mathbf q_0$ and $\mathbf q_1$ at time $t=0,\,1$. We have, as before that
+which we minimise subject to the reconstruction equation \eqref{dq-m} and the
+boundary conditions $\mathbf q_0$ and $\mathbf q_1$ at time $t=0,\,1$. In the
+case of landmarks we have as before that
 \begin{align}\label{zp_relation}
   \mathbf m(x) = \sum_{i=1}^M \frac{1}{\nu(q_t^i)} z_t^i\delta(x-q_i)\qquad \Rightarrow \qquad
   z_t^i = \nu(q_t^i) p_t^i\quad \forall i\, , 
@@ -335,9 +337,11 @@ dynamics. This can also be seen in the relation \eqref{zp_relation}, where
 $\nu(x)=0$  implies that $z_t=0$, this the template does not move. We now show
 that the shooting system \eqref{eq-m-selective} is invertible:
 \begin{theorem}
-Assume $\nu \in W^{2, \infty}_\text{loc}(\Rd)$ and
-$V\subset\textsf{C}_0^k(\Rd)$, $k\geq 1$. The, given $\mathbf p_0,\,\mathbf
-q_0, \in \RdM$, \eqref{eq-m-selective} are integrable for all time.\\
+Assume $\nu \in W^{2, \infty}(\Rd)$ and $V$ is embedded in
+$\textsf{C}_0^k(\Rd)$, $k\geq 1$ (continuous functions with continuous
+derivatives to order $k$ vanishing at infinity). The, given $\mathbf
+p_0,\,\mathbf q_0, \in \RdM$, \eqref{eq-m-selective} are integrable for all
+time.\\
 
 Proof:\\
 
@@ -359,7 +363,7 @@ Given the conditions on $\nu$ the mappings
 are locally Lipschitz. Consequently we verify that for any $(\mathbf
 p_0,\,\mathbf q_0)\in B(0,r)\subset \RdM\times\RdM$, the system
 \eqref{eq-m-selective} is locally Lipschitz with constant $L_{r,t}$.
-Now notice that \eqref{eq-m-selective} are Hamilton's equation for the
+Now notice that \eqref{eq-m-selective} are Hamilton's equations for the
 Hamiltonian written in term of $\mathbf p_t$ and $\mathbf q_t$
 \begin{align}
   h(\mathbf q, \mathbf p) = h_l(\mathbf q_t,\mathbf p_t)+\frac12\sum_i\nu(q_i) |p_i|^2\,,  
@@ -538,13 +542,14 @@ described in algorithm \ref{algo:mcmc} to the landmark configurations in
 \end{minipage}
 \end{figure}
 
-% Insert Effective Sample size (if time)
 We note that the geodesic equations for $p$ and $q$ are time-reversible meaning
 that the configuration in figure \ref{fig:selective:pinch} corresponds to both
-particle collapse as well as hole creation.\\
-
-We note that the source code for all of these experiments is documented
-here (insert link to github.io).
+particle collapse as well as hole creation. Numerically it is relatively simple
+to control the behaviour of $\nu$ by simple scaling or by adding regularisation
+terms to \eqref{E_sm-def} to e.g. penalise Fourier modes far away from the
+support of the images. Here we demonstrate a derivative-free method, but
+depending on the functional setting investigating a Metropolis-adjusted Langevin
+algorithms Langevin is also subject to future treatment.
 
 \section{Outlook}\label{sec:outlook}
 
