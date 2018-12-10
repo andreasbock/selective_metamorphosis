@@ -48,11 +48,11 @@
 %
 \title{Selective metamorphosis for growth modelling with applications to landmarks}
 %
-%\titlerunning{Abbreviated paper title}
+\titlerunning{Selective metamorphosis for growth modelling}
 % If the paper title is too long for the running head, you can set
 % an abbreviated paper title here
 %
-\author{Andreas Bock\inst{1} \and  Alexis Arnaudon\inst{1} \and Colin Cotter\inst{1}}
+\author{Andreas Bock \and  Alexis Arnaudon \and Colin Cotter}
 %
 \authorrunning{Bock et al.}
 % First names are abbreviated in the running head.
@@ -545,7 +545,7 @@ LDDMM and metamorphosis and could provide a first-order exploratory tool for
 physicians to see if the development of a biological feature stems from a few
 violations of diffeomorphic evolution. This paper paves the way towards
 surgically investigating growth phenomena between topologically different images
-in certain areas of the target and template. 
+in certain areas of the target and template.\\
 
 We outline the future work necessary to this end. Firstly, we aim to extend the
 equations of section \ref{sec:select_mm} to images e.g. using the kernel
@@ -600,37 +600,50 @@ reformulation to ensure the required lower semi-continuity. Define a
 variable $w^i_t = \sqrt{\nu(q_t^i)} p^i_t$ in the problem:
 
 \begin{align}
-\inf_{\substack{u \in L^2([0,1],V)\\ q, w\, \in H^1([0,1],\RdM)}}
-    & \int_0^1\half\left (h_l(\mathbf q_t,\mathbf p_t)  +\sum_{i=1}^M |w_t^i|^2\right )\diff{t}\\
-    & \dot{q_t^i} = u(\mathbf q_t) + \sqrt{\nu(q_t^i)} w^i_t\\
+\inf_{\substack{u \in L^2([0,1],V)\\ \mathbf q, \mathbf w\, \in H^1([0,1],\RdM)}}
+    & \int_0^1\half\left (h_l(\mathbf q_t,\mathbf p_t) + \sum_{i=1}^M |w_t^i|^2\right )\diff{t}\\
+    & \dot{\mathbf q_t^i} = u(\mathbf q_t) + \sqrt{\nu(\mathbf q_t)} \mathbf w_t\\
     & \mathbf q_0,\,\mathbf q_1\text{ fixed}
   \label{pbl:reformulation}
 \end{align}
 
 We now show existence of a minimiser to this problem. First, note that owing to
 the constraint effectively being a boundary value problem, we cannot always find
-a $\mathbf q$ for arbitrary pairs of $(u,\,w)$. We define an bounded operator
-$(\mathbf q,\, u)\mapsto \frac{\dot{q_t} - u(q_t)}{\sqrt{\nu(q_t^i)}} := w$:
+a $\mathbf q$ for arbitrary pairs of $(u,\,\mathbf w)$. We define an bounded operator
+$(\mathbf q,\, u)\mapsto \frac{\dot{\mathbf q_t} - u(\mathbf q_t)}{\sqrt{\nu(\mathbf q_t)}} := \mathbf w$:
 \begin{align*}
-\ltwonorm{w}^2 & = \ltwonorm{\frac{\dot{q}_t^i - u(q_t^i)}{\sqrt{\nu(q_t^i)}}}^2\\
-& \leq \nuinf^{-1}\Big(\ltwonorm{\dot{q}_t^i}^2 + \ltwonorm{u(q_t)}^2\Big)\\
+\Big(\sum_{i=1}^M |w_t^i|\Big)^{\frac 12} & = \ltwonorm{\mathbf w} =
+\ltwonorm{\frac{\dot{\mathbf q}_t - u(\mathbf q_t)}{\sqrt{\nu(\mathbf q_t)}}}\\
+& \lesssim \nuinf^{-1}\Big(\ltwonorm{\dot{\mathbf q}_t} + \vnorm{u(\mathbf
+q_t)}\Big)
 \end{align*}
-which is clearly bounded since $q\in C^1(0,1,H)$ and since by continuity of $u$.
-From this we generate a minimising sequence $(q^n, u^n, w^n)$ admissible to
-\eqref{pbl:reformulation}.\\
-
-\textbf{$\longrightarrow$ Show weak continuity of the constraint equation for
-$q$ (the stuff below)}\\
-
-Passing to subsequences where necessary we can by classic results
-\cite{younes2010shapes} extract bounded subsequences converging to weak limits
-where necessary to obtain a minimiser. Convexity of $S$ implies the necessary
+which is clearly bounded since $\mathbf q\in H^1([0,1],\RdM)$ and by the
+conservation of $u$. From this we generate a minimising sequence $(\mathbf q^n,
+u^n, \mathbf w^n)_{n\geq 0}$ admissible to \eqref{pbl:reformulation}. Next we
+show the constraint equation is continuous with respect to the weak topology
+on $X\triangleq H^1([0,1],\RdM)\times L^2([0,1],V)\times L^2([0,1],\RdM)$
+i.e. $\langle e(\mathbf q^n,\,\mathbf w^n,\,\mathbf u^n)-e(\mathbf q,\,\mathbf
+w,\,\mathbf u),\,\phi\rangle_{X,\,X^*}\rightarrow 0$, $\forall \phi\in X^*$
+where $e(q,\,w,\,u) \triangleq \dot{q} - u(q) - \sqrt{\nu{q_t}}w_t$. Here, the
+pairing is understood in the weak sense. Then,
+\begin{align*}
+\langle\sqrt{\nu(q)}w - \sqrt{\nu(q^n)}w^n,\,\phi\rangle \lesssim \nuinf\langle
+w - w^n,\,\phi\rangle \rightarrow 0
+\end{align*}
+\begin{align*}
+\langle u(q)-u^n(q^n),\,\phi\rangle & = \langle u(q)- u^n(q),\,\phi\rangle + \langle u^n(q)-u^n(q^n),\,\phi\rangle\\
+\end{align*}
+the first term vanishes trivially, while we invoke \cite[Lemma 7]{trouve2005local}
+to treat the second:
+\begin{align*}
+\langle u^n(q)-u^n(q^n),\,\phi\rangle \lesssim e^{C\int_0^1\vnorm{u^n}\diff{t}}\langle q-q^n,\,\phi\rangle \rightarrow 0
+\end{align*}
+for some constant $C>0$.
+Since linear operators are naturally compatible with the weak topology, the
+required continuity follows.  Passing to subsequences where necessary we can by
+classic results \cite{younes2010shapes} extract bounded subsequences converging
+to weak limits where necessary to obtain a minimiser. Convexity of $S$ implies
 weak lower semi-continuity concluding the proof.
-
-%\begin{theorem}[Optimality Conditions]
-%There exists a unique (? )solution $u, q, z$ to this system.
-%This will give more conditions on $\nu$, like $\nu(x) \in C^{1}(\mathbb R^2)$. 
-%\end{theorem}
 
 \iffalse
 \section{Well-posedness of the equation of motion}
