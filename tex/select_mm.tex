@@ -317,9 +317,6 @@ Assumption \ref{assumption:nu_bounded} implies that the problem
 Proof: See appendix \ref{app:proof:sm-eu}.
 {\hfill $\square$}
 \end{theorem}
-{\color{red} I think we don't need $\nu>0$, using the $p$ variable it is fine to have $\nu=0$ on some subset of the domain $\mathcal D$, or even the whole domain is we don't want metamorphosis. 
-In this fully finite dimensional system, with only $p$ and $q$ as variables, how shall we proceed to prove this minimizer? No sure how to do that now\dots
-}
 
 The problem defined by \eqref{E_sm-def_p} yields the following equations for
 selective metarmorphosis for landmarks:
@@ -334,8 +331,8 @@ selective metarmorphosis for landmarks:
 with $\mathbf q_0,\, \mathbf q_1 \text{ fixed}$. Note that if $\nu(x)=0$ in
 parts of the domain, the dynamics will follow the standard LDDMM landmark
 dynamics. This can also be seen in the relation \eqref{zp_relation}, where
-$\nu(x)=0$  implies that $z_t=0$, this the template does not move. We now show
-that the shooting system \eqref{eq-m-selective} is invertible:
+$\nu(x)=0$  implies $z_t=0$, this the template does not move. We now show that
+the shooting system \eqref{eq-m-selective} is invertible:
 \begin{theorem}
 Assume $\nu \in W^{2, \infty}(\Rd)$ and $V$ is embedded in
 $\textsf{C}_0^k(\Rd)$, $k\geq 1$ (continuous functions with continuous
