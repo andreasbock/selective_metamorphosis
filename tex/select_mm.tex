@@ -448,12 +448,12 @@ algorithm above in practice.
 \begin{algorithm}[h!]
 \begin{algorithmic}
 \caption{MCMC for selective metamorphosis}\label{algo:mcmc}
-\Procedure{mcmcSM}{$N$, $K$, $q_0$, $q_1$, $\beta\in (0,1]$}
+\Procedure{mcmcSM}{$N$, $K$, $\mathbf q_0$, $\mathbf q_1$, $\beta\in (0,1]$}
 \State $j \gets 1$
 \State $\nu^j \gets \text{initial guess in } \RdK$
 \State Solve \eqref{eq-m-selective} with $\nu^j$ and $q_0,\,q_1$ to obtain $w^0 = (q^0,\, z^0,\, u^0)$
 \While{$j \leq N$}
-\State Sample a random point $\xi \in \mathcal N(0, \text{Id}_{\mathbb R^d})$
+\State Sample a random point $\xi \in \mathcal N(0, \text{Id}_{\mathbb R^d})^K$
 \State $\nu \gets \beta \xi + (1-\beta) \nu^j$
 \State Solve \eqref{eq-m-selective} with $\nu$ and $q_0,\,q_1$ to obtain $w = (q,\, z,\, u)$
 \If {\textsc{randomUnit()}$\,< \min(1,\, e^{- E_{sm}^{\nu^j}(w^j) + E_{sm}^{\nu}(w)})$}
@@ -470,12 +470,20 @@ algorithm above in practice.
 
 \section{Numerical examples}\label{sec:numerical}
 
-This penultimate section displays some numerical results for our method. As we
-have seen in figure \ref{fig:mm_lddmm}, classic metamorphosis is an appropriate
-model for non-diffeomorphic matching. We now evaluate our stochastic model
-described in algorithm \ref{algo:mcmc} to the landmark configurations in
-\ref{fig:mm_lddmm}.
+This penultimate section displays some numerical results for our method. We
+apply algorithm \ref{algo:mcmc} with $K=1$ to infer a distribution for the
+growth location using the landmark boundary conditions seen in figure
+\ref{fig:mm_lddmm}. The parameters and results for the first configuration is
+shown in figure \eqref{fig:selective:crisscross}. These preliminary results show
+that even for a small amount of samples the density of accepted samples
+corresponds at least heuristically to the analytical density histogram obtained
+by computing the value of the metamorphosis functional in \eqref{E_sm-def}.\\
 
+We arrive at the same tentative conclusion for the second example, for which the
+results are shown in figure \eqref{fig:selective:pinch}. Moreover, we note that
+the geodesic equations for $p$ and $q$ are time-reversible meaning that the
+configuration in figure \ref{fig:selective:pinch} corresponds to both particle
+collapse as well as hole creation. 
 \begin{figure}
 \centering
 \begin{minipage}{\textwidth}
@@ -493,9 +501,8 @@ described in algorithm \ref{algo:mcmc} to the landmark configurations in
     row displays the geodesics corresponding a sample realisation from the
     chain, centroid heat map, functional histogram and
     autocorrelation plot. The bottom row shows the geodesics for four MAP
-    estimators. Here the radius is set to $\sigma_nu = 0.2$, and $0.7$ for the
-    velocity kernel and $\beta=0.2$ across $5000$ samples. Moreover we take
-    $\max\nu = 1$ resulting in a higher acceptance rate?}
+    estimators. Here the radius is set to $\sigma_\nu = 0.2$, and $0.7$ for the
+    velocity kernel and $\beta=0.2$ across $5000$ samples.}
     \label{fig:selective:crisscross}
 \end{minipage}
 \end{figure}
@@ -520,36 +527,12 @@ described in algorithm \ref{algo:mcmc} to the landmark configurations in
 \end{minipage}
 \end{figure}
 
-\begin{figure}
-\centering
-\begin{minipage}{\textwidth}
-  \centering
-    \includegraphics[width=.2\textwidth]{example-image-a}
-    \includegraphics[width=.2\textwidth]{example-image-a}
-    \includegraphics[width=.2\textwidth]{example-image-a}
-    \includegraphics[width=.2\textwidth]{example-image-a}\\[0.25cm]
-    \includegraphics[width=.2\textwidth]{example-image-a}
-    \includegraphics[width=.2\textwidth]{example-image-a}
-    \includegraphics[width=.2\textwidth]{example-image-a}
-    \includegraphics[width=.2\textwidth]{example-image-a}
-    %\subcaption{.}
-    \caption{Selective metamorphosis for the inverted landmarks example. The top
-    row displays the geodesics corresponding a sample realisation from the
-    chain, centroid heat map with four MAP estimators, functional histogram and
-    autocorrelation plot. The bottom row shows the geodesics for four MAP
-    estimators.}
-    \label{fig:selective:triangle}
-\end{minipage}
-\end{figure}
-
-We note that the geodesic equations for $p$ and $q$ are time-reversible meaning
-that the configuration in figure \ref{fig:selective:pinch} corresponds to both
-particle collapse as well as hole creation. Numerically it is relatively simple
-to control the behaviour of $\nu$ by simple scaling or by adding regularisation
-terms to \eqref{E_sm-def} to e.g. penalise Fourier modes far away from the
-support of the images. Here we demonstrate a derivative-free method, but
-depending on the functional setting investigating a Metropolis-adjusted Langevin
-algorithms Langevin is also subject to future treatment.
+It is numerically relatively simple to control the behaviour of $\nu$ by simple
+scaling or by adding regularisation terms to \eqref{E_sm-def} to e.g. penalise
+Fourier modes far away from the support of the images. Here we demonstrate a
+simple, proof-of-concept derivative-free method, but depending on the functional
+setting investigating a Metropolis-adjusted Langevin algorithms Langevin is also
+subject to future treatment.
 
 \section{Outlook}\label{sec:outlook}
 
