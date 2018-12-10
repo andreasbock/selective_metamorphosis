@@ -4,9 +4,10 @@ import numpy as np
 import pickle
 import os
 
-resolution = 5
+resolution = 25
 
 # criss-cross test
+print("computing criss-cross test...")
 x_min, x_max = -1, 1
 y_min, y_max = -1, 1
 xs, ys, hs = [], [], []
@@ -24,6 +25,7 @@ pickle.dump((xs, ys, hs), po)
 po.close()
 
 # squeeze test
+print("computing squeeze test...")
 x_min, x_max = -1, 1
 y_min, y_max = -1, 1
 xs, ys, hs = [], [], []

@@ -218,7 +218,8 @@ def centroid_heatmap(c_samples, log_dir, x_min, x_max, y_min, y_max, bins=10):
     plt.hist2d(cx, cy, bins=bins, range = [ [x_min, x_max], [y_min,y_max]])
     plt.xlabel('$x$-coordinate')
     plt.ylabel('$y$-coordinate')
-    plt.colorbar()
+    cbar = plt.colorbar()
+    cbar.ax.set_ylabel('Number of occurrences')
     plt.savefig(log_dir + 'centroid_heat.pdf', bbox_inches='tight')
 
 def sample_autocov(k, m):
@@ -248,10 +249,9 @@ def plot_autocorr(c_samples, fname,lag_max=1000):
     plt.grid(linestyle='dotted')
     plt.savefig(fname + 'autocorrelation.pdf', bbox_inches='tight')
 
-def fnl_histogram(fnls, fname, bins=10):
+def fnl_histogram(fnls, fname, bins='auto'):
     plt.figure()
-    #bins = len(fnls) // 1
-    plt.hist(fnls, bins=bins, density=1, facecolor='green', alpha=0.75)
+    plt.hist(fnls, bins=bins, facecolor='green', alpha=0.75)
     plt.xlabel('Metamorphosis functional')
     plt.ylabel('Number of observed values')
     plt.grid(linestyle='dotted')

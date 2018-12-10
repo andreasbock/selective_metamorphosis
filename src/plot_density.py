@@ -10,13 +10,15 @@ def plot_density(pickle_dat, log_dir, fname):
     H = np.array(h).reshape(n, n)
 
     plt.figure()
-    #plt.rc('text', usetex=True)
+    plt.rc('text', usetex=True)
     plt.rc('font', family='serif')
     plt.xlabel('$x$-coordinate')
     plt.ylabel('$y$-coordinate')
     plt.imshow(H, extent=(np.amin(x), np.amax(x),
-                          np.amin(y), np.amax(y)), cmap='jet')
-    plt.colorbar()
+                          np.amin(y), np.amax(y)), cmap='viridis')
+    cbar = plt.colorbar()
+    cbar.ax.set_ylabel('Functional value')
+
     plt.savefig(log_dir + fname + ".pdf")
 
 if __name__ == "__main__":
