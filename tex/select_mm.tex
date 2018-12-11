@@ -291,7 +291,8 @@ where we have used \eqref{u-def} for the standard landmark Hamiltonian
 We show that the optimisation problem \eqref{E_sm-def} is well-posed. First, we
 need the assumption
 \begin{assumption}\label{assumption:nu_bounded}
-$\nu$ is bounded from below away from zero by $\nuinf \in \mathbb R$.
+$\nu$ is bounded from below away from zero by $\nuinf \in \mathbb R$ and from
+above by $0<\sigma^2\in\mathbb R$.
 \end{assumption}
 
 \begin{theorem}\label{sm-eu}
@@ -315,8 +316,8 @@ selective metarmorphosis for landmarks:
 with $\mathbf q_0,\, \mathbf q_1 \text{ fixed}$. Note that if $\nu(x)=0$ in
 parts of the domain, the dynamics will follow the standard LDDMM landmark
 dynamics. This can also be seen in the relation \eqref{zp_relation}, where
-$\nu(x)=0$  implies $z_t=0$, this the template does not move. We now show that
-the shooting system \eqref{eq-m-selective} is invertible:
+$\nu(x)=0$  implies $z_t=0$, this the template does not move. The shooting
+system \eqref{eq-m-selective} is invertible:
 \begin{theorem}
 Assume $\nu \in W^{2, \infty}(\Rd)$ and $V$ is embedded in
 $\textsf{C}_0^k(\Rd)$, $k\geq 1$ (continuous functions with continuous
@@ -389,17 +390,16 @@ then, at least formally, the MAP estimator minimises $J =\|f^*\|_X^2 +
 \|f^*-\lambda\|_Y^2$.\\
 
 In general, for inverse problems on function space, several key properties
-documented in \cite{?} must be verified before the inverse-problem is
-well-posed. Beyond showing existence of the MAP estimator minimising $J$ above,
-the infinite-dimensional version of Bayes' rule must also be check i.e. the
-Radon-Nikodym derivative of the prior with respect to the posterior must exist
-and be absolutely continuous. Finally, we request continuity of the posterior
-distribution w.r.t the initial data corresponding in a sense to Hadamard
-well-posedness in a probabilistic framework. Rigorously treating this Bayesian
-inverse problem is subject to further study in the forthcoming work
-\cite{bockarnaudoncotter2019}.
+documented in \cite{dashti2017bayesian} must be verified before the
+inverse-problem is well-posed. Beyond showing existence of the MAP estimator
+minimising $J$ above, the infinite-dimensional version of Bayes' rule must also
+be check i.e. the Radon-Nikodym derivative of the prior with respect to the
+posterior must exist and be absolutely continuous. Finally, we request
+continuity of the posterior distribution w.r.t the initial data corresponding in
+a sense to Hadamard well-posedness in a probabilistic framework. Rigorously
+treating this Bayesian inverse problem is subject to further study in the
+forthcoming work \cite{bockarnaudoncotter2019}.
 
-% Talk about our problem
 \subsection{Finite-dimensional Parameterisation}\label{subs:finite-dim-param}
 
 We now introduce the main problem of this paper in the setting above. We
@@ -536,17 +536,21 @@ in certain areas of the target and template.\\
 
 Future work is manifold. Firstly, we aim to extend the equations of section
 \ref{sec:select_mm} to images e.g. using the kernel framework in
-\cite{richardson2016metamorphosis} or developing a space-time method. Further,
-as outlined in \ref{sec:bayesian} there are many aspects of the probabilistic
-framework that need rigorous treatment. Beyond the references therein, see also
-the work in \cite{dashti2013map}. Natural extensions of our probabilistic ansatz
-also includes fully treating $\nu$ as a function and interpreting the resulting
-inverse problem through the appropriate measure-theoretical lens. Adding a
-time-dependency to $\nu$ is also to be explored. Determining truncated Fourier
-modes of $\nu$ could lead to efficient numerical methods. More generally, we
-hope to reconcile our attempts to model growth here with the elegant approach
-described by Kaltenmark in \cite{kaltenmark2016geometrical}. See also
-\cite{kaltenmark2016partial,kaltenmark2017estimation,kaltenmark2017existence}.\\
+\cite{richardson2016metamorphosis} or developing a space-time method. We also
+aim to find an explicit solution to the geodesic equations for $\mathbf p$ and
+$\mathbf q$ and with the additional terms involving $\nu$ à la
+\cite{trouve2005local} to eliminate the need for assumption
+\ref{assumption:nu_bounded}.  Further, as outlined in \ref{sec:bayesian} there
+are many aspects of the probabilistic framework that need rigorous treatment.
+Beyond the references therein, see also the work in \cite{dashti2013map}.
+Natural extensions of our probabilistic ansatz also includes fully treating
+$\nu$ as a function and interpreting the resulting inverse problem through the
+appropriate measure-theoretical lens. Adding a time-dependency to $\nu$ is also
+to be explored. Determining truncated Fourier modes of $\nu$ could lead to
+efficient numerical methods. More generally, we hope to reconcile our attempts
+to model growth here with the mathematically elegant approach described
+in \cite{kaltenmark2016geometrical} and with the more general mathematics of
+growth \cite{goriely2017mathematics}.\\
 
 Finally, it is our hope that we can extend the probabilistic approach developed
 here to encompass classic metamorphosis and growth; that is to say, to develop
@@ -589,50 +593,50 @@ reformulation to ensure the required lower semi-continuity. Define a
 variable $w^i_t = \sqrt{\nu(q_t^i)} p^i_t$ in the problem:
 
 \begin{align}
-\inf_{\substack{u \in L^2([0,1],V)\\ \mathbf q, \mathbf w\, \in H^1([0,1],\RdM)}}
+\inf_{\substack{u \in L^2([0,1],\,V)\\ \mathbf q\in H^1([0,1],\,\RdM)\\\mathbf w\in L^2([0,1],\,\RdM)}}
     & \int_0^1\half\left (h_l(\mathbf q_t,\mathbf p_t) + \sum_{i=1}^M |w_t^i|^2\right )\diff{t}\\
-    & \dot{\mathbf q_t^i} = u(\mathbf q_t) + \sqrt{\nu(\mathbf q_t)} \mathbf w_t\\
+    & \dot{\mathbf q_t^i} = u_t(\mathbf q_t) + \sqrt{\nu(\mathbf q_t)} \mathbf w_t\\
     & \mathbf q_0,\,\mathbf q_1\text{ fixed}
   \label{pbl:reformulation}
 \end{align}
-
 We now show existence of a minimiser to this problem. First, note that owing to
 the constraint effectively being a boundary value problem, we cannot always find
 a $\mathbf q$ for arbitrary pairs of $(u,\,\mathbf w)$. We define an bounded operator
-$(\mathbf q,\, u)\mapsto \frac{\dot{\mathbf q_t} - u(\mathbf q_t)}{\sqrt{\nu(\mathbf q_t)}} := \mathbf w$:
+$(\mathbf q,\, u_t)\mapsto \frac{\dot{\mathbf q_t} - u_t(\mathbf q_t)}{\sqrt{\nu(\mathbf q_t)}} := \mathbf w$:
 \begin{align*}
 \Big(\sum_{i=1}^M |w_t^i|\Big)^{\frac 12} & = \ltwonorm{\mathbf w} =
-\ltwonorm{\frac{\dot{\mathbf q}_t - u(\mathbf q_t)}{\sqrt{\nu(\mathbf q_t)}}}\\
-& \lesssim \nuinf^{-1}\Big(\ltwonorm{\dot{\mathbf q}_t} + \vnorm{u(\mathbf
+\ltwonorm{\frac{\dot{\mathbf q}_t - u_t(\mathbf q_t)}{\sqrt{\nu(\mathbf q_t)}}}
+\lesssim \nuinf^{-1}\Big(\ltwonorm{\dot{\mathbf q}_t} + \vnorm{u_t(\mathbf
 q_t)}\Big)
 \end{align*}
-which is clearly bounded since $\mathbf q\in H^1([0,1],\RdM)$ and by the
-conservation of $u$. From this we generate a minimising sequence $(\mathbf q^n,
-u^n, \mathbf w^n)_{n\geq 0}$ admissible to \eqref{pbl:reformulation}. Next we
-show the constraint equation is continuous with respect to the weak topology
-on $X\triangleq H^1([0,1],\RdM)\times L^2([0,1],V)\times L^2([0,1],\RdM)$
-i.e. $\langle e(\mathbf q^n,\,\mathbf w^n,\,\mathbf u^n)-e(\mathbf q,\,\mathbf
-w,\,\mathbf u),\,\phi\rangle_{X,\,X^*}\rightarrow 0$, $\forall \phi\in X^*$
-where $e(q,\,w,\,u) \triangleq \dot{q} - u(q) - \sqrt{\nu{q_t}}w_t$. Here, the
+which is clearly bounded since $\mathbf q\in H^1([0,1],\,\RdM)$ and by
+conservation of $u_t$. From this we generate a minimising sequence $(\mathbf q^n,
+u^n, \mathbf w^n)_{n\geq 0}$ admissible to \eqref{pbl:reformulation}. The rest
+of the proof is standard, see e.g. \cite{younes2010shapes}. Next we show the
+constraint equation is continuous with respect to the weak topology on
+$X\triangleq H^1([0,1],\,\RdM)\times L^2([0,1],\,V)\times L^2([0,1],\,\RdM)$ i.e.
+$\langle e(\mathbf q_t^n,\,\mathbf w_t^n,\,\mathbf u_t^n)-e(\mathbf q_t,\,\mathbf
+w_t,\,\mathbf u_t),\,\phi\rangle_{X,\,X^*}\rightarrow 0$, $\forall \phi\in X^*$
+where $e(q,\,w,\,u) \triangleq \dot{q} - u(q) - \sqrt{\nu(q)}w$. Here, the
 pairing is understood in the weak sense. Then,
 \begin{align*}
-\langle\sqrt{\nu(q)}w - \sqrt{\nu(q^n)}w^n,\,\phi\rangle \lesssim \nuinf\langle
-w - w^n,\,\phi\rangle \rightarrow 0
+\langle\sqrt{\nu(\mathbf q_t)}\mathbf w_t - \sqrt{\nu(\mathbf q_t^n)}\mathbf w_t^n,\,\phi\rangle \lesssim \nuinf\langle
+\mathbf w_t - \mathbf w_t^n,\,\phi\rangle \rightarrow 0\,,
 \end{align*}
 \begin{align*}
-\langle u(q)-u^n(q^n),\,\phi\rangle & = \langle u(q)- u^n(q),\,\phi\rangle + \langle u^n(q)-u^n(q^n),\,\phi\rangle\\
+\langle u_t(\mathbf q_t)-u_t^n(\mathbf q_t^n),\,\phi\rangle & = \langle
+u_t(\mathbf q_t)- u_t^n(\mathbf q_t),\,\phi\rangle + \langle u_t^n(\mathbf
+q_t)-u^n(\mathbf q_t^n),\,\phi\rangle\,.
 \end{align*}
-the first term vanishes trivially, while we invoke \cite[Lemma 7]{trouve2005local}
-to treat the second:
+The first term vanishes trivially, while for the second we see
 \begin{align*}
-\langle u^n(q)-u^n(q^n),\,\phi\rangle \lesssim e^{C\int_0^1\vnorm{u^n}\diff{t}}\langle q-q^n,\,\phi\rangle \rightarrow 0
+\langle u_t^n(\mathbf q_t)-u_t^n(\mathbf q_t^n),\,\phi\rangle \leq \text{Lip}(u_t^n)\langle \mathbf q_t-\mathbf q_t^n,\,\phi\rangle \rightarrow 0
 \end{align*}
-for some constant $C>0$.
 Since linear operators are naturally compatible with the weak topology, the
 required continuity follows.  Passing to subsequences where necessary we can by
-classic results \cite{younes2010shapes} extract bounded subsequences converging
-to weak limits where necessary to obtain a minimiser. Convexity of $S$ implies
-weak lower semi-continuity concluding the proof.
+classic results extract bounded subsequences converging to weak limits where
+necessary to obtain a minimiser. Convexity of $S$ implies weak lower
+semi-continuity concluding the proof.
 
 \iffalse
 \section{Well-posedness of the equation of motion}
