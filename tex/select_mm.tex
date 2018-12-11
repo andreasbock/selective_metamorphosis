@@ -172,22 +172,22 @@ where $V$ is continuously embedded in $\textsf{C}_0^k(\Rd)$, $k\geq 1$ induces a
 curve $\varphi_t$ on a subgroup $\text{Diff}_V$ of diffeomorphisms
 \cite{younes2010shapes} via the following ordinary differential equation
 \begin{align}
-& \dot{\varphi_t} = u_t \circ \varphi_t\, , \qquad  \varphi_0 = \text{id}
+& \dot{\varphi_t} = u_t \circ \varphi_t\, , \qquad  \varphi_0 = \text{id}\, . 
   \label{diffeo}
 \end{align}
 This is often used in a minmisation problem where the objective is to match two
 images $I_0$ and $I_1$:
 \begin{align}
-  E(u) = \int_0^1 \half\vnorm{u_t}^2 \diff{t} + \frac{1}{\sigma^2}
+  E(u) = \int_0^1 \half\vnorm{u_t}^2 \diff{t} + \frac{1}{\lambda^2}
   S(I_0\circ\varphi_1, I_1)\longrightarrow \text{min}\, , \label{E-def}
 \end{align}
 where $S$ denotes a similarity measure between the deformed initial image
 $I_0\circ \varphi_1$ and the target image $I_1$ to allow inexact matching
-parametrised by $\sigma^2$. The LDDMM approach takes $S$ as an $L^2$ norm on
+parametrised by $\lambda^2$. The LDDMM approach takes $S$ as an $L^2$ norm on
 the difference between its arguments.\\
 
 In order to simplify the exposition, we will consider singular solutions of this
-problem, which are given by
+problem, which are given by the Ansatz
 \begin{align}
   \frac{\delta l}{\delta u} = \mathbf m(x) = \sum_{i=1}^M p_t^i \delta(x-q_t^i)\,, 
 \end{align}
@@ -210,10 +210,10 @@ Then, we can define the template velocity as
   \mathbf z = \varphi_t \dot {\boldsymbol \eta}
   \label{z_eta}
 \end{align}
-and extend the energy \eqref{E-def} to 
+and extend the action functional \eqref{E-def} to 
 \begin{align}
   \begin{split}
-    E_m(\mathbf q_t, \mathbf p_t, \mathbf z_t) = & \int_0^1
+    S_m(\mathbf q_t, \mathbf p_t, \mathbf z_t) = & \int_0^1
     \half  \left (\vnorm{u_t}^2 + \frac{1}{\sigma^2} \sum_{i=1}^M |z_t^i|^2\right )\diff{t}
   \end{split}
   \label{E_m-def}
@@ -225,11 +225,9 @@ where now the reconstruction relation is
 \end{align}
 obtained from \eqref{z_eta} and \eqref{q_t} together with  $u= \dot \varphi_t \varphi^{-1}$, 
 see \cite{holm2009euler} for more details.  
-Before, the boundary conditions are given on the positions $\mathbf q(0)$ and $\mathbf
-q(1)$, but we now have an extra term in the energy and the reconstruction
-equation \eqref{dq-m}. 
 
-By taking variations carefully, see again \cite{holm2009euler}, we directly obtain 
+By taking variations carefully, see again \cite{holm2009euler}, we directly obtain a relationship
+between the momentum variable $\mathbf p$ and the template variable $\mathbf z$ as
 \begin{align}
   \mathbf m(x) = \frac{1}{\sigma^2} \sum_{i=1}^M z_t^i\delta(x-q_i)\qquad \Rightarrow \qquad
   \mathbf z = \sigma^2 \mathbf p_i\, , 
@@ -242,52 +240,86 @@ and the equation of motions are
   \end{split}
   \label{eq-m-classic}
 \end{align}
+where $u_t$ is defined in \eqref{u-def}. 
+%We emphasise a subtlety - the landmark
+%equations above are actually those for \emph{measure metamorphosis}
+%\cite[Section 11.1, equation 33]{holm2009euler}. However, since $p_t$ does not
+%explicitly depend on the landmark positions above the momentum equation
+%simplifies to $\dot{\mathbf p_t} = - \nabla u_t(\mathbf q_t)^T \mathbf p_t$.\\
 
-where $u_t$ is defined in \eqref{u-def}. We emphasise a subtlety - the landmark
-equations above are actually those for \emph{measure metamorphosis}
-\cite[Section 11.1, equation 33]{holm2009euler}. However, since $p_t$ does not
-explicitly depend on the landmark positions above the momentum equation
-simplifies to $\dot{\mathbf p_t} = - \nabla u_t(\mathbf q_t)^T \mathbf p_t$.\\
-
-In the next section we generalise the penalty parameter above and introduce a
-spatially dependent $\sigma^2$. We analyse the resulting optimisation problem
-and extend the equations in \eqref{eq-m-classic}.
+%In the next section we generalise the penalty parameter above and introduce a
+%spatially dependent $\sigma^2$. We analyse the resulting optimisation problem
+%and extend the equations in \eqref{eq-m-classic}.
 
 \section{Selective Metamorphosis for Landmarks}\label{sec:select_mm}
 
 We can now extend the metamorphosis setting to be able to locally control the
 amount of non-diffeomorphic evolution.  For this, we introduce a function $\nu:
 \mathbb R^2\to \mathbb R$ replacing the parameter $\sigma^2$ such that
-$\nu(x)=\sigma^2$ corresponds to the classic landmark metamorphosis. The energy
-for selective metamorphosis takes on the following form in the most general
-setting:
+$\nu(x)=\sigma^2$ corresponds to the classic landmark metamorphosis. The action 
+for selective metamorphosis thus becomes 
 \begin{align}
   \begin{split}
-    E_{sm}^\nu(\mathbf q_t, u_t, \mathbf z_t) = & \int_0^1
-    \half  \left (\vnorm{u_t}^2 +\sum_{i=1}^M \frac{1}{\nu(q_t^i)}|z_t^i|^2\right )\diff{t}
+    S_{sm}^\nu(\mathbf q_t, u_t, \mathbf z_t) = & \int_0^1
+    \half  \left (\vnorm{u_t}^2 +\sum_{i=1}^M \frac{1}{\nu(q_t^i)}|z_t^i|^2\right )\diff{t}\, , 
   \end{split}
   \label{E_sm-def}
 \end{align}
-which we minimise subject to the reconstruction equation \eqref{dq-m} and the
+which we minimize subject to the reconstruction equation \eqref{dq-m} and the
 boundary conditions $\mathbf q_0$ and $\mathbf q_1$ at time $t=0,\,1$. In the
 case of landmarks we have as before that
 \begin{align}\label{zp_relation}
   \mathbf m(x) = \sum_{i=1}^M \frac{1}{\nu(q_t^i)} z_t^i\delta(x-q_i)\qquad \Rightarrow \qquad
   z_t^i = \nu(q_t^i) p_t^i\quad \forall i\, , 
 \end{align}
-so we can get rid of the template variable $\mathbf z_t$ and write. 
+so we can get rid of the template variable $\mathbf z_t$ and write  
 \begin{align}
   \begin{split}
-    E_{sm}^\nu(\mathbf q_t, \mathbf p_t) = & \int_0^1
-    \half  \left (h_l(\mathbf q_t,\mathbf p_t)  +\sum_{i=1}^M \nu(q_t^i)|p_t^i|^2\right )\diff{t}\, , 
+    S_{sm}^\nu(\mathbf q_t, u_t, \mathbf p_t) = & \int_0^1
+    \half  \left (\|u_t\|_V^2  +\sum_{i=1}^M \nu(q_t^i)|p_t^i|^2\right )\diff{t}\, . 
   \end{split}
   \label{E_sm-def_p}
+\end{align}
+
+The problem defined by \eqref{E_sm-def_p} yields the following equations for
+selective metarmorphosis for landmarks:
+\begin{align}
+  \begin{split}
+  \dot{\mathbf p}_t &= - \nabla u_t(\mathbf q_t)^T \mathbf p_t - \frac12
+  \nabla \nu(\mathbf q_t ) |\mathbf p_t|^2\\ \dot{\mathbf q}_t &= u_t(\mathbf q_t) +
+  \nu(\mathbf q_t)\mathbf p_t \,,
+\end{split}
+  \label{eq-m-selective}
+\end{align}
+with $\mathbf q_0,\, \mathbf q_1 \text{ fixed}$. Note that if $\nu(x)=0$ in
+parts of the domain, the dynamics will follow the standard LDDMM landmark
+dynamics. This can also be seen in the relation \eqref{zp_relation}, where
+$\nu(x)=0$  implies $z_t=0$, this the template does not move. 
+Notice that these equations are Hamilton's equations for the
+Hamiltonian $\mathbf p_t$ and $\mathbf q_t$
+\begin{align}
+  h(\mathbf q, \mathbf p) = h_l(\mathbf q_t,\mathbf p_t)+\frac12\sum_i\nu(q_i) |p_i|^2\,,  
 \end{align}
 where we have used \eqref{u-def} for the standard landmark Hamiltonian
 \begin{align}
   h_l(\mathbf q, \mathbf p) =  \frac12 \sum_{i,j=1}^M K(q_i-q_j)p_i\cdot p_j\, . 
 \label{hamiltonian}
 \end{align}
+{\color{red} From the standard theory of Hamiltonian systems, we now that there exists 
+solutions up to any times $t$, thus from an initial condition $\mathbf q_0$ one can find 
+a solution which reach $\mathbf q_1$ in finite time $T$, from the freedom on the choice of 
+$\mathbf p(0)$. This procedure is called shooting, as solving $\mathbf q(T)= \mathbf q_0$ 
+for $\mathbf p(0)$ involves the computation of an adjoint (backward) equation to estimate
+a correction on $\mathbf p(0)$. We will perform this procedure directly with an 
+automatic differentiation package Theano \cite{team2016theano}, see 
+\cite{kuhnel2017computational,kuhnel2017differential} for more details on the implementation.
+
+
+
+
+
+}
+
 We show that the optimisation problem \eqref{E_sm-def} is well-posed. First, we
 need the assumption
 \begin{assumption}\label{assumption:nu_bounded}
@@ -303,21 +335,7 @@ Proof: See appendix \ref{app:proof:sm-eu}.
 {\hfill $\square$}
 \end{theorem}
 
-The problem defined by \eqref{E_sm-def_p} yields the following equations for
-selective metarmorphosis for landmarks:
-\begin{align}
-  \begin{split}
-  \dot{\mathbf p}_t &= - \nabla u_t(\mathbf q_t)^T \mathbf p_t - \frac12
-  \nabla \nu(\mathbf q_t ) |\mathbf p_t|^2\\ \dot{\mathbf q}_t &= u_t(\mathbf q_t) +
-  \nu(\mathbf q_t)\mathbf p_t \,,
-\end{split}
-  \label{eq-m-selective}
-\end{align}
-with $\mathbf q_0,\, \mathbf q_1 \text{ fixed}$. Note that if $\nu(x)=0$ in
-parts of the domain, the dynamics will follow the standard LDDMM landmark
-dynamics. This can also be seen in the relation \eqref{zp_relation}, where
-$\nu(x)=0$  implies $z_t=0$, this the template does not move. The shooting
-system \eqref{eq-m-selective} is invertible:
+
 \begin{theorem}
 Assume $\nu \in W^{2, \infty}(\Rd)$ and $V$ is embedded in
 $\textsf{C}_0^k(\Rd)$, $k\geq 1$ (continuous functions with continuous
@@ -354,13 +372,14 @@ so we can easily verify $\dot h \equiv 0$ meaning that it is a conserved
 quantity. Due to this fact the existence of solutions to \eqref{eq-m-selective}
 can be extended to arbitrary $t>0$ with a $t$-independent Lipschitz constant.
 {\hfill $\square$}
+{\color{red} Can we squeeze this to : Everything is lipfsitz, and we are Hamiltonian so we are good?, Btw, why do we need to check lifshitz again? We should say this, but I don't know of any Hamiltonian system you can't integrate forward\dots}
 \end{theorem}
 
-We have established that for a prescribed $\nu$, solutions of the geodesic
-equations obtain. The main goal of this work is described in the next section
-where we infer the unknown function $\nu$ so as to gather information about
-where in the spatial domain we are most likely to observe metamorphic behaviour
-via a Bayesian framework as in \cite{dashti2017bayesian}.
+%We have established that for a prescribed $\nu$, solutions of the geodesic
+%equations obtain. The main goal of this work is described in the next section
+%where we infer the unknown function $\nu$ so as to gather information about
+%where in the spatial domain we are most likely to observe metamorphic behaviour
+%via a Bayesian framework as in \cite{dashti2017bayesian}.
 
 \section{Bayesian Framework}\label{sec:bayesian}
 
@@ -402,6 +421,7 @@ forthcoming work \cite{bockarnaudoncotter2019}.
 
 \subsection{Finite-dimensional Parameterisation}\label{subs:finite-dim-param}
 
+
 We now introduce the main problem of this paper in the setting above. We
 consider $\nu$ as a random variable, indeed a random \emph{function}. This is an
 appropriate framework because if the lack of uniqueness allows for a qualitative
@@ -414,18 +434,27 @@ Here the finite family $h_k$ of centroids in $\Rd$ together with the uniform
 length-scale $\sigma_\nu$ fully determine $\nu_h$, thus greatly reducing the
 complexity of sampling. We defer sampling from function space to future work
 \cite{bockarnaudoncotter2019}. Defining a density $p_{sm} \propto e^{-
-E_{sm}^\nu}$ over the space of selective metamorphoses for a prescribed $\nu$
+S_{sm}^\nu}$ over the space of selective metamorphoses for a prescribed $\nu$
 leading to algorithm \ref{algo:mcmc}. Here, $N$ denotes the desired number of
 samples and $K$ the number of terms in \eqref{nu_h}. \textsc{randomUnit()}
 denotes a randomly generated number in $[0,\,1]$. The coefficient $\beta$ scales
 between the previoius sample and the new step $\xi$. Setting it too low
 increases the acceptance rate by taking shorter steps at the cost of slow
 exploration of the state space. Conversely, a too high value of $\beta$ results
-in lower acceptance and thus convergence. Further, the numerical solutions to
-the equations \eqref{eq-m-selective} are obtained using Theano
-\cite{team2016theano} which automatically generates the discrete adjoint
-equation used to shoot for the final conditions. The next section shows the
-algorithm above in practice.
+in lower acceptance and thus convergence. 
+%Further, the numerical solutions to
+%the equations \eqref{eq-m-selective} are obtained using Theano
+%\cite{team2016theano} which automatically generates the discrete adjoint
+%equation used to shoot for the final conditions. 
+The next section shows the algorithm above in practice.
+
+\section{Numerical examples}\label{sec:numerical}
+
+This penultimate section displays some numerical results for our method. We
+apply algorithm \ref{algo:mcmc} to infer a distribution for the
+growth location using the landmark boundary conditions seen in figure
+\ref{fig:mm_lddmm}. 
+
 \begin{algorithm}[h!]
 \begin{algorithmic}
 \caption{MCMC for selective metamorphosis}\label{algo:mcmc}
@@ -435,9 +464,9 @@ algorithm above in practice.
 \State Solve \eqref{eq-m-selective} with $\nu^j$ and $q_0,\,q_1$ to obtain $w^0 = (q^0,\, z^0,\, u^0)$
 \While{$j \leq N$}
 \State Sample a random point $\xi \in \mathcal N(0, \text{Id}_{\mathbb R^d})^K$
-\State $\nu \gets \beta \xi + (1-\beta) \nu^j$
+\State $\nu \gets \beta \xi + \sqrt{1-\beta^2} \nu^j$
 \State Solve \eqref{eq-m-selective} with $\nu$ and $q_0,\,q_1$ to obtain $w = (q,\, z,\, u)$
-\If {\textsc{randomUnit()}$\,< \min(1,\, e^{- E_{sm}^{\nu^j}(w^j) + E_{sm}^{\nu}(w)})$}
+\If {\textsc{randomUnit()}$\,< \min(1,\, e^{- S_{sm}^{\nu^j}(w^j) + S_{sm}^{\nu}(w)})$}
     \State $\nu^{j+1} \gets \nu$
 \Else
     \State $\nu^{j+1} \gets \nu^j$
@@ -449,13 +478,9 @@ algorithm above in practice.
 \end{algorithmic}
 \end{algorithm}
 
-\section{Numerical examples}\label{sec:numerical}
 
-This penultimate section displays some numerical results for our method. We
-apply algorithm \ref{algo:mcmc} to infer a distribution for the
-growth location using the landmark boundary conditions seen in figure
-\ref{fig:mm_lddmm}. The parameters and results for the first configuration is
-shown in figure \eqref{fig:selective:crisscross}. These preliminary results show
+The parameters and results for the first configuration is
+shown in figure \ref{fig:selective:crisscross}. These preliminary results demonstrate 
 that even for a small amount of samples the density of accepted samples
 corresponds at least heuristically to the analytical density histogram obtained
 by computing the value of the metamorphosis functional in \eqref{E_sm-def}.\\
@@ -466,24 +491,21 @@ the geodesic equations for $p$ and $q$ are time-reversible meaning that the
 configuration in figure \ref{fig:selective:pinch} corresponds to both particle
 collapse as well as hole creation. 
 
-\def \resultPath {\string~/Dropbox/mcmc_inverse_problems/simulations/}
 \begin{figure}
 \centering
 \begin{minipage}{\textwidth}
   \centering
-    \includegraphics[width=.46\textwidth]{\resultPath results_criss_cross_10/centroid_heat.pdf}
-    \includegraphics[width=.46\textwidth]{density_criss_cross.pdf}\\[0.23cm]
-    \includegraphics[width=.46\textwidth]{\resultPath results_criss_cross_10/functional_histogram.pdf}
-    \includegraphics[width=.46\textwidth]{\resultPath results_criss_cross_10/autocorrelation.pdf}
-    %\includegraphics[width=.23\textwidth]{\resultPath results_criss_cross_10/MAP_center_0.pdf}
-    %\includegraphics[width=.23\textwidth]{\resultPath results_criss_cross_10/MAP_center_1.pdf}
-    %\includegraphics[width=.23\textwidth]{\resultPath results_criss_cross_10/MAP_center_2.pdf}
-    %\subcaption{.}
-    \caption{Selective metamorphosis for the inverted landmarks example,
-    displaying a heat map for the accepted proposals, a histogram with the
-    analytical values for \eqref{E_sm-def} at a resolution of 25, a functional
-    histogram for the proposals and an autocorrelation plot. We see the density
-    of the accepted samples is exponentially proportional to the analytically
+    \includegraphics[width=.46\textwidth]{density_criss_cross.pdf}
+    \includegraphics[width=.46\textwidth]{centroid_heat_criss_cross.pdf} \\[0.23cm]
+    \includegraphics[width=.46\textwidth]{functional_histogram_criss_cross.pdf}
+    \includegraphics[width=.46\textwidth]{autocorrelation_criss_cross.pdf}
+    \caption{We display the result of the MCMC algorithm for the selective metamorphosis 
+     of the inverted landmarks example,
+    The top left panel show the analytical values for \eqref{E_sm-def}, found by the shooting method.  
+    The top right panel displays a heat map for the sampled positions of the centroid from the MCMC method. 
+    The bottom left panel is he histrogram of the sampled values of the functional
+    and the bottom right panel is the autocorrelation function of the Markov Chain. 
+    We see the density of the accepted samples is exponentially proportional to the analytically
     computed metamorphosis values. The radius here is set to $\sigma_\nu = 0.2$,
     and $0.7$ for the velocity kernel, $K=1$ and $\beta=0.2$ across $5000$
     samples.}
@@ -491,29 +513,29 @@ collapse as well as hole creation.
 \end{minipage}
 \end{figure}
 
-\begin{figure}
-\centering
-\begin{minipage}{\textwidth}
-  \centering
-    %\includegraphics[width=.23\textwidth]{\resultPath results_squeeze_8/sample_1500.pdf}
-    \includegraphics[width=.23\textwidth]{\resultPath
-    results_squeeze_8/centroid_heat_0.pdf}
-    \includegraphics[width=.23\textwidth]{\resultPath
-    results_squeeze_8/centroid_heat_1.pdf}
-    \includegraphics[width=.23\textwidth]{density_squeeze.pdf}\\[0.23cm]
-    \includegraphics[width=.4\textwidth]{\resultPath results_squeeze_8/functional_histogram.pdf}
-    \includegraphics[width=.4\textwidth]{\resultPath results_squeeze_8/autocorrelation.pdf}
-    %\includegraphics[width=.46\textwidth]{\resultPath results_squeeze_8/MAP_center_0.pdf}
+%\begin{figure}
+%\centering
+%\begin{minipage}{\textwidth}
+%  \centering
+%    %\includegraphics[width=.23\textwidth]{\resultPath results_squeeze_8/sample_1500.pdf}
+%    \includegraphics[width=.23\textwidth]{\resultPath
+%    results_squeeze_8/centroid_heat_0.pdf}
+%    \includegraphics[width=.23\textwidth]{\resultPath
+%    results_squeeze_8/centroid_heat_1.pdf}
+%    \includegraphics[width=.23\textwidth]{density_squeeze.pdf}\\[0.23cm]
+%    \includegraphics[width=.4\textwidth]{\resultPath results_squeeze_8/functional_histogram.pdf}
+%    \includegraphics[width=.4\textwidth]{\resultPath results_squeeze_8/autocorrelation.pdf}
+%    %\includegraphics[width=.46\textwidth]{\resultPath results_squeeze_8/MAP_center_0.pdf}
     %\includegraphics[width=.46\textwidth]{\resultPath results_squeeze_8/MAP_center_1.pdf}
     %\includegraphics[width=.46\textwidth]{\resultPath results_squeeze_8/MAP_center_2.pdf}
     %\subcaption{.}
-    \caption{Selective metamorphosis for the pinch example. The top row displays
-    the geodesics corresponding a sample realisation from the chain, centroid
-    heat map with four MAP estimators, functional histogram and autocorrelation
-    plot. The bottom row shows the geodesics for four MAP estimators.}
-    \label{fig:selective:pinch}
-\end{minipage}
-\end{figure}
+%    \caption{Selective metamorphosis for the pinch example. The top row displays
+%    the geodesics corresponding a sample realisation from the chain, centroid
+%    heat map with four MAP estimators, functional histogram and autocorrelation
+%    plot. The bottom row shows the geodesics for four MAP estimators.}
+%    \label{fig:selective:pinch}
+%\end{minipage}
+%\end{figure}
 
 It is numerically relatively simple to control the behaviour of $\nu$ by simple
 scaling or by adding regularisation terms to \eqref{E_sm-def} to e.g. penalise
@@ -540,7 +562,10 @@ Future work is manifold. Firstly, we aim to extend the equations of section
 aim to find an explicit solution to the geodesic equations for $\mathbf p$ and
 $\mathbf q$ and with the additional terms involving $\nu$ à la
 \cite{trouve2005local} to eliminate the need for assumption
-\ref{assumption:nu_bounded}.  Further, as outlined in \ref{sec:bayesian} there
+\ref{assumption:nu_bounded}. 
+{\color{red} Do they have explicit solution? Like $q(t) = \dots$, $p(t)= \dots$? 
+I don't see the link with assumption 1?}
+Further, as outlined in \ref{sec:bayesian} there
 are many aspects of the probabilistic framework that need rigorous treatment.
 Beyond the references therein, see also the work in \cite{dashti2013map}.
 Natural extensions of our probabilistic ansatz also includes fully treating
@@ -557,7 +582,7 @@ here to encompass classic metamorphosis and growth; that is to say, to develop
 the necessary theory in order to place a stochastic model on the state space
 consisting of velocities and source functions. Being able to sample random pairs
 (MCMC) of these would permit a novel numerical approach to metamorphosis as well
-as other problems shape analysis.
+as other problems in shape analysis.
 
 \appendix
 \iffalse
