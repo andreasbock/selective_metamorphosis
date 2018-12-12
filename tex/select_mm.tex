@@ -74,7 +74,7 @@ is given as a function defined over the image and parameterises the template
 deformation. By modelling localised template deformation we have a mathematical
 description of growth only in specified parts of an image. The location can
 either be specified from prior knowledge of the growth location or learned from
-data. For simplicity we consider landmark matching and infer the distribution of
+data. For simplicity, we consider landmark matching and infer the distribution of
 a finite dimensional parameterisation of the control via Markov chain Monte
 Carlo.  Preliminary numerical results are shown and future paths of
 investigation are laid out. Well-posedness of this new problem is studied
@@ -108,25 +108,27 @@ image intensity. In particular, if $\sigma^2=0$ the deformation is purely
 diffeomorphic as in LDDMM.  See
 \cite{trouve1995infinite,trouve2005local,miller2001group} for technical details
 pertaining to the construction of the metamorphosis problem. While diffeomorphic
-paths always exists for landmark problems \cite{guo2006diffeomorphic} this
+paths always exist for landmark problems \cite{guo2006diffeomorphic} this
 theory allows one to match images of shapes with different topological features,
 which is ill-conditioned for standard LDDMM. Indeed, even inexact matching in
 LDDMM for such problems yields large energies and spurious geodesics that do not
-contribute to an intuitive macthing, see figure \ref{fig:mm_lddmm}. As observed
+contribute to an intuitive matching, see figure \ref{fig:mm_lddmm}. As observed
 here, introducing $\sigma^2>0$ regularises the problem and qualitative improves
 the matching.\\
 
-In this work we modify metamorphosis to include a spatially dependent control
+In this work, we modify metamorphosis to include a spatially dependent control
 parameter $x\mapsto\nu(x)$ in order to selectively allow non-diffeomorphic
 (\emph{metamorphic}) matching in parts of the image. For $\nu(\cdot) = \sigma^2$
 our theory recovers the standard metamorphosis model. However, with a localised
-control (e.g. a Gaussian centered at a point in $\Rd$), we can selectively
+control (e.g. a Gaussian centred at a point in $\Rd$), we can selectively
 introduce metamorphosis in an image and model local topological effects such as
 growth phenomena. The difficulty of this problem is to infer the function
 $\nu(\cdot)$ without prior knowledge of the location of the topological effects.
+This problem is similar to the one treated in \cite{arnaudon_geometric_2017}, where 
+such functions were parametrizing the randomness in LDDMM  matching of shapes. 
 We will use a Markov chain Monte Carlo (MCMC) approach to infer appropriate
 functions $\nu(\cdot)$, such that the topological effects are well described and
-a large part of the matching remains diffeomorphic. In this paper we will focus
+a large part of the matching remains diffeomorphic. In this paper, we will focus
 on landmark matching but the theory of selective metamorphosis can be extended
 to any data structures that the classical metamorphosis or LDDMM theory can
 handle \cite{bockarnaudoncotter2019}.\\
@@ -282,7 +284,7 @@ so we can eliminate the template variable $\mathbf z_t$ and write
 \end{align}
 
 The problem defined by \eqref{E_sm-def_p} yields the following equations for
-selective metarmorphosis for landmarks:
+selective metamorphosis for landmarks:
 \begin{align}
   \begin{split}
   \dot{\mathbf p}_t &= - \nabla u_t(\mathbf q_t)^T \mathbf p_t - \frac12
@@ -307,11 +309,7 @@ where we have used \eqref{u-def} for the standard landmark Hamiltonian
 \label{hamiltonian}
 \end{align}
 
-{\color{red}
-\sout{From the standard theory of Hamiltonian systems, we now that there exists
-solutions up to any times $t$, thus from an initial condition $\mathbf q_0$ one
-can find a solution which reach $\mathbf q_1$ in finite time $T$, from the
-freedom on the choice of $\mathbf p(0)$.} A practical procedure for solving
+A practical procedure for solving
 \eqref{eq-m-selective} with the landmark Hamiltonian above is called
 \emph{shooting}, where we replace the end-point condition $\mathbf q_1$ with a
 guess for $\mathbf p_0$, and iteratively update $\mathbf p_0$ using
@@ -319,26 +317,75 @@ automatically computed adjoint (or backward) equations until $\mathbf q_1$
 compares to $\mathbf q(1)$ below a certain tolerance. We will perform this
 procedure directly with an automatic differentiation package Theano
 \cite{team2016theano}, see \cite{kuhnel2017computational,kuhnel2017differential}
-for more details on the implementation.} This section concludes with some
+for more details on the implementation. This section concludes with some
 theoretical results.
 \begin{theorem}\label{sm-eu}
 Let $\nu$ be bounded from below away from zero by $\nuinf \in \mathbb R$ and
 from above by $0<\sigma^2\in\mathbb R$. Then \eqref{pbl:reformulation} attains
-its unique infimum.\\
-
-Proof: See appendix \ref{app:proof:sm-eu}.
-{\hfill $\square$}
+its unique infimum.
 \end{theorem}
+\begin{proof}
+The functional in \eqref{E_sm-def_p} is not convex so we work with a
+reformulation to ensure the required lower semi-continuity. Define a
+variable $w^i_t = \sqrt{\nu(q_t^i)} p^i_t$ in the problem:
 
+\begin{align}
+\inf_{\substack{u \in L^2([0,1],\,V)\\ \mathbf q\in H^1([0,1],\,\RdM)\\\mathbf w\in L^2([0,1],\,\RdM)}}
+    & \int_0^1\half\left (h_l(\mathbf q_t,\mathbf p_t) + \sum_{i=1}^M |w_t^i|^2\right )\diff{t}\\
+    & \dot{\mathbf q_t^i} = u_t(\mathbf q_t) + \sqrt{\nu(\mathbf q_t)} \mathbf w_t\\
+    & \mathbf q_0,\,\mathbf q_1\text{ fixed}
+  \label{pbl:reformulation}
+\end{align}
+We now show existence of a minimiser to this problem. First, note that owing to
+the constraint effectively being a boundary value problem, we cannot always find
+a $\mathbf q$ for arbitrary pairs of $(u,\,\mathbf w)$. We define an bounded operator
+$(\mathbf q,\, u_t)\mapsto \frac{\dot{\mathbf q_t} - u_t(\mathbf
+q_t)}{\sqrt{\nu(\mathbf q_t)}} \triangleq \mathbf w$:
+\begin{align*}
+\Big(\sum_{i=1}^M |w_t^i|^2\Big)^{\frac 12} & = \ltwonorm{\mathbf w} =
+\ltwonorm{\frac{\dot{\mathbf q}_t - u_t(\mathbf q_t)}{\sqrt{\nu(\mathbf q_t)}}}
+\lesssim \nuinf^{-1}\Big(\ltwonorm{\dot{\mathbf q}_t} + \vnorm{u_t(\mathbf
+q_t)}\Big)\,.
+\end{align*}
+From this we generate a minimising sequence $(\mathbf q^n,
+u^n, \mathbf w^n)_{n\geq 0}$ admissible to \eqref{pbl:reformulation}. The rest
+of the proof is standard, see e.g. \cite{younes2010shapes}. We show the
+constraint equation is continuous with respect to the weak topology on
+$X\triangleq H^1([0,1],\,\RdM)\times L^2([0,1],\,V)\times L^2([0,1],\,\RdM)$ i.e.
+$\langle e(\mathbf q_t^n,\,\mathbf w_t^n,\,\mathbf u_t^n)-e(\mathbf q_t,\,\mathbf
+w_t,\,\mathbf u_t),\,\phi\rangle_{X,\,X^*}\rightarrow 0$, $\forall \phi\in X^*$
+where $e(q,\,w,\,u) \triangleq \dot{q} - u(q) - \sqrt{\nu(q)}w$. Here, the
+pairing is understood in the weak sense. Then,
+\begin{align*}
+\langle\sqrt{\nu(\mathbf q_t)}\mathbf w_t - \sqrt{\nu(\mathbf q_t^n)}\mathbf w_t^n,\,\phi\rangle \lesssim \nuinf\langle
+\mathbf w_t - \mathbf w_t^n,\,\phi\rangle \rightarrow 0\,,
+\end{align*}
+\begin{align*}
+\langle u_t(\mathbf q_t)-u_t^n(\mathbf q_t^n),\,\phi\rangle & = \langle
+u_t(\mathbf q_t)- u_t^n(\mathbf q_t),\,\phi\rangle + \langle u_t^n(\mathbf
+q_t)-u^n(\mathbf q_t^n),\,\phi\rangle\,.
+\end{align*}
+The first term vanishes trivially, while for the second we see
+\begin{align*}
+\langle u_t^n(\mathbf q_t)-u_t^n(\mathbf q_t^n),\,\phi\rangle \leq \text{Lip}(u_t^n)\langle \mathbf q_t-\mathbf q_t^n,\,\phi\rangle \rightarrow 0
+\end{align*}
+Since linear operators are naturally compatible with the weak topology the
+required continuity follows.  Passing to subsequences where necessary we can by
+classic results extract bounded subsequences converging to weak limits where
+necessary to obtain a minimiser. Convexity of $S$ implies weak lower
+semi-continuity concluding the proof.
+
+\end{proof}
 \begin{theorem}
 Assume $\nu \in W^{2, \infty}(\Rd)$ and $V$ is embedded in
 $\textsf{C}_0^k(\Rd)$, $k\geq 1$ (continuous functions with continuous
 derivatives to order $k$ vanishing at infinity). The, given $\mathbf
 p_0,\,\mathbf q_0, \in \RdM$, \eqref{eq-m-selective} are integrable for all
-time.\\
+time.
 
-Proof:\\
-
+\end{theorem}
+\begin{proof}
+  
 Establishing appropriate Lipschitz conditions implies integrability of the
 system. First, the mapping $(u,\,q)\mapsto u\circ q$ is clearly Lipschitz. For
 $u(q)\mapsto\nabla u(q)^T$ consider $v,\,w \in V$ and $x,\,y\in\Rd$:
@@ -357,19 +404,19 @@ are locally Lipschitz. Consequently we verify that for any $(\mathbf
 p_0,\,\mathbf q_0)\in B(0,r)\subset \RdM\times\RdM$, the system
 \eqref{eq-m-selective} is locally Lipschitz with constant $L_{r,t_0}$ for some
 $t_0>0$. By the conservation of the Hamiltonian we can extend the existence of
-solutions to arbitary $t>t_0$.
+solutions to arbitrary $t>t_0$.
+\end{proof}
 
-{\hfill $\square$}
-{\color{red} 1) Can we squeeze this to : Everything is lipfsitz, and we are
-Hamiltonian so we are good?, 2) Btw, why do we need to check lifshitz again? We
-should say this, but I don't know of any Hamiltonian system you can't integrate
-forward\dots}{\color{blue} 1) I condensed it a bit, we can write a longer more
-rigorous proof in the paper 2) Because without Lipschitz, existence is not
-guaranteed for all times, standard Cauchy-Lipschitz theory of ODEs (see e.g.
-Appendix C of Shapes and Diffeomorphisms. I honestly don't know enough about
-Hamiltonian systems to state anything more precise. However, the three-body
-problem, as an example, is not integrable..?}
-\end{theorem}
+%{\hfill $\square$}
+%{\color{red} 1) Can we squeeze this to : Everything is lipfsitz, and we are
+%Hamiltonian so we are good?, 2) Btw, why do we need to check lifshitz again? We
+%should say this, but I don't know of any Hamiltonian system you can't integrate
+%forward\dots}{\color{blue} 1) I condensed it a bit, we can write a longer more
+%rigorous proof in the paper 2) Because without Lipschitz, existence is not
+%guaranteed for all times, standard Cauchy-Lipschitz theory of ODEs (see e.g.
+%Appendix C of Shapes and Diffeomorphisms. I honestly don't know enough about
+%Hamiltonian systems to state anything more precise. However, the three-body
+%problem, as an example, is not integrable..?}
 
 %We have established that for a prescribed $\nu$, solutions of the geodesic
 %equations obtain. The main goal of this work is described in the next section
@@ -381,7 +428,7 @@ problem, as an example, is not integrable..?}
 
 We now place a stochastic model on $\nu$ inspired by the approach taken in
 \cite{cotter2013bayesian}. The goal is to develop an algorithm to infer $\nu$,
-passing via the deterministic problem seen above.  First we present some
+passing via the deterministic problem seen above.  First, we present some
 preliminaries on the Bayesian approach to inverse problems in section
 \ref{subs:gf}, essentially quoting concepts and results from
 \cite{dashti2017bayesian}. See also \cite{cotter2013mcmc} for an exposition of
@@ -405,9 +452,9 @@ the MAP estimator minimises $J=\|f^*\|_X^2 + \|f^*-\lambda\|_Y^2$.\\
 
 For general inverse problems on function space, several key properties
 documented in \cite{dashti2017bayesian} must be verified before the
-inverse problem is well-posed. Beyond showing existence of the MAP estimator
+inverse problem is well-posed. Beyond showing the existence of the MAP estimator
 minimising $J$ above, the infinite-dimensional version of Bayes' rule must also
-be check i.e. the Radon-Nikodym derivative of the prior with respect to the
+be checked i.e. the Radon-Nikodym derivative of the prior with respect to the
 posterior must exist and be absolutely continuous. Finally, we request
 continuity of the posterior distribution w.r.t the initial data corresponding in
 a sense to Hadamard well-posedness in a probabilistic framework. Rigorously
@@ -552,16 +599,16 @@ Future work is manifold. Firstly, we aim to extend the equations of section
 aim to find an explicit solution to the geodesic equations for $\mathbf p$ and
 $\mathbf q$ and with the additional terms involving $\nu$ à la
 \cite{trouve2005local} to eliminate the need $\nu$ to be bounded from below.
-{\color{red} Do they have explicit solution? Like $q(t) = \dots$, $p(t)= \dots$? 
-I don't see the link with assumption 1?}{\color{blue} Yes, they establish $p_t =
-p_0 \circ \varphi^{-1}_t$, from which they write the constraint for $q_t$ as
-simply $q_1 = \int \dots$, and then everything is known and what they show is
-that with the choice of $p_t$, in fact $q_1$ matches the boundary condition
-$q(0)$ and $q(1)$ exactly. But we do not have $p_t = p_0 \circ \varphi^{-1}_t$.}
+%{\color{red} Do they have explicit solution? Like $q(t) = \dots$, $p(t)= \dots$? 
+%I don't see the link with assumption 1?}{\color{blue} Yes, they establish $p_t =
+%p_0 \circ \varphi^{-1}_t$, from which they write the constraint for $q_t$ as
+%simply $q_1 = \int \dots$, and then everything is known and what they show is
+%that with the choice of $p_t$, in fact $q_1$ matches the boundary condition
+%$q(0)$ and $q(1)$ exactly. But we do not have $p_t = p_0 \circ \varphi^{-1}_t$.}
 Further, as outlined in \ref{sec:bayesian} there
 are many aspects of the probabilistic framework that need rigorous treatment.
 Beyond the references therein, see also the work in \cite{dashti2013map}.
-Natural extensions of our probabilistic approach also includes fully treating
+Natural extensions of our probabilistic approach also include fully treating
 $\nu$ as a function and interpreting the resulting inverse problem through the
 appropriate measure-theoretical lens. Adding a time-dependency to $\nu$ can also
 be explored. Determining a truncated Fourier series of $\nu$ could lead to
@@ -577,6 +624,11 @@ consisting of velocities and source functions and sample from function space.
 This provides a derivative-free method of solving classic metamorphosis (or
 other problems in shape analysis) at the expense of interpreting the results
 probabilistically.
+
+\bibliographystyle{abbrv}
+\bibliography{landmarks}
+\end{document}
+
 \appendix
 \iffalse
 \section{$z_t$ derivation}\label{app:z_derivation}
@@ -603,7 +655,6 @@ We show $z$ satisfies the continuity equation. Using $z_t = \nu(q_t)p_t$:
  - \nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
 & + \nabla u_t(\mathbf q_t)^T \frac{\mathbf z_t}{\mathbf \nu(q_t)} + \frac12\nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
 \end{align*}
-\fi
 
 \section{Proof of Theorem \ref{sm-eu}}\label{app:proof:sm-eu}
 The functional in \eqref{E_sm-def_p} is not convex so we work with a
@@ -656,7 +707,6 @@ classic results extract bounded subsequences converging to weak limits where
 necessary to obtain a minimiser. Convexity of $S$ implies weak lower
 semi-continuity concluding the proof.
 
-\iffalse
 \section{Well-posedness of the equation of motion}
 Using the equation for $z$, we can formally write $z_t = z_t \circ \varphi^{-1}$,
 which corresponds to writing the initial $z_0(x) = \sum_i z_0^i\delta(x-x_0^i)$, 
@@ -686,6 +736,3 @@ in the reconstruction relation.
 and make sure that $\nu(x)<\nu_{max}$ is enough? maybe the derivative needs to be smooth, too. }
 \fi
 
-\bibliographystyle{abbrv}
-\bibliography{landmarks}
-\end{document}
