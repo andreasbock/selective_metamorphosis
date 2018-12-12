@@ -68,69 +68,68 @@
 \maketitle              % typeset the header of the contribution
 
 \begin{abstract}
-We present a framework for shape matching allowing users control of the degree
-to which the matching is diffeomorphic in computational anatomy. This control is
-given as a function defined over the image and parametrises the template
+We present a framework for shape matching in computational anatomy allowing
+users control of the degree to which the matching is diffeomorphic. This control
+is given as a function defined over the image and parameterises the template
 deformation. By modelling localised template deformation we have a mathematical
 description of growth only in specified parts of an image. The location can
 either be specified from prior knowledge of the growth location or learned from
 data. For simplicity we consider landmark matching and infer the distribution of
-a finite dimensional parametrisation of the control via Markov chain Carlo.
-Preliminary numerical results are shown and future paths of investigation are
-laid out. Well-posedness of this new problem is also shown together with an
-analysis of the associated geodesic equations. 
-
-\keywords{LDDMM \and MCMC \and Metamorphosis.}
+a finite dimensional parameterisation of the control via Markov chain Monte
+Carlo.  Preliminary numerical results are shown and future paths of
+investigation are laid out. Well-posedness of this new problem is studied
+together with an analysis of the associated geodesic equations. 
+\keywords{LDDMM \and Computational anatomy \and Metamorphosis \and MCMC.}
 \end{abstract}
 
 \section{Introduction}
 
 In computational anatomy
-\cite{grenander1994representations,grenander1998computational}, one of the most
+\cite{grenander1994representations,grenander1998computational} one of the most
 fundamental problems is to continuously deform an image or shape into another
 and thereby obtain a natural notion of distance between them as the energy
-required for such a deformation. One of the most common method to compute image
-deformations is based on diffeomorphic deformations which assume that the images
-are continuously deformed into one another with the additional property that the
+required for such a deformation. Common methods to compute image deformations
+are based on diffeomorphic deformations which assume that the images are
+continuously deformed into one another with the additional property that the
 inverse deformation is also continuous.  This is a strong requirement for images
 which implies that the 'mass' of any part of the image is conserved: we cannot
-create or close 'holes'.  This property is also a crucial property of fluid
-mechanics and in fact the theory of diffeomorphic matching carrying the moniker
-\emph{Large Deformation Diffeomorphic Metric Mapping}
-\cite{trouve1998diffeomorphisms,beg2005computing} (LDDMM) has been inspired by
-fluid mechanics. Indeed, one of the central pillars on which this field relies
-is the observation made by Arnold \cite{arnold1966geometrie} that the geodesic
-equations for the diffeomorphism group induced by divergence-free vector fields
-corresponded to that of incompressible flows. If a strictly diffeomorphic
-matching is not possible or necessary, an extension of LDDMM called
-metamorphosis \cite{trouve2005metamorphoses,holm2009euler} is available which
-introduces a parameter $\sigma^2$ parametrizing the deviation from diffeomorphic
-matching allowing for topological variations e.g. growth via image intensity. In
-particular, if $\sigma^2=0$ the deformation is purely diffeomorphic as in LDDMM.
-See \cite{trouve1995infinite,trouve2005local,miller2001group} for technical
-details pertaining to constructing the metamorphosis problem. While
-diffeomorphic paths always exists for landmark problems
-\cite{guo2006diffeomorphic} this theory allows one to match images of shapes
-with different topological features, which is ill-conditioned for standard
-LDDMM. Indeed, even inexact matching in LDDMM for such problems yields large
-energies and spurious geodesics that do not contribute to an intuitive macthing,
-see figure \ref{fig:mm_lddmm}. As observed here, introducing $\sigma^2>0$
-regularises the problem and qualitative improves the matching.\\
+create or close 'holes'.  This is also a crucial property in fluid mechanics and
+in fact the theory of diffeomorphic matching carrying the moniker \emph{Large
+Deformation Diffeomorphic Metric Mapping} (LDDMM)
+\cite{trouve1998diffeomorphisms,beg2005computing} has been inspired by fluid
+mechanics. Indeed, Arnold \cite{arnold1966geometrie} made the central
+observation that the geodesic equations for the diffeomorphism group induced by
+divergence-free vector fields corresponded to that of incompressible flows. If a
+strictly diffeomorphic matching is not possible or necessary, an extension of
+LDDMM called metamorphosis \cite{trouve2005metamorphoses,holm2009euler} is
+available which introduces a parameter $\sigma^2$ parametrizing the deviation
+from diffeomorphic matching allowing for topological variations e.g. growth via
+image intensity. In particular, if $\sigma^2=0$ the deformation is purely
+diffeomorphic as in LDDMM.  See
+\cite{trouve1995infinite,trouve2005local,miller2001group} for technical details
+pertaining to the construction of the metamorphosis problem. While diffeomorphic
+paths always exists for landmark problems \cite{guo2006diffeomorphic} this
+theory allows one to match images of shapes with different topological features,
+which is ill-conditioned for standard LDDMM. Indeed, even inexact matching in
+LDDMM for such problems yields large energies and spurious geodesics that do not
+contribute to an intuitive macthing, see figure \ref{fig:mm_lddmm}. As observed
+here, introducing $\sigma^2>0$ regularises the problem and qualitative improves
+the matching.\\
 
 In this work we modify metamorphosis to include a spatially dependent control
 parameter $x\mapsto\nu(x)$ in order to selectively allow non-diffeomorphic
 (\emph{metamorphic}) matching in parts of the image. For $\nu(\cdot) = \sigma^2$
 our theory recovers the standard metamorphosis model. However, with a localised
-control (e.g. Gaussian), we can selectively introduce metamorphosis in an image
-and model local topological effects such as growth phenomena. The difficulty of
-this problem is to infer the function $\nu(\cdot)$ without prior knowledge of
-the location of the topological effects. We will use a Markov chain Monte Carlo
-(MCMC) approach to infer appropriate functions $\nu(\cdot)$, such that the
-topological effects are well described and a large part of the matching remains
-diffeomorphic. For this paper, we will focus on landmark matching, but the
-theory of selective metamorphosis can be extended to any data structures that
-the classical metamorphosis or LDDMM theory can handle
-\cite{bockarnaudoncotter2019}.\\
+control (e.g. a Gaussian centered at a point in $\Rd$), we can selectively
+introduce metamorphosis in an image and model local topological effects such as
+growth phenomena. The difficulty of this problem is to infer the function
+$\nu(\cdot)$ without prior knowledge of the location of the topological effects.
+We will use a Markov chain Monte Carlo (MCMC) approach to infer appropriate
+functions $\nu(\cdot)$, such that the topological effects are well described and
+a large part of the matching remains diffeomorphic. In this paper we will focus
+on landmark matching but the theory of selective metamorphosis can be extended
+to any data structures that the classical metamorphosis or LDDMM theory can
+handle \cite{bockarnaudoncotter2019}.\\
 
 \begin{figure}
 \centering
@@ -146,62 +145,62 @@ the classical metamorphosis or LDDMM theory can handle
     %\includegraphics[width=.291\textwidth]{custom_nu_pent_to_tri.pdf}\\[0.25cm]
     %\includegraphics[width=.291\textwidth]{mm_pent_to_tri.pdf}
     \caption{This figures illustrates landmark matching with classical LDDMM
-    (left column), metamorphosis (right column) and selective metamorphosis (middle
-    column). For LDDMM we observe unnatural landmark trajectories whereas
-    metamorphosis achieves a more intuitive matching. Selective metamorphosis
-    has the extra advantage of only breaking the diffeomorphic property where
-    needed in along the matching, thus preserving more of the desired
-    diffeomorphic property of the matching.}
+    (left column), metamorphosis (right column) and our selective metamorphosis
+    approach (middle column). For LDDMM we observe unnatural landmark
+    trajectories whereas metamorphosis achieves a more intuitive matching.
+    Selective metamorphosis has the additional advantage of only breaking the
+    diffeomorphic property where needed in along the matching, thus preserving
+    more of the desired diffeomorphic property of the matching.}
     \label{fig:mm_lddmm}
 \end{minipage}
 \end{figure}
 
 {\bf Structure} This paper is organised as follows. We review the theory of
 classical metamorphosis in section \ref{sec:bg} and extend it to selective
-metamorphosis in \ref{sec:select_mm}.  We then introduce a Bayesian framework
-for inferring the local metamorphosis parameter $\nu(\cdot)$ in section
-\ref{sec:bayesian} and apply this theory to a few landmark examples in section
-\ref{sec:numerical}.
+metamorphosis in section \ref{sec:select_mm}.  We then introduce a Bayesian
+framework for inferring the metamorphic control parameter $\nu(\cdot)$ in
+section \ref{sec:bayesian} and apply this theory to a few landmark examples in
+section \ref{sec:numerical}. Section \label{sec:outlook} contains concluding
+remarks.
 
 \section{Metamorphosis for Landmarks}\label{sec:bg}
 
 In this paper we are concerned with diffeomorphometric approaches to image and
-shape matching. One of the pillars on which this field relies is the observation
-made by Arnold \cite{arnold1966geometrie} that, under certain conditions, a
-time-dependent velocity field $u$ e.g. occupying some Hilbert space $u_t \in V$,
-where $V$ is continuously embedded in $\textsf{C}_0^k(\Rd)$, $k\geq 1$ induces a
-curve $\varphi_t$ on a subgroup $\text{Diff}_V$ of diffeomorphisms
-\cite{younes2010shapes} via the following ordinary differential equation
+shape matching. To this end we use time-dependent velocity fields $u$ occupying
+some Hilbert space $u_t \in V$, where $V$ is continuously embedded in
+$\textsf{C}_0^k(\Rd)$, $k\geq 1$ inducing a curve $\varphi_t$ on a subgroup
+$\text{Diff}_V(\Rd)$ of diffeomorphisms
+\cite{arnold1966geometrie,younes2010shapes} via the following ordinary
+differential equation
 \begin{align}
 & \dot{\varphi_t} = u_t \circ \varphi_t\, , \qquad  \varphi_0 = \text{id}\, . 
   \label{diffeo}
 \end{align}
-This is often used in a minmisation problem where the objective is to match two
+This is often used in a minimisation problem where the objective is to match two
 images $I_0$ and $I_1$:
 \begin{align}
-  E(u) = \int_0^1 \half\vnorm{u_t}^2 \diff{t} + \frac{1}{\lambda^2}
-  S(I_0\circ\varphi_1, I_1)\longrightarrow \text{min}\, , \label{E-def}
+  S(u) = \int_0^1 \half\vnorm{u_t}^2 \diff{t} + \frac{1}{2\lambda^2}
+  F(I_0\circ\varphi_1, I_1)\longrightarrow \text{min. subject to \eqref{diffeo}}\, , \label{E-def}
 \end{align}
-where $S$ denotes a similarity measure between the deformed initial image
+where $F$ denotes a similarity measure between the deformed initial image
 $I_0\circ \varphi_1$ and the target image $I_1$ to allow inexact matching
-parametrised by $\lambda^2$. The LDDMM approach takes $S$ as an $L^2$ norm on
-the difference between its arguments.\\
-
-In order to simplify the exposition, we will consider singular solutions of this
-problem, which are given by the Ansatz
+parametrised by $\lambda^2$. The LDDMM approach takes $F$ as an $L^2$ norm of
+the difference between its arguments. In order to simplify the exposition, we
+will consider singular solutions of this problem, which are given by the Ansatz
 \begin{align}
   \frac{\delta l}{\delta u} = \mathbf m(x) = \sum_{i=1}^M p_t^i \delta(x-q_t^i)\,, 
 \end{align}
-for $N$ landmarks with position $q_t^i\in \mathbb R^2 $ and momenta $p_t^i \in
-\mathbb R^2$. The vector field is thus 
+for $N$ landmarks with position $q_t^i\in \Rd$ and momenta $p_t^i \in \Rd$.
+The vector field is thus 
 \begin{align}
   u(x) = \sum_{i=1}^M p_t^i K(x-q_t^i)\,, 
   \label{u-def}
 \end{align}
-where $K:\mathbb R^2\times \mathbb R^2\to \mathbb R$ is the kernel associated to
-the norm $\|\cdot \|_V$.  For metamorphosis, we introduce a discrete template
-variable $\boldsymbol \eta_t$ such that the deformation of a set of landmarks is
-written as the composition of the template position and deformation as
+where $K:\mathbb R^d\times \mathbb R^d\to \mathbb R$ is the kernel associated to
+the norm $\|\cdot \|_V$. This parameterisation holds throughout this paper and
+we set $d=2$. For metamorphosis, we introduce a discrete template variable
+$\boldsymbol \eta_t$ such that the deformation of a set of landmarks is written
+as the composition of the template position and deformation as
 \begin{align}
   \mathbf q_t = \varphi_t \boldsymbol \eta_t\, . 
   \label{q_t}
@@ -273,7 +272,7 @@ case of landmarks we have as before that
   \mathbf m(x) = \sum_{i=1}^M \frac{1}{\nu(q_t^i)} z_t^i\delta(x-q_i)\qquad \Rightarrow \qquad
   z_t^i = \nu(q_t^i) p_t^i\quad \forall i\, , 
 \end{align}
-so we can get rid of the template variable $\mathbf z_t$ and write  
+so we can eliminate the template variable $\mathbf z_t$ and write  
 \begin{align}
   \begin{split}
     S_{sm}^\nu(\mathbf q_t, u_t, \mathbf p_t) = & \int_0^1
@@ -292,12 +291,13 @@ selective metarmorphosis for landmarks:
 \end{split}
   \label{eq-m-selective}
 \end{align}
-with $\mathbf q_0,\, \mathbf q_1 \text{ fixed}$. Note that if $\nu(x)=0$ in
-parts of the domain, the dynamics will follow the standard LDDMM landmark
-dynamics. This can also be seen in the relation \eqref{zp_relation}, where
-$\nu(x)=0$  implies $z_t=0$, this the template does not move. 
-Notice that these equations are Hamilton's equations for the
-Hamiltonian $\mathbf p_t$ and $\mathbf q_t$
+with $\mathbf q_0,\, \mathbf q_1 \text{ fixed}$. Again, the velocity is fully
+described by $\mathbf p$ and $\mathbf q$ via \eqref{u-def}. The landmark
+dynamics follow standard LDDMM trajectories as $\nu(x)$ vanishes in parts of the
+domain.  This can also be seen in the relation \eqref{zp_relation}, where
+$\nu(x)=0 \Rightarrow \mathbf z_t=0$ implies that the template variable remains
+fixed. Notice that these equations are Hamilton's equations for the Hamiltonian
+$\mathbf p_t$ and $\mathbf q_t$
 \begin{align}
   h(\mathbf q, \mathbf p) = h_l(\mathbf q_t,\mathbf p_t)+\frac12\sum_i\nu(q_i) |p_i|^2\,,  
 \end{align}
@@ -339,10 +339,9 @@ time.\\
 
 Proof:\\
 
-This is a simple ODE system which we integrate by establishing appropriate
-Lipschitz conditions. First, the mapping $(u,\,q)\mapsto u\circ q$ is clearly 
-Lipschitz. For $u(q)\mapsto\nabla u(q)^T$ consider $v,\,w \in V$ and
-$x,\,y\in\Rd$:
+Establishing appropriate Lipschitz conditions implies integrability of the
+system. First, the mapping $(u,\,q)\mapsto u\circ q$ is clearly Lipschitz. For
+$u(q)\mapsto\nabla u(q)^T$ consider $v,\,w \in V$ and $x,\,y\in\Rd$:
 \begin{align}
 \ltwonorm{\nabla v(x) - \nabla w(y)} \lesssim \vnorm{v} \ltwonorm{x-y} + \vnorm{v-w}\ltwonorm{y}
 \end{align}
@@ -392,22 +391,21 @@ problems to $\nu$ by a finite-dimensional family of parameterisations.
 
 \subsection{General Framework}\label{subs:gf}
 
-The general framework is based off of the idea that we can cast optimisation
+The general framework is based on the idea that we can cast optimisation
 problems in a probabilistic framework where minimisers, roughly speaking,
-correspond to modes of a certain distribution of function space.  In the context
-of optimisation we define a \emph{likelihood} $\Phi : X\rightarrow Y$, mapping
-some control variable in $X$ to an observable in $Y$.  A \emph{maximum a
+correspond to modes of a certain distribution over function space.  In the
+context of optimisation we define a \emph{likelihood} $\Phi : X\rightarrow Y$,
+mapping some control variable in $X$ to an observable in $Y$.  A \emph{maximum a
 posteriori} (MAP) estimator $f^*$ satisfies $f^* = \arg\max_{f\in X} \Phi(f)
-p(f)$ where $p$ is a Gaussian density over $X$. Equipped with a norm
-$\|\cdot\|_X$ we can then define the density by $p(\cdot) \propto
-e^{-\|\cdot\|_X^2}$.  Supposing further that the likelihood is on the form, say,
-$\log \Phi(f) = -\|f-\lambda\|_Y^2$, for a certain control desiderata $\lambda\in Y$
-then, at least formally, the MAP estimator minimises $J =\|f^*\|_X^2 +
-\|f^*-\lambda\|_Y^2$.\\
+p(f)$ where $p$ is a density over $X$. Equipped with a norm $\|\cdot\|_X$ we can
+then define the Gaussian density by $p(\cdot) \propto e^{-\|\cdot\|_X^2}$.
+Supposing further that the likelihood is on the form $\log \Phi(f) =
+-\|f-\lambda\|_Y^2$, for some desiderata $\lambda\in Y$ then, at least formally,
+the MAP estimator minimises $J=\|f^*\|_X^2 + \|f^*-\lambda\|_Y^2$.\\
 
-In general, for inverse problems on function space, several key properties
+For general inverse problems on function space, several key properties
 documented in \cite{dashti2017bayesian} must be verified before the
-inverse-problem is well-posed. Beyond showing existence of the MAP estimator
+inverse problem is well-posed. Beyond showing existence of the MAP estimator
 minimising $J$ above, the infinite-dimensional version of Bayes' rule must also
 be check i.e. the Radon-Nikodym derivative of the prior with respect to the
 posterior must exist and be absolutely continuous. Finally, we request
@@ -418,12 +416,12 @@ forthcoming work \cite{bockarnaudoncotter2019}.
 
 \subsection{Finite-dimensional Parameterisation}\label{subs:finite-dim-param}
 
-
 We now introduce the main problem of this paper in the setting above. We
-consider $\nu$ as a random variable, indeed a random \emph{function}. This is an
-appropriate framework because if the lack of uniqueness allows for a qualitative
-evaluation of a solution to selective metamorphosis. We consider the case where
-$\nu$ is given by a sum of exponentials:
+consider $\nu$ as a random variable. If the growth location is not known \emph{a
+priori}, then this is an appropriate framework as it allows for a qualitative
+evaluation of selective metamorphosis. Moreover, it can account for some
+observation error by its probabilistic nature. As a simple example we consider
+the case where $\nu$ is given by a sum of exponentials:
 \begin{equation}\label{nu_h}
     \nu_h (x) = \sum_{k=1}^K e^{ -\sigma_\nu^{-2}\|h_k - x\|_{\Rd}^2}
 \end{equation}
@@ -431,27 +429,26 @@ Here the finite family $h_k$ of centroids in $\Rd$ together with the uniform
 length-scale $\sigma_\nu$ fully determine $\nu_h$, thus greatly reducing the
 complexity of sampling. We defer sampling from function space to future work
 \cite{bockarnaudoncotter2019}. Defining a density $p_{sm} \propto e^{-
-S_{sm}^\nu}$ over the space of selective metamorphoses for a prescribed $\nu$
-leading to algorithm \ref{algo:mcmc}. Here, $N$ denotes the desired number of
-samples and $K$ the number of terms in \eqref{nu_h}. \textsc{randomUnit()}
-denotes a randomly generated number in $[0,\,1]$. The coefficient $\beta$ scales
-between the previoius sample and the new step $\xi$. Setting it too low
-increases the acceptance rate by taking shorter steps at the cost of slow
-exploration of the state space. Conversely, a too high value of $\beta$ results
-in lower acceptance and thus convergence. 
-%Further, the numerical solutions to
-%the equations \eqref{eq-m-selective} are obtained using Theano
-%\cite{team2016theano} which automatically generates the discrete adjoint
-%equation used to shoot for the final conditions. 
-The next section shows the algorithm above in practice.
+S_{sm}^\nu}$ over the space of candidates $(\nu,\,u_\nu,\,\mathbf q_\nu,\,\mathbf
+p_\nu)$ for a prescribed $\nu$ leading to algorithm \ref{algo:mcmc}. Here, $N$
+denotes the desired number of samples and $K$ the number of terms in
+\eqref{nu_h}. \textsc{randomUnit()} denotes a randomly generated number in
+$[0,\,1]$. The coefficient $\beta$ scales between the previous sample and the
+new step $\xi$. This needs to be calibrated as a too low value may increase the
+acceptance rate by taking shorter steps at the cost of slow exploration of the
+state space. Conversely, a too high value of $\beta$ results in lower acceptance
+and thus convergence. The next section shows the algorithm above in practice.
 
 \section{Numerical examples}\label{sec:numerical}
 
-This penultimate section displays some numerical results for our method. We
-apply algorithm \ref{algo:mcmc} to infer a distribution for the
-growth location using the landmark boundary conditions seen in figure
-\ref{fig:mm_lddmm}. 
-
+This section displays some numerical results for our method. We apply algorithm
+\ref{algo:mcmc} to infer a distribution for the growth location using the
+landmark boundary conditions seen in figure \ref{fig:mm_lddmm}.  The parameters
+and results for the first configuration is shown in figure
+\ref{fig:selective:crisscross}. These preliminary results demonstrate that even
+for a small amount of samples the density of accepted samples corresponds at
+least heuristically to the analytical density histogram obtained by computing
+the value of the metamorphosis functional in \eqref{E_sm-def}.
 \begin{algorithm}[h!]
 \begin{algorithmic}
 \caption{MCMC for selective metamorphosis}\label{algo:mcmc}
@@ -479,13 +476,6 @@ to obtain $\omega = (\mathbf q,\, \mathbf p,\, u)$
 \end{algorithmic}
 \end{algorithm}
 
-
-The parameters and results for the first configuration is
-shown in figure \ref{fig:selective:crisscross}. These preliminary results demonstrate 
-that even for a small amount of samples the density of accepted samples
-corresponds at least heuristically to the analytical density histogram obtained
-by computing the value of the metamorphosis functional in \eqref{E_sm-def}.\\
-
 We arrive at the same tentative conclusion for the second example, for which the
 results are shown in figure \eqref{fig:selective:pinch}. Moreover, we note that
 the geodesic equations for $p$ and $q$ are time-reversible meaning that the
@@ -500,17 +490,16 @@ collapse as well as hole creation.
     \includegraphics[width=.46\textwidth]{centroid_heat_criss_cross.pdf} \\[0.23cm]
     \includegraphics[width=.46\textwidth]{functional_histogram_criss_cross.pdf}
     \includegraphics[width=.46\textwidth]{autocorrelation_criss_cross.pdf}
-    \caption{We display the result of the MCMC algorithm for the selective metamorphosis 
-     of the inverted landmarks example,
-    The top left panel show the analytical values for \eqref{E_sm-def}, found by the shooting method.  
-    The top right panel displays a heat map for the sampled positions of the centroid from the MCMC method. 
-    The bottom left panel is he histrogram of the sampled values of the functional
-    and the bottom right panel is the autocorrelation function of the Markov Chain. 
-    We see the density of the accepted samples is exponentially proportional to the analytically
-    computed metamorphosis values. The radius here is set to $\sigma_\nu = 0.2$,
-    and $0.7$ for the velocity kernel, $K=1$ and $\beta=0.2$ across $5000$
-    samples.}
-    \label{fig:selective:crisscross}
+    \caption{We display the result of algorithm \ref{algo:mcmc} applied to the
+    inverted landmarks example, The top left panel show the analytical values
+    for \eqref{E_sm-def}, found by the shooting method.   The top right panel
+    displays a heat map for the sampled positions of the centroid from the MCMC
+    method.  The bottom left panel is a histogram of the sampled values of the
+    functional and the bottom right panel is the autocorrelation function of the
+    Markov Chain.  We see the density of the accepted samples is exponentially
+    proportional to the analytically computed metamorphosis values. The radius
+    here is set to $\sigma_\nu = 0.2$, and $0.7$ for the velocity kernel, $K=1$
+    and $\beta=0.2$ across $5000$ samples.} \label{fig:selective:crisscross}
 \end{minipage}
 \end{figure}
 
@@ -549,13 +538,13 @@ subject to future treatment.
 
 We have presented a preliminary approach for selectively allowing photometric
 variation in a diffeomorphic image matching. We analysed the selective
-metamorphosis problem and the associated geodesic equation and demonstrated a
-proof of concept MCMC approach of inferring the $\nu$ control. This generalises
-LDDMM and metamorphosis and could provide a first-order exploratory tool for
-physicians to see if the development of a biological feature stems from a few
-violations of diffeomorphic evolution. This paper paves the way towards
-surgically investigating growth phenomena between topologically different images
-in certain areas of the target and template.\\
+metamorphosis problem, the associated geodesic equations and demonstrated a
+proof of concept MCMC algorithm inferring a simple parameterisation of $\nu$.
+This generalises LDDMM and metamorphosis and could provide a first-order
+exploratory tool for physicians to see if the development of a biological
+feature stems from a few violations of diffeomorphic evolution. This paper paves
+the way towards surgically investigating growth phenomena between topologically
+different images.\\
 
 Future work is manifold. Firstly, we aim to extend the equations of section
 \ref{sec:select_mm} to images e.g. using the kernel framework in
@@ -574,20 +563,20 @@ are many aspects of the probabilistic framework that need rigorous treatment.
 Beyond the references therein, see also the work in \cite{dashti2013map}.
 Natural extensions of our probabilistic approach also includes fully treating
 $\nu$ as a function and interpreting the resulting inverse problem through the
-appropriate measure-theoretical lens. Adding a time-dependency to $\nu$ is also
-to be explored. Determining truncated Fourier modes of $\nu$ could lead to
+appropriate measure-theoretical lens. Adding a time-dependency to $\nu$ can also
+be explored. Determining a truncated Fourier series of $\nu$ could lead to
 efficient numerical methods. More generally, we hope to reconcile our attempts
 to model growth here with the mathematically elegant approach described
 in \cite{kaltenmark2016geometrical} and with the more general mathematics of
 growth \cite{goriely2017mathematics}.\\
 
 Finally, it is our hope that we can extend the probabilistic approach developed
-here to encompass classic metamorphosis and growth; that is to say, to develop
-the necessary theory in order to place a stochastic model on the state space
-consisting of velocities and source functions. Being able to sample random pairs
-(MCMC) of these would permit a novel numerical approach to metamorphosis as well
-as other problems in shape analysis.
-
+here to encompass classic metamorphosis as well; that is to say, to develop the
+necessary theory in order to place a stochastic model on the state space
+consisting of velocities and source functions and sample from function space.
+This provides a derivative-free method of solving classic metamorphosis (or
+other problems in shape analysis) at the expense of interpreting the results
+probabilistically.
 \appendix
 \iffalse
 \section{$z_t$ derivation}\label{app:z_derivation}
@@ -631,17 +620,17 @@ variable $w^i_t = \sqrt{\nu(q_t^i)} p^i_t$ in the problem:
 We now show existence of a minimiser to this problem. First, note that owing to
 the constraint effectively being a boundary value problem, we cannot always find
 a $\mathbf q$ for arbitrary pairs of $(u,\,\mathbf w)$. We define an bounded operator
-$(\mathbf q,\, u_t)\mapsto \frac{\dot{\mathbf q_t} - u_t(\mathbf q_t)}{\sqrt{\nu(\mathbf q_t)}} := \mathbf w$:
+$(\mathbf q,\, u_t)\mapsto \frac{\dot{\mathbf q_t} - u_t(\mathbf
+q_t)}{\sqrt{\nu(\mathbf q_t)}} \triangleq \mathbf w$:
 \begin{align*}
-\Big(\sum_{i=1}^M |w_t^i|\Big)^{\frac 12} & = \ltwonorm{\mathbf w} =
+\Big(\sum_{i=1}^M |w_t^i|^2\Big)^{\frac 12} & = \ltwonorm{\mathbf w} =
 \ltwonorm{\frac{\dot{\mathbf q}_t - u_t(\mathbf q_t)}{\sqrt{\nu(\mathbf q_t)}}}
 \lesssim \nuinf^{-1}\Big(\ltwonorm{\dot{\mathbf q}_t} + \vnorm{u_t(\mathbf
-q_t)}\Big)
+q_t)}\Big)\,.
 \end{align*}
-which is clearly bounded since $\mathbf q\in H^1([0,1],\,\RdM)$ and by
-conservation of $u_t$. From this we generate a minimising sequence $(\mathbf q^n,
+From this we generate a minimising sequence $(\mathbf q^n,
 u^n, \mathbf w^n)_{n\geq 0}$ admissible to \eqref{pbl:reformulation}. The rest
-of the proof is standard, see e.g. \cite{younes2010shapes}. Next we show the
+of the proof is standard, see e.g. \cite{younes2010shapes}. We show the
 constraint equation is continuous with respect to the weak topology on
 $X\triangleq H^1([0,1],\,\RdM)\times L^2([0,1],\,V)\times L^2([0,1],\,\RdM)$ i.e.
 $\langle e(\mathbf q_t^n,\,\mathbf w_t^n,\,\mathbf u_t^n)-e(\mathbf q_t,\,\mathbf
@@ -661,7 +650,7 @@ The first term vanishes trivially, while for the second we see
 \begin{align*}
 \langle u_t^n(\mathbf q_t)-u_t^n(\mathbf q_t^n),\,\phi\rangle \leq \text{Lip}(u_t^n)\langle \mathbf q_t-\mathbf q_t^n,\,\phi\rangle \rightarrow 0
 \end{align*}
-Since linear operators are naturally compatible with the weak topology, the
+Since linear operators are naturally compatible with the weak topology the
 required continuity follows.  Passing to subsequences where necessary we can by
 classic results extract bounded subsequences converging to weak limits where
 necessary to obtain a minimiser. Convexity of $S$ implies weak lower
