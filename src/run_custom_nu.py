@@ -22,8 +22,8 @@ maxiter = 7500 # shooting
 
 def run_mm_custom_nu(q0, q1, test_name, nus, return_dict=True, plot=True):
     # kernel parameters
-    sigma    = 0.5
-    sigma_nu = 0.5
+    sigma    = 0.7
+    sigma_nu = 0.2
 
     num_landmarks, DIM = q0.shape
     N = theano.shared(num_landmarks)

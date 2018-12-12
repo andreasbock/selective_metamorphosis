@@ -19,7 +19,7 @@ if not os.path.exists(log_dir):
 def run_mm(q0, q1, test_name):
     # landmark parameters
     DIM = 2 # dimension of the image
-    SIGMA = theano.shared(np.array(.5).astype(theano.config.floatX)) # radius of the landmark
+    SIGMA = theano.shared(np.array(.7).astype(theano.config.floatX)) # radius of the landmark
 
     num_landmarks = q0.shape[0]
     N = theano.shared(num_landmarks) # number of landmarks
