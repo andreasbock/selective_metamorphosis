@@ -37,5 +37,5 @@ po.close()
 # plotting
 centroid_heatmap(c_samples, log_dir, x_min, x_max, y_min, y_max,bins=10)
 centroid_plot(c_samples, log_dir, x_min, x_max, y_min, y_max)
-plot_autocorr(c_samples, log_dir, lag_max = 500)
-fnl_histogram(fnls, log_dir,bins=50)
+plot_autocorr(c_samples, log_dir)
+fnl_histogram(fnls, log_dir, test_name, bins=50)

@@ -102,7 +102,7 @@ def triangle_flip(num_landmarks):
     # flip to generate q1 (reflect about x_reflect)
     q1 = np.copy(q0)
     k = 0
-    x_reflect=0 
+    x_reflect=0
     for k in range(num_landmarks):
         x, y = q1[k]
         dist = 2 * np.sqrt((y - x_reflect)**2)
@@ -222,7 +222,8 @@ def centroid_heatmap(c_samples, log_dir, x_min, x_max, y_min, y_max, bins=10):
         plt.hist2d(cx, cy, bins=bins, range = [ [x_min, x_max], [y_min,y_max]])
         plt.xlabel('$x$-coordinate')
         plt.ylabel('$y$-coordinate')
-        plt.colorbar()
+        cbar = plt.colorbar()
+        cbar.ax.set_ylabel('Number of occurrences')
         plt.savefig(log_dir + 'centroid_heat_'+str(i)+'.pdf', bbox_inches='tight')
 
 def sample_autocov(k, m):
