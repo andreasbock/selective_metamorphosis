@@ -126,7 +126,7 @@ def run_lddmm(q0, q1, test_name):
 
     plot_q(x0, xs, num_landmarks, log_dir + 'lddmm_' + test_name)
 
-    return {test_name: (h, res[1])}
+    return {test_name: (h, float(res[1]))}
 
 to_pickle = dict()
 to_pickle.update(run_lddmm(*pent_to_tri(num_landmarks=40)))

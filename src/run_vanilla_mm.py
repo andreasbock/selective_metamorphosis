@@ -137,7 +137,7 @@ def run_mm(q0, q1, test_name):
     m = np.array(m).sum()*dt.eval()
     plot_q(x0, xs, num_landmarks, log_dir + 'mm_' + test_name)
 
-    return {test_name: (h, res[1])}
+    return {test_name: (h, float(res[1]))}
 
 to_pickle = dict()
 to_pickle.update(run_mm(*pent_to_tri(num_landmarks=40)))

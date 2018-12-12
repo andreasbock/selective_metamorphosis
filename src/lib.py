@@ -230,9 +230,9 @@ def sample_autocov(k, m):
             est += np.dot(m[i + k, j, :], m[i, j, :])
     return est / num_samples
 
-def plot_autocorr(c_samples, fname,lag_max=1000):
+def plot_autocorr(c_samples, fname):
     num = min(100, len(c_samples))
-    lags = np.linspace(1, lag_max, num, dtype=int)
+    lags = np.linspace(1, len(c_samples), num, dtype=int)
 
     c_samples_np = np.array(c_samples)
     mean = np.mean(c_samples_np, axis=0)
@@ -243,18 +243,32 @@ def plot_autocorr(c_samples, fname,lag_max=1000):
     plt.figure()
     plt.plot(lags, acf, 'r.-')
     plt.xlabel('Lag')
-    #plt.xlim((1, len(lags)))
-    #plt.xticks(lags)
+    plt.xlim((1, len(c_samples)))
     plt.ylabel('Sample autocorrelation')
     plt.grid(linestyle='dotted')
     plt.savefig(fname + 'autocorrelation.pdf', bbox_inches='tight')
 
-def fnl_histogram(fnls, fname, bins='auto'):
+def fnl_histogram(fnls, fname, test_name, bins='auto'):
     plt.figure()
     plt.hist(fnls, bins=bins, facecolor='green', alpha=0.75)
     plt.xlabel('Metamorphosis functional')
     plt.ylabel('Number of observed values')
     plt.grid(linestyle='dotted')
+
+    # plot lines from
+    import pickle
+    po = open("lddmm.pickle", "rb")  # in src/!
+    fnls_lddmm = pickle.load(po)
+    po.close()
+
+    po = open("mm.pickle", "rb")  # in src/!
+    fnls_mm = pickle.load(po)
+    po.close()
+
+    plt.axvline(x=sum(fnls_lddmm[test_name]), color='b', label='LDDMM')
+    plt.axvline(x=sum(fnls_mm[test_name]), color='r', label='Metamorphosis')
+    plt.legend(loc='best')
+
     plt.savefig(fname + 'functional_histogram.pdf', bbox_inches='tight')
 
 def plot_q(x0, xs, N, fname, nus=None, title=None):

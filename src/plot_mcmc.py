@@ -10,13 +10,14 @@ import sys as sys
 from lib import *
 
 args = sys.argv
-if len(args) < 2:
-    print("No test specified!")
+if len(args) < 3:
+    print("No path specified!")
     exit(1)
 
 log_dir = str(args[1])
 log_dir += '/'
 
+test_name = str(args[2])
 
 # compute bounding box for modulus
 x_min  = -1.
@@ -37,4 +38,4 @@ po.close()
 centroid_heatmap(c_samples, log_dir, x_min, x_max, y_min, y_max,bins=20)
 centroid_plot(c_samples, log_dir, x_min, x_max, y_min, y_max)
 plot_autocorr(c_samples, log_dir)
-fnl_histogram(fnls, log_dir)
+fnl_histogram(fnls, log_dir, test_name)
