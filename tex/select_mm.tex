@@ -458,19 +458,23 @@ growth location using the landmark boundary conditions seen in figure
 \Procedure{mcmcSM}{$N$, $K$, $\mathbf q_0$, $\mathbf q_1$, $\beta\in (0,1]$}
 \State $j \gets 1$
 \State $\nu^j \gets \text{initial guess in } \RdK$
-\State Solve \eqref{eq-m-selective} with $\nu^j$ and $q_0,\,q_1$ to obtain $w^0 = (q^0,\, z^0,\, u^0)$
-\While{$j \leq N$}
+\State Solve \eqref{eq-m-selective} with $\nu^j$ and $\mathbf q_0,\,\mathbf q_1$
+to obtain $\omega^j = (\mathbf q^j,\,\mathbf p^j,\, u^j)$
+\While{$j < N$}
 \State Sample a random point $\xi \in \mathcal N(0, \text{Id}_{\mathbb R^d})^K$
 \State $\nu \gets \beta \xi + \sqrt{1-\beta^2} \nu^j$
-\State Solve \eqref{eq-m-selective} with $\nu$ and $q_0,\,q_1$ to obtain $w = (q,\, z,\, u)$
-\If {\textsc{randomUnit()}$\,< \min(1,\, e^{- S_{sm}^{\nu^j}(w^j) + S_{sm}^{\nu}(w)})$}
+\State Solve \eqref{eq-m-selective} with $\nu$ and $\mathbf q_0,\,\mathbf q_1$
+to obtain $\omega = (\mathbf q,\, \mathbf p,\, u)$
+\If {\textsc{randomUnit()}$\,< \min(1,\, e^{- S_{sm}^{\nu^j}(\omega^j) + S_{sm}^{\nu}(\omega)})$}
     \State $\nu^{j+1} \gets \nu$
+    \State $\omega^{j+1} \gets \omega$
 \Else
     \State $\nu^{j+1} \gets \nu^j$
+    \State $\omega^{j+1} \gets \omega^j$
 \EndIf
 \State $j\gets j+1$
 \EndWhile
-\Return $\{\nu^j,\, q^j,\, z^j,\, u^j\}_{j=1}^N$
+\Return $\{\nu^j,\, \omega^j\}_{j=1}^N$
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
