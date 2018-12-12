@@ -14,7 +14,7 @@ xs, ys, hs = [], [], []
 for x in np.linspace(x_min, x_max, resolution):
     for y in np.linspace(y_min, y_max, resolution):
         nu = [x, y]
-        h = run_mm_custom_nu(*criss_cross(num_landmarks=5), nus=[nu],
+        h = run_mm_custom_nu(*criss_cross(num_landmarks=10), nus=[nu],
             return_dict=False, plot=False)
         xs.append(x)
         ys.append(y)
@@ -32,7 +32,7 @@ xs, ys, hs = [], [], []
 for x in np.linspace(x_min, x_max, resolution):
     for y in np.linspace(y_min, y_max, resolution):
         nu = [x, y]
-        h = run_mm_custom_nu(*criss_cross(num_landmarks=5), nus=[nu],
+        h = run_mm_custom_nu(*squeeze(num_landmarks=8), nus=[nu],
             return_dict=False, plot=False)
         xs.append(x)
         ys.append(y)
