@@ -1,8 +1,8 @@
 import numpy as np
 import pylab as plt
 
-#plt.rc('text', usetex=True)
-#plt.rc('font', family='serif')
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')
 
 def sample_circle(num_landmarks, scale=1, shift=0):
     thetas = np.linspace(0, 2*np.pi, num=num_landmarks+1)[:-1]
@@ -85,26 +85,28 @@ def triangle_flip(num_landmarks):
         exit()
     scale = 1
 
-    a = np.array([1e-06, 0])  # lazy with sign(0) in reflection
-    b = np.array([-2.5, 5])
-    c = np.array([2.5, 5])
+    a = np.array([1e-06, .7])  # lazy with sign(0) in reflection
+    b = np.array([-.7, 0])
+    c = np.array([.7, 0])
 
     # interpolate between them to generate points
     ss = num_landmarks // 3
-
-    q0_a = [(1-s/ss) * a + s/ss * b for s in range(ss)] # [`a` -> `b`)
-    q0_b = [(1-s/ss) * b + s/ss * c for s in range(ss)] # [`b` -> `c`)
-    q0_c = [(1-s/ss) * c + s/ss * a for s in range(ss)] # [`c` -> `a`)
+    ss0 = 1
+    ss1 = 4
+    q0_a = [(1-s/ss0) * a + s/ss0 * b for s in range(ss0)] # [`a` -> `b`)
+    q0_b = [(1-s/ss1) * b + s/ss1 * c for s in range(ss1)] # [`b` -> `c`)
+    q0_c = [(1-s/ss0) * c + s/ss0 * a for s in range(ss0)] # [`c` -> `a`)
 
     q0 = np.array(q0_a + q0_b + q0_c)
 
-    # flip to generate q1 (reflect about x=2.5)
+    # flip to generate q1 (reflect about x_reflect)
     q1 = np.copy(q0)
     k = 0
+    x_reflect=0 
     for k in range(num_landmarks):
         x, y = q1[k]
-        dist = 2 * np.sqrt((y - 2.5)**2)
-        q1[k] = x, y - np.sign(y - 2.5) * dist
+        dist = 2 * np.sqrt((y - x_reflect)**2)
+        q1[k] = x, y - np.sign(y - x_reflect) * dist
         k += 1
 
     return q0, q1, test_name
@@ -198,28 +200,30 @@ def trace_plot(fnls, log_dir):
     plt.savefig(log_dir + 'functional_traceplot.pdf', bbox_inches='tight')
 
 def centroid_plot(c_samples, log_dir, x_min, x_max, y_min, y_max):
-    cs = np.array(c_samples)[:, 0, :]
-    cx, cy = cs[:, 0], cs[:, 1]
+    for i in range(np.shape(np.array(c_samples))[1]):
+        cs = np.array(c_samples)[:, i, :]
+        cx, cy = cs[:, 0], cs[:, 1]
 
-    plt.figure()
-    plt.xlabel('Iteration')
-    plt.ylabel('Centroid position')
-    plt.plot(cx[0], cy[0], 'r>-', alpha=1)
-    plt.plot(cx[-1], cy[-1], 'b<-', alpha=1)
-    plt.plot(cx, cy, 'go-', alpha=0.3)
-    plt.axis([x_min, x_max, y_min, y_max])
-    plt.savefig(log_dir + 'centroid_evolution.pdf', bbox_inches='tight')
+        plt.figure()
+        plt.xlabel('Iteration')
+        plt.ylabel('Centroid position')
+        plt.plot(cx[0], cy[0], 'r>-', alpha=1)
+        plt.plot(cx[-1], cy[-1], 'b<-', alpha=1)
+        plt.plot(cx, cy, 'go-', alpha=0.3)
+        plt.axis([x_min, x_max, y_min, y_max])
+        plt.savefig(log_dir + 'centroid_evolution_'+str(i)+'.pdf', bbox_inches='tight')
 
 def centroid_heatmap(c_samples, log_dir, x_min, x_max, y_min, y_max, bins=10):
-    cs = np.array(c_samples)[:, 0, :]
-    cx, cy = cs[:, 0], cs[:, 1]
-    import matplotlib.colors as mcolors
-    plt.figure()
-    plt.hist2d(cx, cy, bins=bins, range = [ [x_min, x_max], [y_min,y_max]])
-    plt.xlabel('$x$-coordinate')
-    plt.ylabel('$y$-coordinate')
-    plt.colorbar()
-    plt.savefig(log_dir + 'centroid_heat.pdf', bbox_inches='tight')
+    for i in range(np.shape(np.array(c_samples))[1]):
+        cs = np.array(c_samples)[:, i, :]
+        cx, cy = cs[:, 0], cs[:, 1]
+        import matplotlib.colors as mcolors
+        plt.figure()
+        plt.hist2d(cx, cy, bins=bins, range = [ [x_min, x_max], [y_min,y_max]])
+        plt.xlabel('$x$-coordinate')
+        plt.ylabel('$y$-coordinate')
+        plt.colorbar()
+        plt.savefig(log_dir + 'centroid_heat_'+str(i)+'.pdf', bbox_inches='tight')
 
 def sample_autocov(k, m):
     num_samples, num_kernels, _ = m.shape
