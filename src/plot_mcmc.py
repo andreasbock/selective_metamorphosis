@@ -10,13 +10,14 @@ import sys as sys
 from lib import *
 
 args = sys.argv
-if len(args) < 2:
-    print("No test specified!")
+if len(args) < 3:
+    print("No path specified!")
     exit(1)
 
 log_dir = str(args[1])
 log_dir += '/'
 
+test_name = str(args[2])
 
 # compute bounding box for modulus
 x_min  = -1.
