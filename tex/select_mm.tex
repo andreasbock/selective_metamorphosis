@@ -515,10 +515,11 @@ collapse as well as hole creation.
 \centering
 \begin{minipage}{\textwidth}
   \centering
-    \includegraphics[scale=.39]{density_criss_cross.pdf}
-    \includegraphics[scale=.38]{centroid_heat_criss_cross.pdf}\\[0.23cm]
-    \includegraphics[scale=.33]{functional_histogram_criss_cross.pdf}
-    \includegraphics[scale=.33]{autocorrelation_criss_cross.pdf}
+  \subfigure{\includegraphics[scale=.3]{density_criss_cross.pdf}}
+  \subfigure{\includegraphics[scale=.3]{centroid_heat_criss_cross.pdf}}
+  \subfigure{\includegraphics[scale=.3]{functional_histogram_criss_cross.pdf}}
+  \subfigure{\includegraphics[scale=.33]{autocorrelation_criss_cross.pdf}}
+  \subfigure{\includegraphics[scale=.30]{MAP_center_criss_cross.pdf}}
     \caption{\footnotesize We display the result of algorithm \ref{algo:mcmc} applied to the
     inverted landmarks example, The top left panel show the analytical values
     for \eqref{E_sm-def}, found by the shooting method.   The top right panel
@@ -539,11 +540,13 @@ collapse as well as hole creation.
 \centering
 \begin{minipage}{\textwidth}
   \centering
-    \includegraphics[scale=.26]{density_squeeze.pdf}
-    \includegraphics[scale=.26]{centroid_heat_0_squeeze.pdf}
-    \includegraphics[scale=.26]{centroid_heat_1_squeeze.pdf}\\[0.23cm]
-    \includegraphics[scale=.35]{functional_histogram_squeeze.pdf}
-    \includegraphics[scale=.35]{autocorrelation_squeeze.pdf}
+  \subfigure{\includegraphics[scale=.3]{density_squeeze.pdf}}
+  \subfigure{\includegraphics[scale=.3]{centroid_heat_0_squeeze.pdf}}
+  \subfigure{\includegraphics[scale=.3]{centroid_heat_1_squeeze.pdf}}
+  \subfigure{\includegraphics[scale=.3]{functional_histogram_squeeze.pdf}}
+  \subfigure{\includegraphics[scale=.31]{autocorrelation_squeeze.pdf}}
+  \subfigure{\includegraphics[scale=.27]{MAP_center_squeeze.pdf}}
+   
     \caption{\footnotesize Here we display the results for the second example (landmark
     collapse) Again, the top left panel show the analytical values for
     \eqref{E_sm-def}. Here we choose $K=2$, the top middle and right displays
