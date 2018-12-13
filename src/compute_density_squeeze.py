@@ -4,7 +4,7 @@ import numpy as np
 import pickle
 import os
 
-resolution = 2
+resolution = 20
 
 # squeeze test
 print("computing squeeze test...")

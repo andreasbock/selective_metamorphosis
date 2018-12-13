@@ -179,13 +179,13 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
         c = np.sqrt(1. - beta**2) * centers + beta * np.random.normal(size=centers.shape)
         x, y = c[:, 0], c[:, 1]
 
-        while abs(x)>1 or abs(y)>1:
-            c = np.sqrt(1. - beta**2) * centers + beta * np.random.normal(size=centers.shape)
-            x, y = c[:, 0], c[:, 1]
+        #while abs(x)>1 or abs(y)>1:
+        #    c = np.sqrt(1. - beta**2) * centers + beta * np.random.normal(size=centers.shape)
+        #    x, y = c[:, 0], c[:, 1]
 
-        #px, py = periodic(x, x_min, x_max), periodic(y, y_min, y_max)
+        px, py = periodic(x, x_min, x_max), periodic(y, y_min, y_max)
 
-        return np.dstack((x, y))[0]
+        return np.dstack((px, py))[0]
 
     def acceptance_prob(h, h_prop):
         if shoot_success:
@@ -280,7 +280,7 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
             # log and plot this MAP estimator
             fh.write("\t Functional = {} with center {}\n".format(val, me.centers))
             name = 'MAP_center_{}'.format(j)
-            plot_q(x0, me.xs, num_landmarks, log_dir + name, nus=centers)
+            plot_q(x0, me.xs, num_landmarks, log_dir + name, nus=centers,title=str(val))
 
             # serialise too because we can
             po = open(log_dir + name + ".pickle", "wb")
@@ -300,5 +300,5 @@ def run_mcmc(q0, q1, test_name, num_samples, num_nus=1, log_dir=None):
     # plotting
     centroid_heatmap(c_samples, log_dir, x_min, x_max, y_min, y_max)
     centroid_plot(c_samples, log_dir, x_min, x_max, y_min, y_max)
-    plot_autocorr(c_samples, log_dir)
+    plot_autocorr(c_samples, log_dir,lag_max = len(c_samples))
     fnl_histogram(fnls, log_dir)

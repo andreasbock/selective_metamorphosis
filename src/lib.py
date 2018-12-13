@@ -218,11 +218,12 @@ def centroid_heatmap(c_samples, log_dir, x_min, x_max, y_min, y_max, bins=10):
         cs = np.array(c_samples)[:, i, :]
         cx, cy = cs[:, 0], cs[:, 1]
         import matplotlib.colors as mcolors
-        plt.figure()
+        plt.figure(figsize=(5,4))
         plt.hist2d(cx, cy, bins=bins, range = [ [x_min, x_max], [y_min,y_max]])
         plt.xlabel('$x$-coordinate')
         plt.ylabel('$y$-coordinate')
-        plt.colorbar()
+        cbar = plt.colorbar()
+        cbar.ax.set_ylabel('Number of samples')
         plt.savefig(log_dir + 'centroid_heat_'+str(i)+'.pdf', bbox_inches='tight')
 
 def sample_autocov(k, m):
@@ -233,9 +234,9 @@ def sample_autocov(k, m):
             est += np.dot(m[i + k, j, :], m[i, j, :])
     return est / num_samples
 
-def plot_autocorr(c_samples, fname):
-    num = min(100, len(c_samples))
-    lags = np.linspace(1, len(c_samples), num, dtype=int)
+def plot_autocorr(c_samples, fname, lag_max):
+    num = lag_max# min(100, len(c_samples))
+    lags = np.linspace(1, lag_max, num, dtype=int)
 
     c_samples_np = np.array(c_samples)
     mean = np.mean(c_samples_np, axis=0)
@@ -243,16 +244,16 @@ def plot_autocorr(c_samples, fname):
     ac = lambda k: sample_autocov(k, c_samples_np - mean)
     acf = list(map(ac, lags)) / sample_autocov(0, c_samples_np - mean)
 
-    plt.figure()
+    plt.figure(figsize=(5,4))
     plt.plot(lags, acf, 'r.-')
     plt.xlabel('Lag')
-    plt.xlim((1, len(c_samples)))
+    plt.xlim((1, lag_max))#len(c_samples)))
     plt.ylabel('Sample autocorrelation')
     plt.grid(linestyle='dotted')
     plt.savefig(fname + 'autocorrelation.pdf', bbox_inches='tight')
 
 def fnl_histogram(fnls, fname, test_name, bins='auto'):
-    plt.figure()
+    plt.figure(figsize=(5,4))
     plt.hist(fnls, bins=bins, facecolor='green', alpha=0.75)
     plt.xlabel('Metamorphosis functional')
     plt.ylabel('Number of observed values')
@@ -268,14 +269,14 @@ def fnl_histogram(fnls, fname, test_name, bins='auto'):
     fnls_mm = pickle.load(po)
     po.close()
 
-    plt.axvline(x=sum(fnls_lddmm[test_name]), color='b', label='LDDMM')
-    plt.axvline(x=sum(fnls_mm[test_name]), color='r', label='Metamorphosis')
+    #plt.axvline(x=sum(fnls_lddmm[test_name]), color='b', label='LDDMM')
+    #plt.axvline(x=sum(fnls_mm[test_name]), color='r', label='Metamorphosis')
     plt.legend(loc='best')
 
     plt.savefig(fname + 'functional_histogram.pdf', bbox_inches='tight')
 
 def plot_q(x0, xs, N, fname, nus=None, title=None):
-    plt.figure()
+    plt.figure(figsize=(5,4))
     plot_landmarks(x0, color='r', start_style='o--', label='$q_0$', markersize=9)
     plot_landmarks_traj(xs, N, lw=1)
     plot_landmarks(xs[-1], start_style='x:', label='$q_1$', markersize=15)
@@ -287,6 +288,8 @@ def plot_q(x0, xs, N, fname, nus=None, title=None):
         plt.scatter(nx, ny, s=s, color='purple', alpha=.3, label='centroid')
     plt.legend(loc='best')
     plt.grid(linestyle='dotted')
+    plt.xlabel('x')
+    plt.xlabel('y')
     plt.savefig(fname + '.pdf', bbox_inches='tight')
     plt.close()
 
