@@ -131,28 +131,28 @@ appropriate functions $\nu(\cdot)$, such that the topological effects are well
 described and a large part of the matching remains diffeomorphic. In this paper,
 we focus on landmark matching but aim to extend the theory of selective
 metamorphosis to data structures amenable to classical metamorphosis or LDDMM
-theory can handle.\\
+theory can handle.
 
 \begin{figure}
 \centering
 \begin{minipage}{\textwidth}
   \centering
-    \includegraphics[width=.3\textwidth]{lddmm_criss_cross.pdf}\quad
-    \includegraphics[width=.3\textwidth]{custom_nu_criss_cross.pdf}\quad
-    \includegraphics[width=.3\textwidth]{mm_criss_cross.pdf}\quad\\[0.25cm]
-    \includegraphics[width=.3\textwidth]{lddmm_squeeze.pdf}\quad
-    \includegraphics[width=.3\textwidth]{custom_nu_squeeze.pdf}\quad
-    \includegraphics[width=.3\textwidth]{mm_squeeze.pdf}\quad
-    %\includegraphics[width=.291\textwidth]{lddmm_pent_to_tri.pdf}\\[0.25cm]
-    %\includegraphics[width=.291\textwidth]{custom_nu_pent_to_tri.pdf}\\[0.25cm]
-    %\includegraphics[width=.291\textwidth]{mm_pent_to_tri.pdf}
-    \caption{This figures illustrates landmark matching with classical LDDMM
+  \subfigure{\includegraphics[width=.3\textwidth]{lddmm_criss_cross.pdf}}
+  \subfigure{\includegraphics[width=.3\textwidth]{custom_nu_criss_cross.pdf}}
+  \subfigure{\includegraphics[width=.3\textwidth]{mm_criss_cross.pdf}}
+  \subfigure{\includegraphics[width=.3\textwidth]{lddmm_squeeze.pdf}}
+  \subfigure{\includegraphics[width=.3\textwidth]{custom_nu_squeeze.pdf}}
+  \subfigure{\includegraphics[width=.3\textwidth]{mm_squeeze.pdf}}
+    \caption{This figure illustrates landmark matching with classical LDDMM
     (left column), metamorphosis (right column) and our selective metamorphosis
     approach (middle column). LDDMM fails to perform the matching and we observe
     unnatural landmark trajectories whereas metamorphosis achieves a more
     intuitive matching. Selective metamorphosis has the additional advantage of
     only breaking the diffeomorphic property where needed in along the matching,
-    thus preserving more of the desired diffeomorphic property of the matching.}
+    thus preserving more of the desired diffeomorphic property of the matching.
+    These simulations where done for landmarks with Gaussian kernel of variance 
+  $0.5$, $100$ timesteps from $t=0$ to $t=1$, and a metamorphosis kernel 
+of variance $0.2$.}
     \label{fig:mm_lddmm}
 \end{minipage}
 \end{figure}
@@ -168,7 +168,7 @@ remarks.
 \section{Metamorphosis for Landmarks}\label{sec:bg}
 
 In this paper we are concerned with diffeomorphometric approaches to image and
-shape matching. To this end we use time-dependent velocity fields $u$ occupying
+shape matching. To this end, we use time-dependent velocity fields $u_t$ occupying
 some Hilbert space $u_t \in V$, where $V$ is continuously embedded in
 $\textsf{C}_0^k(\Rd)$, $k\geq 1$ inducing a curve $\varphi_t$ on a subgroup
 $\text{Diff}_V(\Rd)$ of diffeomorphisms
@@ -195,7 +195,7 @@ will consider singular solutions of this problem, which are given by the Ansatz
 for $M$ landmarks with position $q_t^i\in \Rd$ and momenta $p_t^i \in \Rd$.
 The vector field is thus 
 \begin{align}
-  u(x) = \sum_{i=1}^M p_t^i K(x-q_t^i)\,, 
+  u_t(x) = \sum_{i=1}^M p_t^i K(x-q_t^i)\,, 
   \label{u-def}
 \end{align}
 where $K:\mathbb R^d\times \mathbb R^d\to \mathbb R$ is the kernel associated to
@@ -216,7 +216,7 @@ and extend the action functional \eqref{E-def} to
 \begin{align}
   \begin{split}
     S_m(\mathbf q_t, \mathbf p_t, \mathbf z_t) = & \int_0^1
-    \half  \left (\vnorm{u_t}^2 + \frac{1}{\sigma^2} \sum_{i=1}^M |z_t^i|^2\right )\diff{t}
+    \half  \left (\vnorm{u_t}^2 + \frac{1}{\sigma^2} \sum_{i=1}^M |z_t^i|^2\right )\diff{t}\, , 
   \end{split}
   \label{E_m-def}
 \end{align}
@@ -329,14 +329,14 @@ variable $w^i_t = \sqrt{\nu(q_t^i)} p^i_t$ in the problem:
 
 \begin{align*}
 \inf_{\substack{u \in L^2([0,1],\,V)\\ \mathbf q\in H^1([0,1],\,\RdM)\\\mathbf w\in L^2([0,1],\,\RdM)}}
-    & \int_0^1\half\left (h_l(\mathbf q_t,\mathbf p_t) + \sum_{i=1}^M |w_t^i|^2\right )\diff{t}\\
+    & \int_0^1\half\left (\|u_t\|^2_V + \sum_{i=1}^M |w_t^i|^2\right )\diff{t}\\
     & \dot{\mathbf q_t^i} = u_t(\mathbf q_t) + \sqrt{\nu(\mathbf q_t)} \mathbf w_t\\
     & \mathbf q_0,\,\mathbf q_1\text{ fixed}
   \label{pbl:reformulation}
 \end{align*}
 First, note that owing to
 the constraint effectively being a boundary value problem, we cannot always find
-a $\mathbf q$ for arbitrary pairs of $(u,\,\mathbf w)$. We define an bounded operator
+a $\mathbf q$ for arbitrary pairs of $(u,\,\mathbf w)$. We define a bounded operator
 $(\mathbf q,\, u_t)\mapsto \frac{\dot{\mathbf q_t} - u_t(\mathbf
 q_t)}{\sqrt{\nu(\mathbf q_t)}} \triangleq \mathbf w$:
 \begin{align*}
@@ -378,7 +378,7 @@ semi-continuity concluding the proof.
 \begin{theorem}
 Assume $\nu \in W^{2, \infty}(\Rd)$ and $V$ is embedded in
 $\textsf{C}_0^k(\Rd)$, $k\geq 1$ (continuous functions with continuous
-derivatives to order $k$ vanishing at infinity). The, given $\mathbf
+derivatives to order $k$ vanishing at infinity). Then, given $\mathbf
 p_0,\,\mathbf q_0, \in \RdM$, \eqref{eq-m-selective} with \eqref{u-def} are
 integrable for all time.
 \end{theorem}
@@ -409,11 +409,12 @@ solutions to arbitary $t>t_0$.
 \section{Bayesian Framework}\label{sec:bayesian}
 
 We now place a stochastic model on $\nu$ inspired by the approach taken in
-\cite{cotter2013bayesian}. The goal is to develop an algorithm to infer $\nu$,
+\cite{cotter2013bayesian}, see also \cite{schiratti2017bayesian} for similar Bayesian 
+approaches in computational anatomy. The goal is to develop an algorithm to infer $\nu$,
 passing via the deterministic problem seen above.  First, we present some
 preliminaries on the Bayesian approach to inverse problems in section
 \ref{subs:gf}, essentially quoting concepts and results from
-\cite{dashti2017bayesian}. See also \cite{cotter2013mcmc} for an exposition of
+\cite{dashti2017bayesian}, or \cite{cotter2013mcmc} for an exposition of
 algorithmic aspects of function space MCMC. Section \ref{subs:finite-dim-param}
 then formally describes how we apply this stochastic approach to inverse
 problems to $\nu$ by a finite-dimensional family of parameterisations.
@@ -441,7 +442,7 @@ posterior must exist and be absolutely continuous. Finally, we request
 continuity of the posterior distribution w.r.t the initial data corresponding in
 a sense to Hadamard well-posedness in a probabilistic framework. Rigorously
 treating this Bayesian inverse problem is subject to further study in 
-forthcoming work.
+forthcoming works.
 
 \subsection{Finite-dimensional Parameterisation}\label{subs:finite-dim-param}
 
@@ -449,35 +450,19 @@ We now introduce the main problem of this paper in the setting above. We
 consider $\nu$ as a random variable. If the growth location is not known \emph{a
 priori}, then this is an appropriate framework as it allows for a qualitative
 evaluation of selective metamorphosis. Moreover, it can account for some
-observation error by its probabilistic nature. As a simple example we consider
-the case where $\nu$ is given by a sum of exponentials:
+observation error by its probabilistic nature. As a simple example, we consider
+the case where $\nu$ is given by a sum of Gaussians 
 \begin{equation}\label{nu_h}
-    \nu_h (x) = \sum_{k=1}^K e^{ -\sigma_\nu^{-2}\|h_k - x\|_{\Rd}^2}
+    \nu_h (x) = \sum_{k=1}^K e^{ -\sigma_\nu^{-2}\|h_k - x\|_{\Rd}^2}\, . 
 \end{equation}
 Here the finite family $h_k$ of centroids in $\Rd$ together with the uniform
 length-scale $\sigma_\nu$ fully determine $\nu_h$, thus greatly reducing the
 complexity of sampling. We defer sampling from function space to future work.
 Defining a density $p_{sm} \propto e^{- S_{sm}^\nu}$ over the space of
-candidates $(\nu,\,u_\nu,\,\mathbf q_\nu,\,\mathbf p_\nu)$ for a prescribed
-$\nu$ leading to algorithm \ref{algo:mcmc}. Here, $N$ denotes the desired number
-of samples and $K$ the number of terms in \eqref{nu_h}. \textsc{randomUnit()}
-denotes a randomly generated number in $[0,\,1]$. The coefficient $\beta$ scales
-between the previous sample and the new step $\xi$. This needs to be calibrated
-as a too low value may increase the acceptance rate by taking shorter steps at
-the cost of slow exploration of the state space. Conversely, a too high value of
-$\beta$ results in lower acceptance and thus convergence. The next section shows
-the algorithm above in practice.
+candidates $(\nu,\,\mathbf q_\nu,\,\mathbf p_\nu)$ for a prescribed
+$\nu$ leads to algorithm \ref{algo:mcmc}.
+{\color{red} This sentence is not really clear I think. Prescribed $\nu$? but it is a candidate?}
 
-\section{Numerical examples}\label{sec:numerical}
-
-This section displays some numerical results for our method. We apply algorithm
-\ref{algo:mcmc} to infer a distribution for the growth location using the
-landmark boundary conditions seen in figure \ref{fig:mm_lddmm}.  The parameters
-and results for the first configuration is shown in figure
-\ref{fig:selective:crisscross}. These preliminary results demonstrate that even
-for a small amount of samples the density of accepted samples corresponds at
-least heuristically to the analytical density histogram obtained by computing
-the value of the metamorphosis functional in \eqref{E_sm-def}.
 \begin{algorithm}[h!]
 \begin{algorithmic}
 \caption{MCMC for selective metamorphosis}\label{algo:mcmc}
@@ -505,6 +490,57 @@ to obtain $\omega = (\mathbf q,\, \mathbf p,\, u)$
 \end{algorithmic}
 \end{algorithm}
 
+
+Here, $N$ denotes the desired number
+of samples and $K$ the number of terms in \eqref{nu_h}. \textsc{randomUnit()}
+denotes a randomly generated number in $[0,\,1]$. The coefficient $\beta$ scales
+between the previous sample and the new step $\xi$. This needs to be calibrated
+as a too low value may increase the acceptance rate by taking shorter steps at
+the cost of slow exploration of the state space. Conversely, a too high value of
+$\beta$ results in lower acceptance and thus convergence. The next section shows
+the algorithm above in practice.
+
+\section{Numerical examples}\label{sec:numerical}
+
+This section displays some numerical results for our method. We apply algorithm
+\ref{algo:mcmc} to infer a distribution for the growth location using the
+landmark boundary conditions seen in figure \ref{fig:mm_lddmm}.  The parameters
+and results for the first configuration is shown in figure
+\ref{fig:selective:crisscross}. These preliminary results demonstrate that even
+for a small number of samples the density of accepted samples corresponds at
+least heuristically to the analytical density histogram obtained by computing
+the value of the metamorphosis functional in \eqref{E_sm-def}.
+
+\begin{figure}[h!]
+  \centering
+  \subfigure{\includegraphics[scale=.35]{density_criss_cross.pdf}}
+  \subfigure{\includegraphics[scale=.35]{centroid_heat_criss_cross.pdf}}
+  \subfigure{\includegraphics[scale=.35]{functional_histogram_criss_cross.pdf}}
+  \subfigure{\includegraphics[scale=.39]{autocorrelation_criss_cross.pdf}}
+  \subfigure{\includegraphics[scale=.34]{MAP_center_criss_cross.pdf}}
+    \caption{We display the result of the MCMC algorithm \ref{algo:mcmc} applied 
+    to the inverted landmarks example of Fig. \ref{fig:mm_lddmm}. 
+    The top left 
+    panel shows the analytical values for the functional \eqref{E_sm-def} obtained 
+    for various positions of a single Gaussian $\nu$. We observe a bimodal minimum 
+    near $(0,0)$, which depends on the choice of the model parameters, and in particular
+    on the landmark interaction length $\alpha$ and variance of $\nu$. 
+    The top middle panel
+    displays a heat map for the sampled positions of the centroid from the MCMC
+    method, where the bimodality is not clearly visible. 
+    The top right panel is a histogram of the sampled values of the
+    functional which rapidly decays, indicating a good sampling of the minimum value 
+    of the functional. 
+    The bottom left panel shows the autocorrelation function of the
+    Markov chain, which decays rapidly to reach an un-correlated state after $50$ iterations. 
+    The bottom right panel is one of the MAP estimators where the centroid is near on the edge of 
+    one of the wells of the top left panel.
+    The simulations parameters are set to
+    $\sigma_\nu = 0.2$, and $0.7$ for the velocity kernel, $K=1$ and $\beta=0.2$
+    across $5000$ samples.}
+    \label{fig:selective:crisscross}
+\end{figure}
+
 We arrive at the same conclusion for the second example, for which the results
 are shown in figure \eqref{fig:selective:pinch}. Moreover, we note that the
 geodesic equations for $p$ and $q$ are time-reversible meaning that the
@@ -513,86 +549,37 @@ collapse as well as hole creation.
 
 \begin{figure}[h!]
 \centering
-\begin{minipage}{\textwidth}
-  \centering
-  \subfigure{\includegraphics[scale=.3]{density_criss_cross.pdf}}
-  \subfigure{\includegraphics[scale=.3]{centroid_heat_criss_cross.pdf}}
-  \subfigure{\includegraphics[scale=.3]{functional_histogram_criss_cross.pdf}}
-  \subfigure{\includegraphics[scale=.33]{autocorrelation_criss_cross.pdf}}
-  \subfigure{\includegraphics[scale=.30]{MAP_center_criss_cross.pdf}}
-    \caption{\footnotesize We display the result of algorithm \ref{algo:mcmc} applied to the
-    inverted landmarks example, The top left panel show the analytical values
-    for \eqref{E_sm-def}, found by the shooting method.   The top right panel
-    displays a heat map for the sampled positions of the centroid from the MCMC
-    method. The bottom left panel is a histogram of the sampled values of the
-    functional and the bottom right panel is the autocorrelation function of the
-    Markov chain, the vertical bars display the functionals corresponding to the
-    LDDMM and metamorphosis geodesics shown in figure \ref{fig:mm_lddmm}. We see
-    the density of the accepted samples is exponentially proportional to the
-    analytically computed metamorphosis values. The radius here is set to
-    $\sigma_\nu = 0.2$, and $0.7$ for the velocity kernel, $K=1$ and $\beta=0.2$
-    across $5000$ samples.}
-    \label{fig:selective:crisscross}
-\end{minipage}
-\end{figure}
-
-\begin{figure}[h!]
-\centering
-\begin{minipage}{\textwidth}
-  \centering
-  \subfigure{\includegraphics[scale=.3]{density_squeeze.pdf}}
-  \subfigure{\includegraphics[scale=.3]{centroid_heat_0_squeeze.pdf}}
-  \subfigure{\includegraphics[scale=.3]{centroid_heat_1_squeeze.pdf}}
-  \subfigure{\includegraphics[scale=.3]{functional_histogram_squeeze.pdf}}
-  \subfigure{\includegraphics[scale=.31]{autocorrelation_squeeze.pdf}}
-  \subfigure{\includegraphics[scale=.27]{MAP_center_squeeze.pdf}}
+  \subfigure{\includegraphics[scale=.34]{density_squeeze.pdf}}
+  \subfigure{\includegraphics[scale=.34]{centroid_heat_0_squeeze.pdf}}
+  \subfigure{\includegraphics[scale=.34]{centroid_heat_1_squeeze.pdf}}
+  \subfigure{\includegraphics[scale=.33]{functional_histogram_squeeze.pdf}}
+  \subfigure{\includegraphics[scale=.34]{autocorrelation_squeeze.pdf}}
+  \subfigure{\includegraphics[scale=.30]{MAP_center_squeeze.pdf}}
    
-    \caption{\footnotesize Here we display the results for the second example (landmark
-    collapse) Again, the top left panel show the analytical values for
-    \eqref{E_sm-def}. Here we choose $K=2$, the top middle and right displays
-    two heat maps for the sampled positions of the centroid. The bottom left
-    panel is a histogram of the sampled values of the functional and the bottom
-    right panel is the autocorrelation function of the Markov chain and the
-    vertical bars display the functionals corresponding to the LDDMM and
-    metamorphosis geodesics shown in figure \ref{fig:mm_lddmm}. We see the
-    density of the accepted samples is exponentially proportional to the
-    analytically computed metamorphosis values. The radius here is set to
-    $\sigma_\nu = 0.2$, and $0.7$ for the velocity kernel, $K=2$ and $\beta=0.2$
-    across $5000$ samples.} \label{fig:selective:crisscross}
+    \caption{ Here we display the results for the second example (landmark
+      collapse) of Fig. \ref{fig:mm_lddmm}.  
+      Again, the top left panel shows the analytical values for a single $\nu$ field
+    \eqref{E_sm-def}, which has also a bimodal structure, but in the other direction. 
+    For the MCMC we choose $K=2$ Gaussian $\nu$ fields, and the top middle and right displays
+    two heat maps for the sampled positions of these centroids. 
+    The bottom left
+    panel is a histogram of the sampled values of the functional, which has a peak at 
+    slightly higher values, possibly due to the redundant choice of two $\nu$ functions.
+    The bottom
+    middle panel is the autocorrelation function of the Markov chain which shows decorrelation
+    after $100$ steps. 
+    The bottom right panel show one of the MAP estimator, where the two $\nu$  fields are close to 
+  each other, demonstrating the fact that only $1$ would have been enough for this landmark configuration.
+  The simulation parameters are the same as in Fig. \ref{fig:selective:crisscross}.
+}
     \label{fig:selective:pinch}
-\end{minipage}
 \end{figure}
-
-%\begin{figure}
-%\centering
-%\begin{minipage}{\textwidth}
-  %\centering
-    %%\includegraphics[width=.23\textwidth]{\resultPath results_squeeze_8/sample_1500.pdf}
-    %\includegraphics[width=.23\textwidth]{\resultPath
-    %results_squeeze_8/centroid_heat_0.pdf}
-    %\includegraphics[width=.23\textwidth]{\resultPath
-    %results_squeeze_8/centroid_heat_1.pdf}
-    %\includegraphics[width=.23\textwidth]{density_squeeze.pdf}\\[0.23cm]
-    %\includegraphics[width=.4\textwidth]{\resultPath results_squeeze_8/functional_histogram.pdf}
-    %\includegraphics[width=.4\textwidth]{\resultPath results_squeeze_8/autocorrelation.pdf}
-   %\includegraphics[width=.46\textwidth]{\resultPath results_squeeze_8/MAP_center_0.pdf}
-    %\includegraphics[width=.46\textwidth]{\resultPath results_squeeze_8/MAP_center_1.pdf}
-    %\includegraphics[width=.46\textwidth]{\resultPath results_squeeze_8/MAP_center_2.pdf}
-    %\subcaption{.}
-    %\caption{Selective metamorphosis for the pinch example. The top row displays
-    %the geodesics corresponding a sample realisation from the chain, centroid
-    %heat map with four MAP estimators, functional histogram and autocorrelation
-    %plot. The bottom row shows the geodesics for four MAP estimators.}
-    %\label{fig:selective:pinch}
-%\end{minipage}
-%\end{figure}
 
 It is numerically relatively simple to control the behaviour of $\nu$ by simple
 scaling or by adding regularisation terms to \eqref{E_sm-def} to e.g. penalise
-Fourier modes far away from the support of the images. Here we demonstrate a
-simple, proof-of-concept derivative-free method, but depending on the functional
-setting investigating a Metropolis-adjusted Langevin algorithm is also
-subject to future treatment.
+having $\nu$'s far away from the support of the images. 
+Such cost can easily be added to the MCMC algorithm, depending on the prior
+information one can have on the shape matching problem.
 
 \section{Conclusion}\label{sec:outlook}
 
@@ -604,7 +591,7 @@ This generalises LDDMM and metamorphosis and could provide a first-order
 exploratory tool for physicians to see if the development of a biological
 feature stems from a few violations of diffeomorphic evolution. This paper paves
 the way towards surgically investigating growth phenomena between topologically
-different images.\\
+different images.
 
 Future work is manifold. Firstly, we aim to extend the equations of section
 \ref{sec:select_mm} to images e.g. using the kernel framework in
@@ -622,7 +609,7 @@ be explored. Determining a truncated Fourier series of $\nu$ could lead to
 efficient numerical methods. More generally, we hope to reconcile our attempts
 to model growth here with the mathematically elegant approach described in
 \cite{kaltenmark2016geometrical} and with the more general mathematics of growth
-\cite{goriely2017mathematics}.\\
+\cite{goriely2017mathematics}.
 
 Finally, it is our hope that we can extend the probabilistic approach developed
 here to encompass classic metamorphosis as well; that is to say, to develop the
@@ -631,6 +618,9 @@ consisting of velocities and source functions and sample from function space.
 This provides a derivative-free method of solving classic metamorphosis (or
 other problems in shape analysis) at the expense of interpreting the results
 probabilistically.
+In this work, we only used a simple MCMC algorithm, but a Metropolis-adjusted 
+Langevin algorithm or Hamiltonian Monte-Carlo algorithm may be more appropriate 
+to solve this problem.
 
 %\subsection*{Acknowledgements}
  %AA acknowledges EPSRC funding through award EP/N014529/1 via
