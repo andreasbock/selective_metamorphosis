@@ -53,13 +53,13 @@
 % If the paper title is too long for the running head, you can set
 % an abbreviated paper title here
 %
-\author{Andreas Bock \and  Alexis Arnaudon \and Colin Cotter}
+%\author{Andreas Bock \and  Alexis Arnaudon \and Colin Cotter}
 %
-\authorrunning{Bock et al.}
+%\authorrunning{Bock et al.}
 % First names are abbreviated in the running head.
 % If there are more than two authors, 'et al.' is used.
 %
-\institute{Imperial College London}
+%\institute{Imperial College London}
 %\email{lncs@springer.com}\\
 %\url{http://www.springer.com/gp/computer-science/lncs} \and
 %ABC Institute, Rupert-Karls-University Heidelberg, Heidelberg, Germany\\
@@ -124,14 +124,14 @@ control (e.g. a Gaussian centred at a point in $\Rd$), we can selectively
 introduce metamorphosis in an image and model local topological effects such as
 growth phenomena. The difficulty of this problem is to infer the function
 $\nu(\cdot)$ without prior knowledge of the location of the topological effects.
-This problem is similar to the one treated in \cite{arnaudon_geometric_2017}, where 
-such functions were parametrizing the randomness in LDDMM  matching of shapes. 
-We will use a Markov chain Monte Carlo (MCMC) approach to infer appropriate
-functions $\nu(\cdot)$, such that the topological effects are well described and
-a large part of the matching remains diffeomorphic. In this paper, we will focus
-on landmark matching but the theory of selective metamorphosis can be extended
-to any data structures that the classical metamorphosis or LDDMM theory can
-handle \cite{bockarnaudoncotter2019}.\\
+This problem is similar to the one treated in \cite{arnaudon_geometric_2017},
+where such functions were parameterising the randomness in LDDMM matching of
+shapes.  We will use a Markov chain Monte Carlo (MCMC) approach to infer
+appropriate functions $\nu(\cdot)$, such that the topological effects are well
+described and a large part of the matching remains diffeomorphic. In this paper,
+we focus on landmark matching but aim to extend the theory of selective
+metamorphosis to data structures amenable to classical metamorphosis or LDDMM
+theory can handle.\\
 
 \begin{figure}
 \centering
@@ -440,8 +440,8 @@ be checked i.e. the Radon-Nikodym derivative of the prior with respect to the
 posterior must exist and be absolutely continuous. Finally, we request
 continuity of the posterior distribution w.r.t the initial data corresponding in
 a sense to Hadamard well-posedness in a probabilistic framework. Rigorously
-treating this Bayesian inverse problem is subject to further study in the
-forthcoming work \cite{bockarnaudoncotter2019}.
+treating this Bayesian inverse problem is subject to further study in 
+forthcoming work.
 
 \subsection{Finite-dimensional Parameterisation}\label{subs:finite-dim-param}
 
@@ -456,17 +456,17 @@ the case where $\nu$ is given by a sum of exponentials:
 \end{equation}
 Here the finite family $h_k$ of centroids in $\Rd$ together with the uniform
 length-scale $\sigma_\nu$ fully determine $\nu_h$, thus greatly reducing the
-complexity of sampling. We defer sampling from function space to future work
-\cite{bockarnaudoncotter2019}. Defining a density $p_{sm} \propto e^{-
-S_{sm}^\nu}$ over the space of candidates $(\nu,\,u_\nu,\,\mathbf q_\nu,\,\mathbf
-p_\nu)$ for a prescribed $\nu$ leading to algorithm \ref{algo:mcmc}. Here, $N$
-denotes the desired number of samples and $K$ the number of terms in
-\eqref{nu_h}. \textsc{randomUnit()} denotes a randomly generated number in
-$[0,\,1]$. The coefficient $\beta$ scales between the previous sample and the
-new step $\xi$. This needs to be calibrated as a too low value may increase the
-acceptance rate by taking shorter steps at the cost of slow exploration of the
-state space. Conversely, a too high value of $\beta$ results in lower acceptance
-and thus convergence. The next section shows the algorithm above in practice.
+complexity of sampling. We defer sampling from function space to future work.
+Defining a density $p_{sm} \propto e^{- S_{sm}^\nu}$ over the space of
+candidates $(\nu,\,u_\nu,\,\mathbf q_\nu,\,\mathbf p_\nu)$ for a prescribed
+$\nu$ leading to algorithm \ref{algo:mcmc}. Here, $N$ denotes the desired number
+of samples and $K$ the number of terms in \eqref{nu_h}. \textsc{randomUnit()}
+denotes a randomly generated number in $[0,\,1]$. The coefficient $\beta$ scales
+between the previous sample and the new step $\xi$. This needs to be calibrated
+as a too low value may increase the acceptance rate by taking shorter steps at
+the cost of slow exploration of the state space. Conversely, a too high value of
+$\beta$ results in lower acceptance and thus convergence. The next section shows
+the algorithm above in practice.
 
 \section{Numerical examples}\label{sec:numerical}
 
@@ -629,10 +629,9 @@ This provides a derivative-free method of solving classic metamorphosis (or
 other problems in shape analysis) at the expense of interpreting the results
 probabilistically.
 
-\subsection*{Acknowledgements}
- AA acknowledges EPSRC funding through award EP/N014529/1 via
-the EPSRC Centre for Mathematics of Precision Healthcare.
-
+%\subsection*{Acknowledgements}
+ %AA acknowledges EPSRC funding through award EP/N014529/1 via
+%the EPSRC Centre for Mathematics of Precision Healthcare.
 
 \bibliographystyle{abbrv}
 \bibliography{landmarks}
