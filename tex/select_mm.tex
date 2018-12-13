@@ -345,19 +345,20 @@ q_t)}{\sqrt{\nu(\mathbf q_t)}} \triangleq \mathbf w$:
 \lesssim \nuinf^{-1}\Big(\ltwonorm{\dot{\mathbf q}_t} + \vnorm{u_t(\mathbf
 q_t)}\Big)\,.
 \end{align*}
-From this we generate a minimising sequence $(\mathbf q^n,
-u^n, \mathbf w^n)_{n\geq 0}$ admissible to \eqref{pbl:reformulation}. The rest
-of the proof is standard, see e.g. \cite{younes2010shapes}. We show the
-constraint equation is continuous with respect to the weak topology on
-$X\triangleq H^1([0,1],\,\RdM)\times L^2([0,1],\,V)\times L^2([0,1],\,\RdM)$ i.e.
-$\langle e(\mathbf q_t^n,\,\mathbf w_t^n,\,\mathbf u_t^n)-e(\mathbf q_t,\,\mathbf
-w_t,\,\mathbf u_t),\,\phi\rangle_{X,\,X^*}\rightarrow 0$, $\forall \phi\in X^*$
-where $e(q,\,w,\,u) \triangleq \dot{q} - u(q) - \sqrt{\nu(q)}w$. Here, the
-pairing is understood in the weak sense. Then,
+From this we generate a minimising sequence $(\mathbf q^n, u^n, \mathbf
+w^n)_{n\geq 0}$ admissible to \eqref{pbl:reformulation}. The rest of the proof
+is standard, see e.g. \cite{younes2010shapes}. We show the constraint equation
+is continuous with respect to the weak topology on $X\triangleq
+H^1([0,1],\,\RdM)\times L^2([0,1],\,V)\times L^2([0,1],\,\RdM)$ i.e.  $e(\mathbf
+q_t^n,\,\mathbf w_t^n,\,\mathbf u_t^n)\rightharpoonup e(\mathbf q_t,\,\mathbf
+w_t,\,\mathbf u_t)$ where $e(q,\,w,\,u) \triangleq \dot{q} - u(q) -
+\sqrt{\nu(q)}w$. Then,
 \begin{align*}
 \langle\sqrt{\nu(\mathbf q_t)}\mathbf w_t - \sqrt{\nu(\mathbf q_t^n)}\mathbf w_t^n,\,\phi\rangle \lesssim \nuinf\langle
-\mathbf w_t - \mathbf w_t^n,\,\phi\rangle \rightarrow 0\,,
+\mathbf w_t - \mathbf w_t^n,\,\phi\rangle \rightarrow 0\,,\quad \forall \phi \in
+L^2([0,1],\,\RdM)\,.
 \end{align*}
+Further, for $\phi\in L^2([0,1],\,V)$,
 \begin{align*}
 \langle u_t(\mathbf q_t)-u_t^n(\mathbf q_t^n),\,\phi\rangle & = \langle
 u_t(\mathbf q_t)- u_t^n(\mathbf q_t),\,\phi\rangle + \langle u_t^n(\mathbf
@@ -635,111 +636,4 @@ the EPSRC Centre for Mathematics of Precision Healthcare.
 \bibliographystyle{abbrv}
 \bibliography{landmarks}
 \end{document}
-
-\appendix
-\iffalse
-\section{$z_t$ derivation}\label{app:z_derivation}
-
-We show $z$ satisfies the continuity equation. Using $z_t = \nu(q_t)p_t$:
-\begin{align*} 0 & = \dot{\mathbf p}_t + \mdiv(u_t(\mathbf q_t)^T \mathbf p_t) +
-\frac12\nabla\nu(q_i) |p_i|^2\\
-& = \frac{d}{dt}\frac{\mathbf z_t}{\mathbf \nu(q_t)} + \mdiv(u_t(\mathbf q_t)^T \frac{\mathbf z_t}{\mathbf \nu(q_t)}) 
-    +  \frac12\nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
-& = \frac{\dot{\mathbf z_t}}{\nu(q_t)} - \frac{\mathbf z_t \nabla\nu(q_t)\dot{q}_t}{\nu^2(q_t)} + 
-\nabla u_t(\mathbf q_t)^T \frac{\mathbf z_t}{\mathbf \nu(q_t)}
-- u_t(\mathbf q_t)^T \frac{\mathbf z_t\nabla \nu(q_t)}{\mathbf \nu^2(q_t)}
-    + \frac12\nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
-& = \frac{\dot{\mathbf z_t}}{\nu(q_t)} - \frac{\mathbf z_t \nabla\nu(q_t)(u(q_t)+ \mathbf z_t)}{\nu^2(q_t)} + 
-\nabla u_t(\mathbf q_t)^T \frac{\mathbf z_t}{\mathbf \nu(q_t)}
-- u_t(\mathbf q_t)^T \frac{\mathbf z_t\nabla \nu(q_t)}{\mathbf \nu^2(q_t)}
-    + \frac12\nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
-& = \frac{\dot{\mathbf z_t}}{\nu(q_t)} - \frac{\mathbf z_t\nabla \nu(q_t)}{\mathbf \nu^2(q_t)}u_t(\mathbf q_t)
- - \nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
-&+  \nabla u_t(\mathbf q_t)^T \frac{\mathbf z_t}{\mathbf \nu(q_t)}
-- u_t(\mathbf q_t)^T \frac{\mathbf z_t\nabla \nu(q_t)}{\mathbf \nu^2(q_t)})
-    + \frac12\nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
-& = \frac{\dot{\mathbf z_t}}{\nu(q_t)}
- - \nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
-& + \nabla u_t(\mathbf q_t)^T \frac{\mathbf z_t}{\mathbf \nu(q_t)} + \frac12\nabla\nu(q_i) |\frac{\mathbf z_t}{\mathbf \nu(q_t)}|^2\\
-\end{align*}
-
-\section{Proof of Theorem \ref{sm-eu}}\label{app:proof:sm-eu}
-The functional in \eqref{E_sm-def_p} is not convex so we work with a
-reformulation to ensure the required lower semi-continuity. Define a
-variable $w^i_t = \sqrt{\nu(q_t^i)} p^i_t$ in the problem:
-
-\begin{align}
-\inf_{\substack{u \in L^2([0,1],\,V)\\ \mathbf q\in H^1([0,1],\,\RdM)\\\mathbf w\in L^2([0,1],\,\RdM)}}
-    & \int_0^1\half\left (h_l(\mathbf q_t,\mathbf p_t) + \sum_{i=1}^M |w_t^i|^2\right )\diff{t}\\
-    & \dot{\mathbf q_t^i} = u_t(\mathbf q_t) + \sqrt{\nu(\mathbf q_t)} \mathbf w_t\\
-    & \mathbf q_0,\,\mathbf q_1\text{ fixed}
-  \label{pbl:reformulation}
-\end{align}
-We now show existence of a minimiser to this problem. First, note that owing to
-the constraint effectively being a boundary value problem, we cannot always find
-a $\mathbf q$ for arbitrary pairs of $(u,\,\mathbf w)$. We define an bounded operator
-$(\mathbf q,\, u_t)\mapsto \frac{\dot{\mathbf q_t} - u_t(\mathbf
-q_t)}{\sqrt{\nu(\mathbf q_t)}} \triangleq \mathbf w$:
-\begin{align*}
-\Big(\sum_{i=1}^M |w_t^i|^2\Big)^{\frac 12} & = \ltwonorm{\mathbf w} =
-\ltwonorm{\frac{\dot{\mathbf q}_t - u_t(\mathbf q_t)}{\sqrt{\nu(\mathbf q_t)}}}
-\lesssim \nuinf^{-1}\Big(\ltwonorm{\dot{\mathbf q}_t} + \vnorm{u_t(\mathbf
-q_t)}\Big)\,.
-\end{align*}
-From this we generate a minimising sequence $(\mathbf q^n,
-u^n, \mathbf w^n)_{n\geq 0}$ admissible to \eqref{pbl:reformulation}. The rest
-of the proof is standard, see e.g. \cite{younes2010shapes}. We show the
-constraint equation is continuous with respect to the weak topology on
-$X\triangleq H^1([0,1],\,\RdM)\times L^2([0,1],\,V)\times L^2([0,1],\,\RdM)$ i.e.
-$\langle e(\mathbf q_t^n,\,\mathbf w_t^n,\,\mathbf u_t^n)-e(\mathbf q_t,\,\mathbf
-w_t,\,\mathbf u_t),\,\phi\rangle_{X,\,X^*}\rightarrow 0$, $\forall \phi\in X^*$
-where $e(q,\,w,\,u) \triangleq \dot{q} - u(q) - \sqrt{\nu(q)}w$. Here, the
-pairing is understood in the weak sense. Then,
-\begin{align*}
-\langle\sqrt{\nu(\mathbf q_t)}\mathbf w_t - \sqrt{\nu(\mathbf q_t^n)}\mathbf w_t^n,\,\phi\rangle \lesssim \nuinf\langle
-\mathbf w_t - \mathbf w_t^n,\,\phi\rangle \rightarrow 0\,,
-\end{align*}
-\begin{align*}
-\langle u_t(\mathbf q_t)-u_t^n(\mathbf q_t^n),\,\phi\rangle & = \langle
-u_t(\mathbf q_t)- u_t^n(\mathbf q_t),\,\phi\rangle + \langle u_t^n(\mathbf
-q_t)-u^n(\mathbf q_t^n),\,\phi\rangle\,.
-\end{align*}
-The first term vanishes trivially, while for the second we see
-\begin{align*}
-\langle u_t^n(\mathbf q_t)-u_t^n(\mathbf q_t^n),\,\phi\rangle \leq \text{Lip}(u_t^n)\langle \mathbf q_t-\mathbf q_t^n,\,\phi\rangle \rightarrow 0
-\end{align*}
-Since linear operators are naturally compatible with the weak topology the
-required continuity follows.  Passing to subsequences where necessary we can by
-classic results extract bounded subsequences converging to weak limits where
-necessary to obtain a minimiser. Convexity of $S$ implies weak lower
-semi-continuity concluding the proof.
-
-\section{Well-posedness of the equation of motion}
-Using the equation for $z$, we can formally write $z_t = z_t \circ \varphi^{-1}$,
-which corresponds to writing the initial $z_0(x) = \sum_i z_0^i\delta(x-x_0^i)$, 
-and the time dependent solution $z_t(x) = \sum_i z_0^i\delta(x-q_t^i)$ (see 
-\cite{holm2009euler}[sec 11.2] for more details). Together with the relations 
-\eqref{q_t} and \eqref{z_eta} and $\eta_0 = q_0$ as $\varphi_0 = Id$, we can write
-\begin{align*}
-  \mathbf q_t &= \varphi_t \eta_t\\
-   &= \varphi_t \mathbf q_0 + \varphi_t \eta_t-\varphi_t \eta_0\\
-   &= \varphi_t \mathbf q_0 + \varphi_t \int \dot \eta_t dt\\
-   &= \varphi_t \mathbf q_0 + \varphi_t \int \varphi_t^{-1} \varphi_t\dot \eta_t dt\\
-   &= \varphi_t \mathbf q_0 + \varphi_t \int  \varphi_t^{-1}\mathbf z dt \\
-   &= \varphi_t \mathbf q_0 + \varphi_t \int  \varphi_t^{-1}\nu(\mathbf q_t) \mathbf p_t  dt\\
-   &= \varphi_t \mathbf q_0 + \varphi_t \int  \varphi_t^{-1}\mathbf z_0\circ \varphi_t^{-1} dt\, , 
-\end{align*}
-and directly verify that it satisfy the equation of motions by computing
-\begin{align*}
-  \dot {\mathbf q}_t = \dot \varphi_t \varphi_t^{-1} \varphi \mathbf q_0 + \dot
-  \varphi_t \varphi_t^{-1} \varphi_t \eta_t + \varphi_t \dot \eta_t  = u_t(
-  \mathbf q_t) + \mathbf z_t\, ,
-\end{align*}
-using $\dot \varphi_t\varphi_t^{-1} = u_t$. 
-This is the integral form of the equation of motion, which is the same equation
-as in \cite{holm2009euler}[eqn 19], with the only difference in the term $\nu(q) p_i$ 
-in the reconstruction relation. 
-{\color{red} Can we simply redo the same proof, but being careful when they need this term, 
-and make sure that $\nu(x)<\nu_{max}$ is enough? maybe the derivative needs to be smooth, too. }
-\fi
 
