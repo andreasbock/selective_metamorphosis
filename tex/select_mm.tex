@@ -192,7 +192,7 @@ will consider singular solutions of this problem, which are given by the Ansatz
 \begin{align}
   \frac{\delta l}{\delta u} = \mathbf m(x) = \sum_{i=1}^M p_t^i \delta(x-q_t^i)\,, 
 \end{align}
-for $N$ landmarks with position $q_t^i\in \Rd$ and momenta $p_t^i \in \Rd$.
+for $M$ landmarks with position $q_t^i\in \Rd$ and momenta $p_t^i \in \Rd$.
 The vector field is thus 
 \begin{align}
   u(x) = \sum_{i=1}^M p_t^i K(x-q_t^i)\,, 
@@ -350,8 +350,8 @@ w^n)_{n\geq 0}$ admissible to \eqref{pbl:reformulation}. The rest of the proof
 is standard, see e.g. \cite{younes2010shapes}. We show the constraint equation
 is continuous with respect to the weak topology on $X\triangleq
 H^1([0,1],\,\RdM)\times L^2([0,1],\,V)\times L^2([0,1],\,\RdM)$ i.e.  $e(\mathbf
-q_t^n,\,\mathbf w_t^n,\,\mathbf u_t^n)\rightharpoonup e(\mathbf q_t,\,\mathbf
-w_t,\,\mathbf u_t)$ where $e(q,\,w,\,u) \triangleq \dot{q} - u(q) -
+q_t^n,\,\mathbf w_t^n,\, u_t^n)\rightharpoonup e(\mathbf q_t,\,\mathbf
+w_t,\, u_t)$ where $e(q,\,w,\,u) \triangleq \dot{q} - u(q) -
 \sqrt{\nu(q)}w$. Then,
 \begin{align*}
 \langle\sqrt{\nu(\mathbf q_t)}\mathbf w_t - \sqrt{\nu(\mathbf q_t^n)}\mathbf w_t^n,\,\phi\rangle \lesssim \nuinf\langle
@@ -379,18 +379,19 @@ semi-continuity concluding the proof.
 Assume $\nu \in W^{2, \infty}(\Rd)$ and $V$ is embedded in
 $\textsf{C}_0^k(\Rd)$, $k\geq 1$ (continuous functions with continuous
 derivatives to order $k$ vanishing at infinity). The, given $\mathbf
-p_0,\,\mathbf q_0, \in \RdM$, \eqref{eq-m-selective} are integrable for all
-time.
+p_0,\,\mathbf q_0, \in \RdM$, \eqref{eq-m-selective} with \eqref{u-def} are
+integrable for all time.
 \end{theorem}
 \begin{proof}
 Establishing appropriate Lipschitz conditions implies integrability of the
-system. First, the mapping $(u,\,q)\mapsto u\circ q$ is clearly Lipschitz. For
-$u(q)\mapsto\nabla u(q)^T$ consider $v,\,w \in V$ and $x,\,y\in\Rd$:
+system akin to \cite[Theorem 5]{cotter2013bayesian}. We note that the kernel in
+\eqref{u-def} is Lipschitz in $(p_t, q_t)$ by assumption, so the composition $(p,\,q) \mapsto
+u\circ q$ is also Lipschitz. $u(q)\mapsto\nabla u(q)^T$ consider $v,\,w \in V$ and $x,\,y\in\Rd$:
 \begin{align}
 \ltwonorm{\nabla v(x) - \nabla w(y)} \lesssim \vnorm{v} \ltwonorm{x-y} + \vnorm{v-w}\ltwonorm{y}
 \end{align}
-
-Given the conditions on $\nu$ the mappings
+so the mapping is Lipschitz in both the position and velocity. Given the
+conditions on $\nu$ the mappings
 \begin{align}
   \begin{split}
     & (q,\,p)\mapsto \nu(q)p\\
