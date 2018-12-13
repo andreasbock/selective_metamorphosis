@@ -102,7 +102,7 @@ def triangle_flip(num_landmarks):
     # flip to generate q1 (reflect about x_reflect)
     q1 = np.copy(q0)
     k = 0
-    x_reflect=0 
+    x_reflect=0
     for k in range(num_landmarks):
         x, y = q1[k]
         dist = 2 * np.sqrt((y - x_reflect)**2)

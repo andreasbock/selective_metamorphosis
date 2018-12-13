@@ -14,7 +14,6 @@ import os
 if not os.path.exists(log_dir):
     os.makedirs(log_dir)
 
-
 # initialize template and target, q0 and q1
 def run_lddmm(q0, q1, test_name):
     # landmark parameters
@@ -129,11 +128,11 @@ def run_lddmm(q0, q1, test_name):
     return {test_name: (h, float(res[1]))}
 
 to_pickle = dict()
-to_pickle.update(run_lddmm(*pent_to_tri(num_landmarks=40)))
+#to_pickle.update(run_lddmm(*pent_to_tri(num_landmarks=40)))
 to_pickle.update(run_lddmm(*criss_cross(num_landmarks=20)))
 to_pickle.update(run_lddmm(*squeeze(num_landmarks=36)))
-to_pickle.update(run_lddmm(*pringle(num_landmarks=16)))
-to_pickle.update(run_lddmm(*triangle_flip(num_landmarks=15)))
+#to_pickle.update(run_lddmm(*pringle(num_landmarks=16)))
+#to_pickle.update(run_lddmm(*triangle_flip(num_landmarks=15)))
 
 import pickle
 po = open("lddmm.pickle", "wb")

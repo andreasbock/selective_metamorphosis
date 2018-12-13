@@ -39,6 +39,7 @@ po.close()
 # plotting
 centroid_heatmap(c_samples, log_dir, x_min, x_max, y_min, y_max,bins=15)
 centroid_plot(c_samples, log_dir, x_min, x_max, y_min, y_max)
+
 plot_autocorr(c_samples, log_dir, lag_max = 1000)
 fnl_histogram(fnls, log_dir,test_name = '', bins=50)
 
@@ -65,6 +66,5 @@ for j in range(3):
     xs = pickle.load(po)
     po.close()
     plot_q(x0, xs, num_landmarks, log_dir + name, nus=centers)#title=str(val))
-
 
 
