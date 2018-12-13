@@ -459,11 +459,8 @@ the case where $\nu$ is given by a sum of Gaussians
 Here the finite family $h_k$ of centroids in $\Rd$ together with the uniform
 length-scale $\sigma_\nu$ fully determine $\nu_h$, thus greatly reducing the
 complexity of sampling. We defer sampling from function space to future work.
-Defining a density $p_{sm} \propto e^{- S_{sm}^\nu}$ over the space of
-candidates $(\nu,\,\mathbf q_\nu,\,\mathbf p_\nu)$ for a prescribed
-$\nu$ leads to algorithm \ref{algo:mcmc}.
-{\color{red} This sentence is not really clear I think. Prescribed $\nu$? but it is a candidate?}
-
+Defining a density $p_{sm} \propto e^{- S_{sm}^\nu}$ over the space of triples
+$(\nu,\,\mathbf q_\nu,\,\mathbf p_\nu)$ leads to algorithm \ref{algo:mcmc}.
 \begin{algorithm}[h!]
 \begin{algorithmic}
 \caption{MCMC for selective metamorphosis}\label{algo:mcmc}
@@ -519,24 +516,22 @@ the value of the metamorphosis functional in \eqref{E_sm-def}.
   \subfigure{\includegraphics[scale=.35]{functional_histogram_criss_cross.pdf}}
   \subfigure{\includegraphics[scale=.39]{autocorrelation_criss_cross.pdf}}
   \subfigure{\includegraphics[scale=.34]{MAP_center_criss_cross.pdf}}
-    \caption{We display the result of the MCMC algorithm \ref{algo:mcmc} applied 
-    to the inverted landmarks example of Fig. \ref{fig:mm_lddmm}. 
-    The top left 
-    panel shows the analytical values for the functional \eqref{E_sm-def} obtained 
-    for various positions of a single Gaussian $\nu$. We observe a bimodal minimum 
-    near $(0,0)$, which depends on the choice of the model parameters, and in particular
-    on the landmark interaction length $\alpha$ and variance of $\nu$. 
-    The top middle panel
-    displays a heat map for the sampled positions of the centroid from the MCMC
-    method, where the bimodality is not clearly visible. 
-    The top right panel is a histogram of the sampled values of the
-    functional which rapidly decays, indicating a good sampling of the minimum value 
-    of the functional. 
-    The bottom left panel shows the autocorrelation function of the
-    Markov chain, which decays rapidly to reach an un-correlated state after $50$ iterations. 
-    The bottom right panel is one of the MAP estimators where the centroid is near on the edge of 
-    one of the wells of the top left panel.
-    The simulations parameters are set to
+    \caption{We display the result of the MCMC algorithm \ref{algo:mcmc} applied
+    to the inverted landmarks example of figure \ref{fig:mm_lddmm}.  The top left
+    panel shows the analytical values for the functional \eqref{E_sm-def}
+    obtained for various positions of a single Gaussian $\nu$. We observe a
+    bimodal minimum near $(0,0)$, which depends on the choice of the model
+    parameters, and in particular on the landmark interaction length
+    corresponding to the Gaussian kernel $K$ and $\sigma_\nu$.  The top middle
+    panel displays a heat map for the sampled positions of the centroid from the
+    MCMC method, where the bimodality is not clearly visible.  The top right
+    panel is a histogram of the sampled
+    values of the functional which rapidly decays, indicating a good sampling of
+    the minimum value of the functional.  The bottom left panel shows the
+    autocorrelation function of the Markov chain, which decays rapidly to reach
+    an un-correlated state after $50$ iterations.  The bottom right panel is one
+    of the MAP estimators where the centroid is near on the edge of one of the
+    wells of the top left panel.  The simulations parameters are set to
     $\sigma_\nu = 0.2$, and $0.7$ for the velocity kernel, $K=1$ and $\beta=0.2$
     across $5000$ samples.}
     \label{fig:selective:crisscross}
@@ -558,20 +553,20 @@ collapse as well as hole creation.
   \subfigure{\includegraphics[scale=.30]{MAP_center_squeeze.pdf}}
    
     \caption{ Here we display the results for the second example (landmark
-      collapse) of Fig. \ref{fig:mm_lddmm}.  
-      Again, the top left panel shows the analytical values for a single $\nu$ field
-    \eqref{E_sm-def}, which has also a bimodal structure, but in the other direction. 
-    For the MCMC we choose $K=2$ Gaussian $\nu$ fields, and the top middle and right displays
-    two heat maps for the sampled positions of these centroids. 
-    The bottom left
-    panel is a histogram of the sampled values of the functional, which has a peak at 
-    slightly higher values, possibly due to the redundant choice of two $\nu$ functions.
-    The bottom
-    middle panel is the autocorrelation function of the Markov chain which shows decorrelation
-    after $100$ steps. 
-    The bottom right panel show one of the MAP estimator, where the two $\nu$  fields are close to 
-  each other, demonstrating the fact that only $1$ would have been enough for this landmark configuration.
-  The simulation parameters are the same as in Fig. \ref{fig:selective:crisscross}.
+    collapse) of figure \ref{fig:mm_lddmm}.  Again, the top left panel shows the
+    analytical values for a single $\nu$ field \eqref{E_sm-def}, which has also
+    a bimodal structure, but in the other direction.  For the MCMC we choose
+    $K=2$ Gaussian $\nu$ fields, and the top middle and right displays two heat
+    maps for the sampled positions of these centroids.  The bottom left panel is
+    a histogram of the sampled values of the functional, which has a peak at
+    slightly higher values, possibly due to the redundant choice of two $\nu$
+    functions.  The bottom middle panel is the autocorrelation function of the
+    Markov chain which shows decorrelation after $100$ steps.  The bottom right
+    panel shows the geodesics yielding one of the lowest functional values,
+    where the two $\nu$  fields are close to each other, demonstrating the fact
+    that only $1$ would have been enough for this landmark configuration.  The
+    simulation parameters are the same as in figure
+    \ref{fig:selective:crisscross} with the exception of $K=2$.
 }
     \label{fig:selective:pinch}
 \end{figure}
